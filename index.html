@@ -11,8 +11,8 @@
 
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold tracking-tight text-indigo-600">A tu Puerta</span>
-            <button onclick="abrirModalLogin()" class="text-xs text-gray-400 hover:text-gray-600 transition font-medium cursor-pointer py-2 px-3">Admin</button>
+            <span class="text-xl font-bold tracking-tight text-indigo-600">A tu puerta</span>
+            <button onclick="document.getElementById('modal-admin-login').style.display = 'flex';" class="text-xs text-gray-400 hover:text-gray-600 transition font-medium cursor-pointer py-2 px-3">Admin</button>
         </div>
     </nav>
 
@@ -29,7 +29,7 @@
 
     <div id="modal-compra" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-            <button onclick="cerrarModalCompra()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <button onclick="document.getElementById('modal-compra').style.display = 'none';" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Finalizar Pedido</h2>
             <p class="text-sm text-gray-500 mb-6" id="detalles-producto-checkout"></p>
 
@@ -65,7 +65,7 @@
 
     <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <button onclick="document.getElementById('modal-admin-login').style.display = 'none';" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-xl font-bold mb-6 text-center">Acceso Administrador</h2>
             <form onsubmit="loginAdmin(event)" class="space-y-4">
                 <div>
@@ -142,38 +142,12 @@
     </div>
 
     <script>
-        // 1. Lógica Visual (Separada para que no falle si no hay internet)
-        function abrirModalLogin() {
-            document.getElementById('modal-admin-login').style.display = 'flex';
-        }
-
-        function cerrarModalLogin() {
-            document.getElementById('modal-admin-login').style.display = 'none';
-        }
-
-        function abrirCheckout(producto) {
-            productoSeleccionado = producto;
-            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${producto.nombre} - Bs ${producto.precio}`;
-            document.getElementById('modal-compra').style.display = 'flex';
-        }
-
-        function cerrarModalCompra() {
-            document.getElementById('modal-compra').style.display = 'none';
-            document.getElementById('form-pedido').reset();
-            productoSeleccionado = null;
-        }
-
-        function cambiarAVistaAdmin() {
-            document.getElementById('vista-cliente').style.display = 'none';
-            document.getElementById('vista-admin').style.display = 'block';
-            cargarProductosAdmin();
-        }
-
-        // 2. Conexión con Supabase
+        // Claves exactas proveídas por el usuario originalmente
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjI1MTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
         let supabase;
+        let productosCargados = [];
         let productoSeleccionado = null;
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -183,10 +157,10 @@
                     cargarProductosCliente();
                     evaluarSesionActual();
                 } else {
-                    document.getElementById('lista-productos').innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error: No se pudo conectar a la base de datos. Sube la página a GitHub Pages o revisa tu conexión.</div>`;
+                    document.getElementById('lista-productos').innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error: CDN de Supabase no cargó. Revisa tu conexión de red.</div>`;
                 }
-            } catch (error) {
-                console.error("Error inicializando Supabase:", error);
+            } catch (err) {
+                console.error("Error crítico de inicio:", err);
             }
         });
 
@@ -196,11 +170,13 @@
             const contenedor = document.getElementById('lista-productos');
             
             if (error || !productos || productos.length === 0) {
-                contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-gray-400">No hay productos disponibles por el momento.</div>`;
+                contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-gray-400">No hay productos disponibles por el momento. Al iniciar sesión como Admin podrás agregar el primero.</div>`;
                 return;
             }
 
-            contenedor.innerHTML = productos.map(p => `
+            productosCargados = productos; // Respaldo seguro en memoria
+
+            contenedor.innerHTML = productos.map((p, index) => `
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
                     <img src="${p.imagen_url}" alt="${p.nombre}" class="w-full h-64 object-cover">
                     <div class="p-6 flex flex-col flex-grow">
@@ -208,13 +184,19 @@
                         <p class="text-sm text-gray-500 flex-grow mb-4">${p.descripcion || ''}</p>
                         <div class="flex items-center justify-between mt-auto">
                             <span class="text-2xl font-black text-gray-900">Bs ${p.precio}</span>
-                            <button onclick='abrirCheckout(${JSON.stringify(p).replace(/'/g, "&#39;")})' class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
+                            <button onclick="abrirCheckoutPorIndice(${index})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
                                 Ordenar
                             </button>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function abrirCheckoutPorIndice(index) {
+            productoSeleccionado = productosCargados[index];
+            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${productoSeleccionado.nombre} - Bs ${productoSeleccionado.precio}`;
+            document.getElementById('modal-compra').style.display = 'flex';
         }
 
         async function procesarPedido(e) {
@@ -242,7 +224,8 @@
 - Ubicación: ${ubicacion}`;
 
             window.location.href = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
-            cerrarModalCompra();
+            document.getElementById('modal-compra').style.display = 'none';
+            document.getElementById('form-pedido').reset();
         }
 
         async function loginAdmin(e) {
@@ -254,9 +237,9 @@
             const { error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert("Error de autenticación. Verifica tus datos.");
+                alert("Error de autenticación: Verifica tus datos.");
             } else {
-                cerrarModalLogin();
+                document.getElementById('modal-admin-login').style.display = 'none';
                 cambiarAVistaAdmin();
             }
         }
@@ -265,6 +248,12 @@
             if (!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
             if (session) cambiarAVistaAdmin();
+        }
+
+        function cambiarAVistaAdmin() {
+            document.getElementById('vista-cliente').style.display = 'none';
+            document.getElementById('vista-admin').style.display = 'block';
+            cargarProductosAdmin();
         }
 
         async function logoutAdmin() {
@@ -320,7 +309,7 @@
 
         async function eliminarProducto(id) {
             if (!supabase) return;
-            if (confirm("¿Estás seguro de que deseas quitar este producto de la tienda?")) {
+            if (confirm("¿Estás seguro de que deseas quitar este producto?")) {
                 const { error } = await supabase.from('productos').delete().eq('id', id);
                 if (error) alert("Error al eliminar: " + error.message);
                 else cargarProductosAdmin();
