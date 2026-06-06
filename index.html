@@ -12,22 +12,22 @@
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <span class="text-xl font-bold tracking-tight text-indigo-600">MiTienda</span>
-            <button onclick="toggleAdminModal()" class="text-xs text-gray-400 hover:text-gray-600 transition">Admin</button>
+            <button id="btn-admin-trigger" class="text-xs text-gray-400 hover:text-gray-600 transition font-medium cursor-pointer py-2 px-3">Admin</button>
         </div>
     </nav>
 
     <main id="vista-cliente" class="max-w-6xl mx-auto px-4 py-12">
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos con Envío Directo</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explora nuestro catálogo, haz tu pedido en segundos y coordina la entrega directamente por WhatsApp.</p>
+            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos con EnvÃ­o Directo</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explora nuestro catÃ¡logo, haz tu pedido en segundos y coordina la entrega directamente por WhatsApp.</p>
         </div>
 
         <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center py-12 col-span-3 text-gray-500 animate-pulse">Cargando productos increíbles...</div>
+            <div class="text-center py-12 col-span-3 text-gray-500 animate-pulse">Cargando productos increÃ­bles...</div>
         </div>
     </main>
 
-    <div id="modal-compra" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+    <div id="modal-compra" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="cerrarModalCompra()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-2xl font-bold mb-2 text-gray-800">Finalizar Pedido</h2>
@@ -36,56 +36,56 @@
             <form id="form-pedido" onsubmit="procesarPedido(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y Apellido</label>
-                    <input type="text" id="cli-nombre" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                    <input type="text" id="cli-nombre" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Edad</label>
-                        <input type="number" id="cli-edad" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                        <input type="number" id="cli-edad" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula</label>
-                        <input type="text" id="cli-cedula" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">CÃ©dula</label>
+                        <input type="text" id="cli-cedula" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de Teléfono</label>
-                    <input type="tel" id="cli-telefono" placeholder="Ej: 04121234567" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NÃºmero de TelÃ©fono</label>
+                    <input type="tel" id="cli-telefono" placeholder="Ej: 04121234567" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación / Dirección de Envío</label>
-                    <textarea id="cli-ubicacion" rows="3" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"></textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">UbicaciÃ³n / DirecciÃ³n de EnvÃ­o</label>
+                    <textarea id="cli-ubicacion" rows="3" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none resize-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 mt-6 cursor-pointer">
-                    Confirmar Pedido vía WhatsApp
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg shadow-lg transition flex items-center justify-center gap-2 mt-6 cursor-pointer">
+                    Confirmar Pedido vÃ­a WhatsApp
                 </button>
             </form>
         </div>
     </div>
 
-    <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+    <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <button id="btn-cerrar-login" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-xl font-bold mb-6 text-center">Acceso Administrador</h2>
             <form onsubmit="loginAdmin(event)" class="space-y-4">
                 <div>
-                    <input type="email" id="admin-email" placeholder="Correo electrónico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="email" id="admin-email" placeholder="Correo electrÃ³nico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div>
-                    <input type="password" id="admin-password" placeholder="Contraseña" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="password" id="admin-password" placeholder="ContraseÃ±a" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
             </form>
         </div>
     </div>
 
-    <div id="vista-admin" class="max-w-6xl mx-auto px-4 py-12 hidden">
+    <div id="vista-admin" class="max-w-6xl mx-auto px-4 py-12" style="display: none;">
         <div class="flex items-center justify-between border-b border-gray-200 pb-6 mb-8">
             <div>
                 <h1 class="text-3xl font-extrabold text-gray-900">Panel de Control</h1>
-                <p class="text-sm text-gray-500">Añade o elimina los productos de tu landing page</p>
+                <p class="text-sm text-gray-500">AÃ±ade o elimina los productos de tu landing page</p>
             </div>
-            <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition cursor-pointer">Cerrar Sesión</button>
+            <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition cursor-pointer">Cerrar SesiÃ³n</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -94,25 +94,25 @@
                 <form onsubmit="crearProducto(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nombre</label>
-                        <input type="text" id="prod-nombre" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="text" id="prod-nombre" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Descripción</label>
-                        <textarea id="prod-descripcion" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">DescripciÃ³n</label>
+                        <textarea id="prod-descripcion" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none resize-none"></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Precio ($)</label>
-                            <input type="number" step="0.01" id="prod-precio" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            <input type="number" step="0.01" id="prod-precio" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cantidad</label>
-                            <input type="number" id="prod-cantidad" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            <input type="number" id="prod-cantidad" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">URL de la Imagen</label>
-                        <input type="url" id="prod-imagen" placeholder="https://ejemplo.com/foto.jpg" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="url" id="prod-imagen" placeholder="https://ejemplo.com/foto.jpg" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                     </div>
                     <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg text-sm transition mt-2 cursor-pointer">Guardar Producto</button>
                 </form>
@@ -132,7 +132,7 @@
                         </thead>
                         <tbody id="tabla-productos-admin">
                             <tr>
-                                <td colspan="4" class="text-center py-4">No hay productos en catálogo.</td>
+                                <td colspan="4" class="text-center py-4">No hay productos en catÃ¡logo.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -142,22 +142,34 @@
     </div>
 
     <script>
-        // Configuración de credenciales provistas por el usuario
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjI1MTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
-        // Inicializar cliente Supabase
         const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let productoSeleccionado = null;
 
-        // Al cargar la página, inicializa todo
+        // Elementos del DOM del Login manuales seguros
+        const modalLogin = document.getElementById('modal-admin-login');
+        const btnTrigger = document.getElementById('btn-admin-trigger');
+        const btnCerrarLogin = document.getElementById('btn-cerrar-login');
+
+        // AsignaciÃ³n explÃ­cita de eventos de clic para el login
+        if(btnTrigger) {
+            btnTrigger.onclick = function() {
+                modalLogin.style.display = 'flex';
+            };
+        }
+        if(btnCerrarLogin) {
+            btnCerrarLogin.onclick = function() {
+                modalLogin.style.display = 'none';
+            };
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             cargarProductosCliente();
             evaluarSesionActual();
         });
 
-        // 1. CARGAR PRODUCTOS EN LA VISTA DEL CLIENTE
         async function cargarProductosCliente() {
             const { data: productos, error } = await supabase
                 .from('productos')
@@ -165,7 +177,6 @@
                 .order('created_at', { ascending: false });
 
             const contenedor = document.getElementById('lista-productos');
-            
             if (error || !productos || productos.length === 0) {
                 contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-gray-400">No hay productos disponibles por el momento.</div>`;
                 return;
@@ -188,32 +199,28 @@
             `).join('');
         }
 
-        // 2. LOGICA DEL MODAL DE CHECKOUT/COMPRA
         function abrirCheckout(producto) {
             productoSeleccionado = producto;
-            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${producto.nombre} - $${producto.precio}`;
-            document.getElementById('modal-compra').classList.remove('hidden');
+            document.getElementById('detalles-producto-checkout').innerText = `EstÃ¡s solicitando: ${producto.nombre} - $${producto.precio}`;
+            document.getElementById('modal-compra').style.display = 'flex';
         }
 
         function cerrarModalCompra() {
-            document.getElementById('modal-compra').classList.add('hidden');
+            document.getElementById('modal-compra').style.display = 'none';
             document.getElementById('form-pedido').reset();
             productoSeleccionado = null;
         }
 
-        // 3. ENVIAR PEDIDO A WHATSAPP Y ENLACE DE REDIRECCIÓN
         async function procesarPedido(e) {
             e.preventDefault();
-
             if (!productoSeleccionado) return;
 
             const nombre = document.getElementById('cli-nombre').value;
             const edad = document.getElementById('cli-edad').value;
-            const cedula = document.getElementById('cli-cedula');
+            const cedula = document.getElementById('cli-cedula').value;
             const telefono = document.getElementById('cli-telefono').value;
             const ubicacion = document.getElementById('cli-ubicacion').value;
 
-            // Construcción del mensaje estructurado para WhatsApp
             const numeroWhatsapp = "584128481584"; 
             const textoMensaje = `Hola acabo de realizar un pedido.
 
@@ -223,21 +230,13 @@
 
 *Datos del Cliente:*
 - Nombre: ${nombre}
-- Edad: ${edad} años
-- Cédula: ${cedula.value}
-- Teléfono: ${telefono}
-- Ubicación: ${ubicacion}`;
+- Edad: ${edad} aÃ±os
+- CÃ©dula: ${cedula}
+- TelÃ©fono: ${telefono}
+- UbicaciÃ³n: ${ubicacion}`;
 
-            const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
-
-            // Redirección inmediata a WhatsApp
-            window.location.href = urlWhatsapp;
+            window.location.href = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
             cerrarModalCompra();
-        }
-
-        // 4. SECCIÓN AUTENTICACIÓN ADMIN (SUPABASE AUTH)
-        function toggleAdminModal() {
-            document.getElementById('modal-admin-login').classList.toggle('hidden');
         }
 
         async function loginAdmin(e) {
@@ -248,9 +247,9 @@
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert("Error de autenticación: Verifique sus credenciales en Supabase.");
+                alert("Error de autenticaciÃ³n: Verifique sus credenciales en Supabase.");
             } else {
-                toggleAdminModal();
+                modalLogin.style.display = 'none';
                 cambiarAVistaAdmin();
             }
         }
@@ -263,19 +262,18 @@
         }
 
         function cambiarAVistaAdmin() {
-            document.getElementById('vista-cliente').classList.add('hidden');
-            document.getElementById('vista-admin').classList.remove('hidden');
+            document.getElementById('vista-cliente').style.display = 'none';
+            document.getElementById('vista-admin').style.display = 'block';
             cargarProductosAdmin();
         }
 
         async function logoutAdmin() {
             await supabase.auth.signOut();
-            document.getElementById('vista-admin').classList.add('hidden');
-            document.getElementById('vista-cliente').classList.remove('hidden');
+            document.getElementById('vista-admin').style.display = 'none';
+            document.getElementById('vista-cliente').style.display = 'block';
             cargarProductosCliente();
         }
 
-        // 5. GESTIÓN DE INVENTARIO DESDE EL PANEL ADMIN
         async function cargarProductosAdmin() {
             const { data: productos } = await supabase.from('productos').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('tabla-productos-admin');
@@ -318,7 +316,7 @@
         }
 
         async function eliminarProducto(id) {
-            if (confirm("¿Estás seguro de que deseas quitar este producto de la tienda?")) {
+            if (confirm("Â¿EstÃ¡s seguro de que deseas quitar este producto de la tienda?")) {
                 const { error } = await supabase.from('productos').delete().eq('id', id);
                 if (error) alert("Error al eliminar: " + error.message);
                 else cargarProductosAdmin();
