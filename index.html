@@ -11,19 +11,19 @@
 
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold tracking-tight text-indigo-600">MiTienda</span>
-            <button id="btn-admin-trigger" class="text-xs text-gray-400 hover:text-gray-600 transition font-medium cursor-pointer py-2 px-3">Admin</button>
+            <span class="text-xl font-bold tracking-tight text-indigo-600">A tu Puerta</span>
+            <button onclick="abrirModalLogin()" class="text-xs text-gray-400 hover:text-gray-600 transition font-medium cursor-pointer py-2 px-3">Admin</button>
         </div>
     </nav>
 
     <main id="vista-cliente" class="max-w-6xl mx-auto px-4 py-12">
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos con Envío Directo</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explora nuestro catálogo, haz tu pedido en segundos y coordina la entrega directamente por WhatsApp.</p>
+            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos con Env&iacute;o Directo</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explora nuestro cat&aacute;logo, haz tu pedido en segundos y coordina la entrega directamente por WhatsApp.</p>
         </div>
 
         <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center py-12 col-span-3 text-gray-500 animate-pulse">Cargando productos increíbles...</div>
+            <div class="text-center py-12 col-span-3 text-gray-500 animate-pulse">Cargando productos incre&iacute;bles...</div>
         </div>
     </main>
 
@@ -44,20 +44,20 @@
                         <input type="number" id="cli-edad" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">C&eacute;dula</label>
                         <input type="text" id="cli-cedula" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de Teléfono</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">N&uacute;mero de Tel&eacute;fono</label>
                     <input type="tel" id="cli-telefono" placeholder="Ej: 04121234567" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación / Dirección de Envío</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicaci&oacute;n / Direcci&oacute;n de Env&iacute;o</label>
                     <textarea id="cli-ubicacion" rows="3" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg outline-none resize-none"></textarea>
                 </div>
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg shadow-lg transition flex items-center justify-center gap-2 mt-6 cursor-pointer">
-                    Confirmar Pedido vía WhatsApp
+                    Confirmar Pedido v&iacute;a WhatsApp
                 </button>
             </form>
         </div>
@@ -65,14 +65,14 @@
 
     <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button id="btn-cerrar-login" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-xl font-bold mb-6 text-center">Acceso Administrador</h2>
             <form onsubmit="loginAdmin(event)" class="space-y-4">
                 <div>
-                    <input type="email" id="admin-email" placeholder="Correo electrónico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
+                    <input type="email" id="admin-email" placeholder="Correo electr&oacute;nico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div>
-                    <input type="password" id="admin-password" placeholder="Contraseña" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
+                    <input type="password" id="admin-password" placeholder="Contrase&ntilde;a" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
             </form>
@@ -83,9 +83,9 @@
         <div class="flex items-center justify-between border-b border-gray-200 pb-6 mb-8">
             <div>
                 <h1 class="text-3xl font-extrabold text-gray-900">Panel de Control</h1>
-                <p class="text-sm text-gray-500">Añade o elimina los productos de tu landing page</p>
+                <p class="text-sm text-gray-500">A&ntilde;ade o elimina los productos de tu landing page</p>
             </div>
-            <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition cursor-pointer">Cerrar Sesión</button>
+            <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition cursor-pointer">Cerrar Sesi&oacute;n</button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -97,12 +97,12 @@
                         <input type="text" id="prod-nombre" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Descripción</label>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Descripci&oacute;n</label>
                         <textarea id="prod-descripcion" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none resize-none"></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Precio ($)</label>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Precio (Bs)</label>
                             <input type="number" step="0.01" id="prod-precio" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none">
                         </div>
                         <div>
@@ -132,7 +132,7 @@
                         </thead>
                         <tbody id="tabla-productos-admin">
                             <tr>
-                                <td colspan="4" class="text-center py-4">No hay productos en catálogo.</td>
+                                <td colspan="4" class="text-center py-4">No hay productos en cat&aacute;logo.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -142,41 +142,59 @@
     </div>
 
     <script>
+        // 1. Lógica Visual (Separada para que no falle si no hay internet)
+        function abrirModalLogin() {
+            document.getElementById('modal-admin-login').style.display = 'flex';
+        }
+
+        function cerrarModalLogin() {
+            document.getElementById('modal-admin-login').style.display = 'none';
+        }
+
+        function abrirCheckout(producto) {
+            productoSeleccionado = producto;
+            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${producto.nombre} - Bs ${producto.precio}`;
+            document.getElementById('modal-compra').style.display = 'flex';
+        }
+
+        function cerrarModalCompra() {
+            document.getElementById('modal-compra').style.display = 'none';
+            document.getElementById('form-pedido').reset();
+            productoSeleccionado = null;
+        }
+
+        function cambiarAVistaAdmin() {
+            document.getElementById('vista-cliente').style.display = 'none';
+            document.getElementById('vista-admin').style.display = 'block';
+            cargarProductosAdmin();
+        }
+
+        // 2. Conexión con Supabase
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjI1MTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
-        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let supabase;
         let productoSeleccionado = null;
 
-        // Elementos del DOM del Login manuales seguros
-        const modalLogin = document.getElementById('modal-admin-login');
-        const btnTrigger = document.getElementById('btn-admin-trigger');
-        const btnCerrarLogin = document.getElementById('btn-cerrar-login');
-
-        // Asignación explícita de eventos de clic para el login
-        if(btnTrigger) {
-            btnTrigger.onclick = function() {
-                modalLogin.style.display = 'flex';
-            };
-        }
-        if(btnCerrarLogin) {
-            btnCerrarLogin.onclick = function() {
-                modalLogin.style.display = 'none';
-            };
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            cargarProductosCliente();
-            evaluarSesionActual();
+            try {
+                if (typeof Supabase !== 'undefined') {
+                    supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    cargarProductosCliente();
+                    evaluarSesionActual();
+                } else {
+                    document.getElementById('lista-productos').innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error: No se pudo conectar a la base de datos. Sube la página a GitHub Pages o revisa tu conexión.</div>`;
+                }
+            } catch (error) {
+                console.error("Error inicializando Supabase:", error);
+            }
         });
 
         async function cargarProductosCliente() {
-            const { data: productos, error } = await supabase
-                .from('productos')
-                .select('*')
-                .order('created_at', { ascending: false });
-
+            if (!supabase) return;
+            const { data: productos, error } = await supabase.from('productos').select('*').order('created_at', { ascending: false });
             const contenedor = document.getElementById('lista-productos');
+            
             if (error || !productos || productos.length === 0) {
                 contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-gray-400">No hay productos disponibles por el momento.</div>`;
                 return;
@@ -189,26 +207,14 @@
                         <h3 class="text-lg font-bold text-gray-900 mb-1">${p.nombre}</h3>
                         <p class="text-sm text-gray-500 flex-grow mb-4">${p.descripcion || ''}</p>
                         <div class="flex items-center justify-between mt-auto">
-                            <span class="text-2xl font-black text-gray-900">$${p.precio}</span>
-                            <button onclick="abrirCheckout(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
+                            <span class="text-2xl font-black text-gray-900">Bs ${p.precio}</span>
+                            <button onclick='abrirCheckout(${JSON.stringify(p).replace(/'/g, "&#39;")})' class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
                                 Ordenar
                             </button>
                         </div>
                     </div>
                 </div>
             `).join('');
-        }
-
-        function abrirCheckout(producto) {
-            productoSeleccionado = producto;
-            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${producto.nombre} - $${producto.precio}`;
-            document.getElementById('modal-compra').style.display = 'flex';
-        }
-
-        function cerrarModalCompra() {
-            document.getElementById('modal-compra').style.display = 'none';
-            document.getElementById('form-pedido').reset();
-            productoSeleccionado = null;
         }
 
         async function procesarPedido(e) {
@@ -226,7 +232,7 @@
 
 *Detalles del Pedido:*
 - Producto: ${productoSeleccionado.nombre}
-- Precio: $${productoSeleccionado.precio}
+- Precio: Bs ${productoSeleccionado.precio}
 
 *Datos del Cliente:*
 - Nombre: ${nombre}
@@ -241,33 +247,28 @@
 
         async function loginAdmin(e) {
             e.preventDefault();
+            if (!supabase) return;
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert("Error de autenticación: Verifique sus credenciales en Supabase.");
+                alert("Error de autenticación. Verifica tus datos.");
             } else {
-                modalLogin.style.display = 'none';
+                cerrarModalLogin();
                 cambiarAVistaAdmin();
             }
         }
 
         async function evaluarSesionActual() {
+            if (!supabase) return;
             const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                cambiarAVistaAdmin();
-            }
-        }
-
-        function cambiarAVistaAdmin() {
-            document.getElementById('vista-cliente').style.display = 'none';
-            document.getElementById('vista-admin').style.display = 'block';
-            cargarProductosAdmin();
+            if (session) cambiarAVistaAdmin();
         }
 
         async function logoutAdmin() {
+            if (!supabase) return;
             await supabase.auth.signOut();
             document.getElementById('vista-admin').style.display = 'none';
             document.getElementById('vista-cliente').style.display = 'block';
@@ -275,6 +276,7 @@
         }
 
         async function cargarProductosAdmin() {
+            if (!supabase) return;
             const { data: productos } = await supabase.from('productos').select('*').order('created_at', { ascending: false });
             const tbody = document.getElementById('tabla-productos-admin');
 
@@ -286,7 +288,7 @@
             tbody.innerHTML = productos.map(p => `
                 <tr class="border-b border-gray-100 hover:bg-gray-50">
                     <td class="px-4 py-3 font-semibold text-gray-900">${p.nombre}</td>
-                    <td class="px-4 py-3">$${p.precio}</td>
+                    <td class="px-4 py-3">Bs ${p.precio}</td>
                     <td class="px-4 py-3">${p.cantidad_disponible}</td>
                     <td class="px-4 py-3 text-right">
                         <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 font-medium cursor-pointer">Eliminar</button>
@@ -297,6 +299,7 @@
 
         async function crearProducto(e) {
             e.preventDefault();
+            if (!supabase) return;
             const nombre = document.getElementById('prod-nombre').value;
             const descripcion = document.getElementById('prod-descripcion').value;
             const precio = parseFloat(document.getElementById('prod-precio').value);
@@ -316,6 +319,7 @@
         }
 
         async function eliminarProducto(id) {
+            if (!supabase) return;
             if (confirm("¿Estás seguro de que deseas quitar este producto de la tienda?")) {
                 const { error } = await supabase.from('productos').delete().eq('id', id);
                 if (error) alert("Error al eliminar: " + error.message);
