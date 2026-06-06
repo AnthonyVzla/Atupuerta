@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Dropshipping</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <span class="text-xl font-bold tracking-tight text-indigo-600">MiTienda</span>
+            <button onclick="toggleAdminModal()" class="text-xs text-gray-400 hover:text-gray-600 transition">Admin</button>
+        </div>
+    </nav>
+
+    <main id="vista-cliente" class="max-w-6xl mx-auto px-4 py-12">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos con Envío Directo</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Explora nuestro catálogo, haz tu pedido en segundos y coordina la entrega directamente por WhatsApp.</p>
+        </div>
+
+        <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center py-12 col-span-3 text-gray-500 animate-pulse">Cargando productos increíbles...</div>
+        </div>
+    </main>
+
+    <div id="modal-compra" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModalCompra()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <h2 class="text-2xl font-bold mb-2 text-gray-800">Finalizar Pedido</h2>
+            <p class="text-sm text-gray-500 mb-6" id="detalles-producto-checkout"></p>
+
+            <form id="form-pedido" onsubmit="procesarPedido(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre y Apellido</label>
+                    <input type="text" id="cli-nombre" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Edad</label>
+                        <input type="number" id="cli-edad" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cédula</label>
+                        <input type="text" id="cli-cedula" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de Teléfono</label>
+                    <input type="tel" id="cli-telefono" placeholder="Ej: 04121234567" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ubicación / Dirección de Envío</label>
+                    <textarea id="cli-ubicacion" rows="3" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2 mt-6 cursor-pointer">
+                    Confirmar Pedido vía WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+            <button onclick="toggleAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            <h2 class="text-xl font-bold mb-6 text-center">Acceso Administrador</h2>
+            <form onsubmit="loginAdmin(event)" class="space-y-4">
+                <div>
+                    <input type="email" id="admin-email" placeholder="Correo electrónico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <input type="password" id="admin-password" placeholder="Contraseña" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="vista-admin" class="max-w-6xl mx-auto px-4 py-12 hidden">
+        <div class="flex items-center justify-between border-b border-gray-200 pb-6 mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Panel de Control</h1>
+                <p class="text-sm text-gray-500">Añade o elimina los productos de tu landing page</p>
+            </div>
+            <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition cursor-pointer">Cerrar Sesión</button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
+                <h2 class="text-lg font-bold mb-4">Agregar Nuevo Producto</h2>
+                <form onsubmit="crearProducto(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Nombre</label>
+                        <input type="text" id="prod-nombre" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Descripción</label>
+                        <textarea id="prod-descripcion" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Precio ($)</label>
+                            <input type="number" step="0.01" id="prod-precio" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Cantidad</label>
+                            <input type="number" id="prod-cantidad" value="1" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">URL de la Imagen</label>
+                        <input type="url" id="prod-imagen" placeholder="https://ejemplo.com/foto.jpg" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg text-sm transition mt-2 cursor-pointer">Guardar Producto</button>
+                </form>
+            </div>
+
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <h2 class="text-lg font-bold mb-4">Inventario Actual</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3">Producto</th>
+                                <th class="px-4 py-3">Precio</th>
+                                <th class="px-4 py-3">Cant.</th>
+                                <th class="px-4 py-3 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-productos-admin">
+                            <tr>
+                                <td colspan="4" class="text-center py-4">No hay productos en catálogo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de credenciales provistas por el usuario
+        const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjI1MTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
+        
+        // Inicializar cliente Supabase
+        const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let productoSeleccionado = null;
+
+        // Al cargar la página, inicializa todo
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarProductosCliente();
+            evaluarSesionActual();
+        });
+
+        // 1. CARGAR PRODUCTOS EN LA VISTA DEL CLIENTE
+        async function cargarProductosCliente() {
+            const { data: productos, error } = await supabase
+                .from('productos')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            const contenedor = document.getElementById('lista-productos');
+            
+            if (error || !productos || productos.length === 0) {
+                contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-gray-400">No hay productos disponibles por el momento.</div>`;
+                return;
+            }
+
+            contenedor.innerHTML = productos.map(p => `
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
+                    <img src="${p.imagen_url}" alt="${p.nombre}" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">${p.nombre}</h3>
+                        <p class="text-sm text-gray-500 flex-grow mb-4">${p.descripcion || ''}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="text-2xl font-black text-gray-900">$${p.precio}</span>
+                            <button onclick="abrirCheckout(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition cursor-pointer">
+                                Ordenar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 2. LOGICA DEL MODAL DE CHECKOUT/COMPRA
+        function abrirCheckout(producto) {
+            productoSeleccionado = producto;
+            document.getElementById('detalles-producto-checkout').innerText = `Estás solicitando: ${producto.nombre} - $${producto.precio}`;
+            document.getElementById('modal-compra').classList.remove('hidden');
+        }
+
+        function cerrarModalCompra() {
+            document.getElementById('modal-compra').classList.add('hidden');
+            document.getElementById('form-pedido').reset();
+            productoSeleccionado = null;
+        }
+
+        // 3. ENVIAR PEDIDO A WHATSAPP Y ENLACE DE REDIRECCIÓN
+        async function procesarPedido(e) {
+            e.preventDefault();
+
+            if (!productoSeleccionado) return;
+
+            const nombre = document.getElementById('cli-nombre').value;
+            const edad = document.getElementById('cli-edad').value;
+            const cedula = document.getElementById('cli-cedula');
+            const telefono = document.getElementById('cli-telefono').value;
+            const ubicacion = document.getElementById('cli-ubicacion').value;
+
+            // Construcción del mensaje estructurado para WhatsApp
+            const numeroWhatsapp = "584128481584"; 
+            const textoMensaje = `Hola acabo de realizar un pedido.
+
+*Detalles del Pedido:*
+- Producto: ${productoSeleccionado.nombre}
+- Precio: $${productoSeleccionado.precio}
+
+*Datos del Cliente:*
+- Nombre: ${nombre}
+- Edad: ${edad} años
+- Cédula: ${cedula.value}
+- Teléfono: ${telefono}
+- Ubicación: ${ubicacion}`;
+
+            const urlWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
+
+            // Redirección inmediata a WhatsApp
+            window.location.href = urlWhatsapp;
+            cerrarModalCompra();
+        }
+
+        // 4. SECCIÓN AUTENTICACIÓN ADMIN (SUPABASE AUTH)
+        function toggleAdminModal() {
+            document.getElementById('modal-admin-login').classList.toggle('hidden');
+        }
+
+        async function loginAdmin(e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                alert("Error de autenticación: Verifique sus credenciales en Supabase.");
+            } else {
+                toggleAdminModal();
+                cambiarAVistaAdmin();
+            }
+        }
+
+        async function evaluarSesionActual() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                cambiarAVistaAdmin();
+            }
+        }
+
+        function cambiarAVistaAdmin() {
+            document.getElementById('vista-cliente').classList.add('hidden');
+            document.getElementById('vista-admin').classList.remove('hidden');
+            cargarProductosAdmin();
+        }
+
+        async function logoutAdmin() {
+            await supabase.auth.signOut();
+            document.getElementById('vista-admin').classList.add('hidden');
+            document.getElementById('vista-cliente').classList.remove('hidden');
+            cargarProductosCliente();
+        }
+
+        // 5. GESTIÓN DE INVENTARIO DESDE EL PANEL ADMIN
+        async function cargarProductosAdmin() {
+            const { data: productos } = await supabase.from('productos').select('*').order('created_at', { ascending: false });
+            const tbody = document.getElementById('tabla-productos-admin');
+
+            if (!productos || productos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">No hay productos.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = productos.map(p => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="px-4 py-3 font-semibold text-gray-900">${p.nombre}</td>
+                    <td class="px-4 py-3">$${p.precio}</td>
+                    <td class="px-4 py-3">${p.cantidad_disponible}</td>
+                    <td class="px-4 py-3 text-right">
+                        <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 font-medium cursor-pointer">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function crearProducto(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('prod-nombre').value;
+            const descripcion = document.getElementById('prod-descripcion').value;
+            const precio = parseFloat(document.getElementById('prod-precio').value);
+            const cantidad = parseInt(document.getElementById('prod-cantidad').value);
+            const imagen_url = document.getElementById('prod-imagen').value;
+
+            const { error } = await supabase.from('productos').insert([{
+                nombre, descripcion, precio, cantidad_disponible: cantidad, imagen_url
+            }]);
+
+            if (error) {
+                alert("Error al guardar: " + error.message);
+            } else {
+                e.target.reset();
+                cargarProductosAdmin();
+            }
+        }
+
+        async function eliminarProducto(id) {
+            if (confirm("¿Estás seguro de que deseas quitar este producto de la tienda?")) {
+                const { error } = await supabase.from('productos').delete().eq('id', id);
+                if (error) alert("Error al eliminar: " + error.message);
+                else cargarProductosAdmin();
+            }
+        }
+    </script>
+</body>
+</html>
