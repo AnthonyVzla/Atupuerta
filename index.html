@@ -28,7 +28,11 @@
         .modal.active { display: flex; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body class="bg-gray-50 text-gray-800 antialiased relative">
+
+    <a href="https://wa.me/584128481584?text=Hola!%20Necesito%20soporte%20o%20aclarar%20unas%20dudas%20con%20la%20tienda." target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition-all duration-300 z-50 hover:scale-110" title="Soporte Técnico">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
 
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
@@ -116,6 +120,12 @@
                 
                 <div class="bg-gray-50 p-4 rounded-2xl mb-6 space-y-3 border border-gray-100">
                     <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-1">Datos de Despacho</p>
+                    
+                    <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl text-xs font-semibold flex items-start gap-2.5 mb-2">
+                        <i class="fa-solid fa-truck-delivery text-amber-600 mt-0.5 text-sm"></i>
+                        <span>El delivery se cobra según el destino y será indicado por WhatsApp al momento de confirmar su pedido.</span>
+                    </div>
+
                     <input type="text" id="checkout-nombre" placeholder="Nombre completo de quien recibe" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
                     <input type="text" id="checkout-direccion" placeholder="Dirección exacta de entrega" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
                 </div>
@@ -171,10 +181,10 @@
                     </div>
 
                     <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                        <h3 class="font-black text-lg mb-4 text-gray-900 flex items-center gap-2">
+                        <h3 id="admin-form-title" class="font-black text-lg mb-4 text-gray-900 flex items-center gap-2">
                             <i class="fa-solid fa-box-open text-indigo-600"></i> Registrar Producto
                         </h3>
-                        <form onsubmit="adminCrearProducto(event)" class="space-y-3.5">
+                        <form onsubmit="adminGuardarProducto(event)" class="space-y-3.5">
                             <input type="text" id="adm-nombre" placeholder="Nombre Comercial" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
                             <textarea id="adm-desc" placeholder="Descripción resumida del artículo" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
                             
@@ -201,7 +211,8 @@
                                 <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600"> ¿Colocar en sección de Promociones?
                             </label>
                             
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer">GUARDAR EN INVENTARIO</button>
+                            <button type="submit" id="btn-admin-guardar" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer">GUARDAR EN INVENTARIO</button>
+                            <button type="button" id="btn-admin-cancelar" onclick="cancelarEdicion()" class="hidden w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-xl font-bold transition cursor-pointer text-xs">Cancelar Edición</button>
                         </form>
                     </div>
 
@@ -222,7 +233,6 @@
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
-        // Cambio clave preventivo para evitar colisiones globales
         const supabaseCliente = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let globalTasa = 1;
@@ -231,6 +241,7 @@
         let carrito = [];
         let usuarioActual = null;
         let modoAuthActual = 'login';
+        let idProductoEditando = null; // Rastrea si estamos editando un producto existente
 
         // Inicialización Forzada del E-commerce
         async function inicializarPlataforma() {
@@ -368,8 +379,14 @@
                 if (error) return alert("Error de acceso: " + error.message);
                 cerrarModal('modal-auth');
             } else {
-                const { error } = await supabaseCliente.auth.signUp({ email, password: pass });
+                const { data, error } = await supabaseCliente.auth.signUp({ email, password: pass });
                 if (error) return alert("Error en registro: " + error.message);
+                
+                // SALVAGUARDA DE PERFIL: Guardar explícitamente en la tabla pública 'usuarios'
+                if(data && data.user) {
+                    await supabaseCliente.from('usuarios').insert([{ id: data.user.id, email: email }]);
+                }
+
                 alert("¡Cuenta generada con éxito! Ya puedes ingresar con tus datos.");
                 cambiarModoAuth('login');
                 return;
@@ -384,7 +401,6 @@
 
         // FLUJO DEL CARRITO DE COMPRAS
         function agregarAlCarrito(id) {
-            // REGLA CRÍTICA: Bloqueo inmediato para usuarios no registrados
             if (!usuarioActual) {
                 alert("📢 ¡Atención! Para agregar productos al carrito e iniciar tu pedido, es obligatorio estar registrado o haber iniciado sesión.");
                 abrirModal('modal-auth');
@@ -458,7 +474,7 @@
             let sumaTotal = 0;
             carrito.forEach((prod, i) => {
                 textoPedido += `${i + 1}. *${prod.nombre}*\n`;
-                textoPedido += `   _Vendedor:_ ${prod.aliado_comercial}\n`;
+                textoPedido += `   _Aliado Comercial:_ ${prod.aliado_comercial}\n`;
                 textoPedido += `   _Precio:_ $${parseFloat(prod.precio_usd).toFixed(2)} (${(prod.precio_usd * globalTasa).toFixed(2)} Bs)\n\n`;
                 sumaTotal += parseFloat(prod.precio_usd);
             });
@@ -466,18 +482,17 @@
             textoPedido += `───────────────\n`;
             textoPedido += `💵 *TOTAL USD:* $${sumaTotal.toFixed(2)}\n`;
             textoPedido += `🇻🇪 *TOTAL BS:* ${(sumaTotal * globalTasa).toFixed(2)} Bs\n\n`;
+            textoPedido += `*Nota:* El costo definitivo del envío será coordinado en este chat.\n`;
             textoPedido += `_Tasa de conversión aplicada: ${globalTasa} Bs_`;
 
-            // Enlace directo de WhatsApp con mensaje pre-cargado
             const numeroDestino = "584128481584"; 
             const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(textoPedido)}`;
             window.open(urlWhatsApp, '_blank');
         }
 
-        // CONSOLE / MODAL DE ADMINISTRACIÓN (MECÁNICAS BACKEND)
+        // CONSOLE / MODAL DE ADMINISTRACIÓN
         function validarAdmin() {
             const claveEntrada = document.getElementById('admin-key').value;
-            // Clave maestra establecida por requerimientos de negocio
             if (claveEntrada === '27146006') {
                 document.getElementById('admin-login-ui').classList.add('hidden');
                 document.getElementById('admin-main-ui').classList.remove('hidden');
@@ -509,10 +524,11 @@
             await obtenerCategoriasDisponibles();
         }
 
-        async function adminCrearProducto(e) {
+        // ACCIÓN INTEGRADA: GUARDAR O ACTUALIZAR
+        async function adminGuardarProducto(e) {
             e.preventDefault();
             
-            const productoNuevo = {
+            const productoEstructura = {
                 nombre: document.getElementById('adm-nombre').value.trim(),
                 descripcion: document.getElementById('adm-desc').value.trim(),
                 precio_usd: parseFloat(document.getElementById('adm-precio').value),
@@ -523,12 +539,67 @@
                 es_promocion: document.getElementById('adm-promo').checked
             };
 
-            const { error } = await supabaseCliente.from('productos').insert([productoNuevo]);
-            if (error) return alert("Fallo al insertar producto: " + error.message);
+            if (idProductoEditando !== null) {
+                // Modo Edición
+                const { error } = await supabaseCliente.from('productos').update(productoEstructura).eq('id', idProductoEditando);
+                if (error) return alert("Fallo al actualizar producto: " + error.message);
+                alert("Producto modificado correctamente.");
+                cancelarEdicion();
+            } else {
+                // Modo Registro Nuevo
+                const { error } = await supabaseCliente.from('productos').insert([productoEstructura]);
+                if (error) return alert("Fallo al insertar producto: " + error.message);
+                alert("Producto guardado con éxito.");
+                e.target.reset();
+            }
 
-            alert("Producto guardado y sincronizado con éxito.");
-            e.target.reset();
             await obtenerProductosInventario();
+        }
+
+        // CARGAR DATOS EN EL FORMULARIO PARA EDITAR
+        function cargarProductoParaEditar(id) {
+            const p = globalProductos.find(prod => prod.id === id);
+            if (!p) return;
+
+            idProductoEditando = p.id;
+            
+            // Cambiar textos y aspecto visual del formulario a modo Edición
+            document.getElementById('admin-form-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-500"></i> Editar Producto`;
+            const btnGuardar = document.getElementById('btn-admin-guardar');
+            btnGuardar.innerText = "ACTUALIZAR PRODUCTO";
+            btnGuardar.className = "w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer";
+            document.getElementById('btn-admin-cancelar').classList.remove('hidden');
+
+            // Colocar los valores en los campos correspondientes
+            document.getElementById('adm-nombre').value = p.nombre;
+            document.getElementById('adm-desc').value = p.descripcion || '';
+            document.getElementById('adm-precio').value = p.precio_usd;
+            document.getElementById('adm-stock').value = p.stock;
+            document.getElementById('adm-img').value = p.imagen_url;
+            document.getElementById('adm-aliado').value = p.aliado_comercial;
+            document.getElementById('adm-cat').value = p.categoria_id || '';
+            document.getElementById('adm-promo').checked = p.es_promocion;
+        }
+
+        function cancelarEdicion() {
+            idProductoEditando = null;
+            
+            // Restaurar textos y aspecto visual original
+            document.getElementById('admin-form-title').innerHTML = `<i class="fa-solid fa-box-open text-indigo-600"></i> Registrar Producto`;
+            const btnGuardar = document.getElementById('btn-admin-guardar');
+            btnGuardar.innerText = "GUARDAR EN INVENTARIO";
+            btnGuardar.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer";
+            document.getElementById('btn-admin-cancelar').classList.add('hidden');
+            
+            // Limpiar inputs
+            document.getElementById('adm-nombre').value = '';
+            document.getElementById('adm-desc').value = '';
+            document.getElementById('adm-precio').value = '';
+            document.getElementById('adm-stock').value = '';
+            document.getElementById('adm-img').value = '';
+            document.getElementById('adm-aliado').value = '';
+            document.getElementById('adm-cat').value = '';
+            document.getElementById('adm-promo').checked = false;
         }
 
         async function eliminarProducto(id) {
@@ -537,6 +608,7 @@
             const { error } = await supabaseCliente.from('productos').delete().eq('id', id);
             if (error) return alert("No se pudo remover el ítem: " + error.message);
             
+            if(idProductoEditando === id) cancelarEdicion();
             await obtenerProductosInventario();
         }
 
@@ -552,7 +624,10 @@
                             <p class="text-xs font-bold text-gray-900 truncate">${p.nombre}</p>
                             <p class="text-[10px] text-gray-400 truncate">$${parseFloat(p.precio_usd).toFixed(2)} | Stock: ${p.stock} | ${p.aliado_comercial}</p>
                         </div>
-                        <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 bg-red-50 rounded-lg transition cursor-pointer">Borrar</button>
+                        <div class="flex gap-1.5 flex-shrink-0">
+                            <button onclick="cargarProductoParaEditar(${p.id})" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold px-2.5 py-1 bg-indigo-50 rounded-lg transition cursor-pointer"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2.5 py-1 bg-red-50 rounded-lg transition cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>
                 `;
             });
@@ -562,7 +637,6 @@
         function filtrar(tipo) {
             let filtrados = [];
             
-            // Estilos estéticos de botones activos
             const botones = document.querySelectorAll('.btn-filter');
             botones.forEach(b => {
                 b.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
@@ -584,11 +658,9 @@
             renderizarCatalogoPublico(filtrados);
         }
 
-        // HERRAMIENTAS INTERNAS DE MODALES
         function abrirModal(id) { document.getElementById(id).classList.add('active'); }
         function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
 
-        // Inicializar al cargar el documento
         inicializarPlataforma();
     </script>
 </body>
