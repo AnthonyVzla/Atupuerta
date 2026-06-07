@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Tu Puerta - E-commerce Pro</title>
+    <title>A Tu Puerta - E-commerce Híbrido Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -26,13 +26,54 @@
             backdrop-filter: blur(4px);
         }
         .modal.active { display: flex; }
+
+        /* --- ESTILO: CINTILLO ANIMADO --- */
+        .scrolling-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .scrolling-text {
+            display: inline-block;
+            animation: scroller 25s linear infinite;
+        }
+        /* Pausar la animación al pasar el mouse */
+        .scrolling-container:hover .scrolling-text {
+            animation-play-state: paused;
+        }
+        @keyframes scroller {
+            0% { transform: translateX(100%); } /* Empieza fuera por la derecha */
+            100% { transform: translateX(-100%); } /* Termina fuera por la izquierda */
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased relative">
 
-    <a href="https://wa.me/584128481584?text=Hola!%20Necesito%20soporte%20o%20aclarar%20unas%20dudas%20con%20la%20tienda." target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition-all duration-300 z-50 hover:scale-110" title="Soporte Técnico">
+    <a href="https://wa.me/584128481584?text=Hola!%20Necesito%20soporte." target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition-all duration-300 z-50 hover:scale-110">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </a>
+
+    <div class="bg-gray-900 text-white shadow-inner scrolling-container py-2 border-b border-gray-700">
+        <div class="scrolling-text text-xs font-semibold tracking-wide flex items-center gap-2">
+            <span>Síguenos en nuestras redes:</span>
+            <a href="https://www.instagram.com/Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+                <i class="fa-brands fa-instagram text-lg text-indigo-300"></i>
+                <span class="font-black">@Atupuertamcy</span>
+            </a>
+            <span class="text-gray-600 mx-2">|</span>
+            <a href="https://www.tiktok.com/@Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+                <i class="fa-brands fa-tiktok text-lg text-gray-100"></i>
+                <span class="font-black">@Atupuertamcy</span>
+            </a>
+            <span class="text-gray-600 mx-2">|</span>
+            <span class="ml-4 text-emerald-400">¡Pedidos rápidos directo a WhatsApp!</span>
+            <span class="text-gray-600 mx-2">|</span>
+            <span>Síguenos en nuestras redes:</span>
+            <a href="https://www.instagram.com/Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+                <i class="fa-brands fa-instagram text-lg text-indigo-300"></i>
+                <span class="font-black">@Atupuertamcy</span>
+            </a>
+        </div>
+    </div>
 
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
@@ -43,7 +84,7 @@
             
             <div class="flex items-center gap-4">
                 <div id="auth-buttons" class="hidden flex gap-2">
-                    <button onclick="abrirModal('modal-auth')" class="text-sm font-bold text-indigo-600 px-4 py-2 hover:bg-indigo-50 rounded-xl transition cursor-pointer">Iniciar Sesión / Registro</button>
+                    <button onclick="abrirModal('modal-auth')" class="text-sm font-bold text-indigo-600 px-4 py-2 hover:bg-indigo-50 rounded-xl transition cursor-pointer">Iniciar Sesión</button>
                 </div>
                 <div id="user-menu" class="hidden flex items-center gap-3">
                     <span class="text-sm font-medium text-gray-600 flex items-center gap-1">
@@ -57,7 +98,7 @@
                     <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
                 </button>
                 
-                <button onclick="abrirModal('modal-admin')" class="text-[11px] text-gray-300 hover:text-gray-500 ml-1 transition cursor-pointer"><i class="fa-solid fa-gear"></i></button>
+                <button onclick="abrirModal('modal-admin')" class="text-gray-400 hover:text-indigo-600 ml-1 transition cursor-pointer text-lg"><i class="fa-solid fa-sliders"></i></button>
             </div>
         </div>
         <div class="bg-indigo-600 text-white text-center py-1.5 text-xs font-bold tracking-widest uppercase">
@@ -66,43 +107,35 @@
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 mt-8 pb-24">
-        
         <div class="max-w-xl mx-auto mb-8">
-            <div class="relative flex items-center bg-white rounded-2xl shadow-xs border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+            <div class="relative flex items-center bg-white rounded-2xl border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
                 <span class="pl-4 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-                <input type="text" id="buscador-productos" oninput="filtrarYBuscar()" placeholder="¿Qué estás buscando hoy? Escribe aquí..." class="w-full p-4 bg-transparent outline-none text-sm text-gray-800">
+                <input type="text" id="buscador-productos" oninput="filtrarYBuscar()" placeholder="¿Qué buscas hoy?..." class="w-full p-4 bg-transparent outline-none text-sm text-gray-800">
             </div>
         </div>
 
         <div class="flex flex-wrap gap-3 justify-center mb-10">
-            <button onclick="filtrar('todos')" class="btn-filter bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md transition cursor-pointer">Todo</button>
-            <button onclick="filtrar('promo')" class="btn-filter bg-white text-gray-600 px-6 py-2.5 rounded-full font-bold shadow-sm hover:shadow-md border border-gray-200 transition cursor-pointer text-red-500 flex items-center gap-1">
-                <i class="fa-solid fa-fire text-xs"></i> Promociones
-            </button>
-            <button onclick="filtrar('aliados_ver')" class="btn-filter bg-white text-gray-600 px-6 py-2.5 rounded-full font-bold shadow-sm hover:shadow-md border border-gray-200 transition cursor-pointer text-indigo-600 flex items-center gap-1">
-                <i class="fa-solid fa-handshake text-xs"></i> Aliados Comerciales
-            </button>
+            <button onclick="filtrar('todos')" class="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold shadow-sm transition cursor-pointer">Todo</button>
+            <button onclick="filtrar('promo')" class="bg-white text-red-500 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i class="fa-solid fa-fire text-xs"></i> Promociones</button>
+            <button onclick="filtrar('aliados_ver')" class="bg-white text-indigo-600 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i class="fa-solid fa-handshake text-xs"></i> Negocios</button>
             <div id="categorias-filtros" class="flex flex-wrap gap-3"></div>
         </div>
 
         <h2 id="section-title" class="text-3xl font-black mb-8 tracking-tight text-gray-900">Todos los Productos</h2>
-        <div id="grid-productos" class="grid-products">
-            </div>
+        <div id="grid-productos" class="grid-products"></div>
     </main>
 
     <div id="modal-auth" class="modal">
         <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
             <button onclick="cerrarModal('modal-auth')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <div id="auth-ui">
-                <h2 id="auth-titulo" class="text-3xl font-black mb-2 text-gray-900">Iniciar Sesión</h2>
-                <p id="auth-desc" class="text-gray-500 mb-6 text-sm">Necesitas una cuenta para añadir productos al carrito y comprar.</p>
-                <div class="space-y-4">
-                    <input type="email" id="auth-email" placeholder="Correo electrónico" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                    <input type="password" id="auth-pass" placeholder="Contraseña" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
-                    <button id="btn-auth-principal" onclick="ejecutarAuth('login')" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-indigo-700 transition cursor-pointer">Ingresar</button>
-                    <div class="text-center pt-2">
-                        <button id="btn-auth-cambio" onclick="cambiarModoAuth('registro')" class="text-indigo-600 text-xs font-bold hover:underline cursor-pointer">¿No tienes cuenta? Regístrate gratis aquí</button>
-                    </div>
+            <h2 id="auth-titulo" class="text-3xl font-black mb-2 text-gray-900">Iniciar Sesión</h2>
+            <p id="auth-desc" class="text-gray-500 mb-6 text-sm">Ingresa tu cuenta para comprar.</p>
+            <div class="space-y-4">
+                <input type="email" id="auth-email" placeholder="Correo electrónico" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+                <input type="password" id="auth-pass" placeholder="Contraseña" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+                <button onclick="ejecutarAuth()" id="btn-auth-principal" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-md hover:bg-indigo-700 transition cursor-pointer">Ingresar</button>
+                <div class="text-center pt-2">
+                    <button id="btn-auth-cambio" onclick="cambiarModoAuth('registro')" class="text-indigo-600 text-xs font-bold hover:underline cursor-pointer">¿No tienes cuenta? Regístrate aquí</button>
                 </div>
             </div>
         </div>
@@ -113,20 +146,27 @@
             <button onclick="cerrarModal('modal-carrito')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
             <h2 class="text-3xl font-black mb-6 text-gray-900">Tu Carrito</h2>
             <div id="cart-items" class="space-y-4 mb-6"></div>
+            
+            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 flex items-center gap-3">
+                <div class="flex-grow">
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">¿Tienes un Cupón de Descuento?</label>
+                    <input type="text" id="cart-coupon-input" placeholder="Ej: MARACAYDEAL" class="w-full p-2 bg-white border border-gray-200 rounded-xl text-sm font-bold uppercase outline-none">
+                </div>
+                <button onclick="validarAplicarCupon()" class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-4 py-3 rounded-xl mt-4 transition cursor-pointer">Aplicar</button>
+            </div>
+
             <div class="border-t border-gray-100 pt-6">
                 <div class="flex justify-between items-baseline mb-6">
-                    <span class="text-xl font-bold text-gray-500">Total Estimado:</span>
+                    <div>
+                        <span class="text-xl font-bold text-gray-500">Total Estimado:</span>
+                        <p id="coupon-badge" class="text-xs text-emerald-600 font-bold hidden"></p>
+                    </div>
                     <div class="text-right">
                         <p id="cart-total-usd" class="text-3xl font-black text-gray-900">$0.00</p>
                         <p id="cart-total-bs" class="text-sm font-bold text-indigo-600">0.00 Bs</p>
                     </div>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-2xl mb-6 space-y-3 border border-gray-100">
-                    <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-1">Datos de Despacho</p>
-                    <div class="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl text-xs font-semibold flex items-start gap-2.5 mb-2">
-                        <i class="fa-solid fa-truck-delivery text-amber-600 mt-0.5 text-sm"></i>
-                        <span>El delivery se cobra según el destino y será indicado por WhatsApp al momento de confirmar su pedido.</span>
-                    </div>
                     <input type="text" id="checkout-nombre" placeholder="Nombre completo de quien recibe" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
                     <input type="text" id="checkout-direccion" placeholder="Dirección exacta de entrega" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
                 </div>
@@ -141,96 +181,169 @@
         <div class="bg-white rounded-3xl w-full max-w-6xl p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
             <button onclick="cerrarModal('modal-admin')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
             
-            <div id="admin-login-ui" class="max-w-sm mx-auto py-12">
-                <div class="text-center mb-6">
-                    <i class="fa-solid fa-lock-open text-3xl text-gray-400 mb-2"></i>
-                    <h2 class="text-2xl font-black text-gray-900">Panel Administrativo</h2>
+            <div id="admin-gate-ui" class="max-w-md mx-auto py-8 text-center space-y-6">
+                <h2 class="text-3xl font-black text-gray-900">Consola de Configuración</h2>
+                <p class="text-sm text-gray-500">Selecciona tu nivel de acceso para ingresar al panel técnico.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="cambiarAccesoGate('maestro')" class="p-5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-crown text-2xl"></i> Maestro / Admin
+                    </button>
+                    <button onclick="cambiarAccesoGate('aliado')" class="p-5 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-shop text-2xl"></i> Aliado Comercial
+                    </button>
                 </div>
-                <input type="password" id="admin-key" placeholder="Contraseña Maestra" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl mb-4 outline-none text-center font-bold tracking-widest">
-                <button onclick="validarAdmin()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition cursor-pointer">Ingresar</button>
+
+                <div id="gate-form-maestro" class="hidden border-t pt-6 text-left animate-fadeIn">
+                    <input type="password" id="admin-key" placeholder="Contraseña Maestra" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl mb-3 outline-none text-center font-bold tracking-widest">
+                    <button onclick="validarAdminMaestro()" class="w-full bg-gray-900 text-white py-3.5 rounded-2xl font-bold hover:bg-black transition cursor-pointer">Entrar como Dueño</button>
+                </div>
+
+                <div id="gate-form-aliado" class="hidden border-t pt-6 text-left space-y-3 animate-fadeIn">
+                    <label class="block text-xs font-bold text-gray-500">Selecciona tu Establecimiento</label>
+                    <select id="gate-aliado-select" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-700 outline-none"></select>
+                    <input type="password" id="gate-aliado-pass" placeholder="Clave de Acceso de Aliado" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center font-bold tracking-widest outline-none">
+                    <button onclick="validarAdminAliado()" class="w-full bg-indigo-600 text-white py-3.5 rounded-2xl font-bold hover:bg-indigo-700 transition cursor-pointer">Entrar a mi Tienda</button>
+                </div>
             </div>
 
-            <div id="admin-main-ui" class="hidden">
-                <div class="border-b border-gray-100 pb-4 mb-6 flex justify-between items-center">
-                    <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-screwdriver-wrench text-indigo-600 mr-2"></i>Consola de Control</h2>
-                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Modo Administrador</span>
+            <div id="admin-main-ui" class="hidden space-y-8">
+                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-crown text-indigo-600 mr-2"></i>Consola Principal Maestro</h2>
+                    <button onclick="salirDePaneles()" class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Cerrar Sesión Panel</button>
+                </div>
+
+                <div class="bg-gray-900 text-white p-6 rounded-3xl border border-gray-800 shadow-xl">
+                    <h3 class="text-xs font-black text-indigo-400 tracking-widest uppercase mb-4"><i class="fa-solid fa-chart-line"></i> Estadísticas en Tiempo Real (Métricas del Sistema)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Volumen Facturado</span>
+                            <span id="metric-total-usd" class="text-2xl font-black text-emerald-400">$0.00</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Órdenes Procesadas</span>
+                            <span id="metric-total-pedidos" class="text-2xl font-black text-white">0</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Negocio Más Exitoso</span>
+                            <span id="metric-top-aliado" class="text-sm font-black text-indigo-300 truncate block mt-1">Calculando...</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Plato / Producto Estrella</span>
+                            <span id="metric-top-producto" class="text-sm font-black text-amber-300 truncate block mt-1">Calculando...</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="space-y-6">
-                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200 shadow-sm">
-                            <h3 class="font-bold text-amber-800 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-money-bill-trend-up"></i> CONTROL DE DIVISA</h3>
-                            <label class="block text-[10px] font-black text-amber-700 mb-1 uppercase">Valor Dólar BCV</label>
+                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+                            <h3 class="font-bold text-amber-800 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-money-bill-trend-up"></i> CONTROL DE TASA</h3>
                             <div class="flex gap-2">
-                                <input type="number" step="0.01" id="adm-tasa" class="flex-grow p-3 bg-white rounded-xl border border-amber-300 font-bold text-gray-800 outline-none">
-                                <button onclick="actualizarTasa()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 rounded-xl font-bold text-sm transition cursor-pointer">Fijar</button>
+                                <input type="number" step="0.01" id="adm-tasa" class="w-full p-3 bg-white rounded-xl border border-amber-300 font-bold outline-none">
+                                <button onclick="actualizarTasa()" class="bg-amber-600 text-white px-4 rounded-xl font-bold text-xs cursor-pointer">Fijar</button>
                             </div>
                         </div>
 
-                        <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100 shadow-sm">
-                            <h3 class="font-bold text-indigo-900 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> NUEVO ALIADO COMERCIAL</h3>
-                            <div class="space-y-2">
-                                <input type="text" id="adm-nuevo-aliado-nom" placeholder="Nombre (Ej: Tequeñería Delicias)" class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm outline-none">
-                                <input type="text" id="adm-nuevo-aliado-img" placeholder="URL del Logo o Foto del negocio" class="w-full p-3 bg-white rounded-xl border border-gray-200 text-sm outline-none">
-                                <button onclick="adminCrearAliado()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-sm transition cursor-pointer">Registrar Aliado</button>
+                        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                            <h3 class="font-bold text-emerald-900 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-ticket"></i> CONTROL DE CUPONES</h3>
+                            <div class="space-y-2 bg-white p-3 rounded-xl border border-emerald-100 mb-3">
+                                <input type="text" id="adm-nuevo-cupon-cod" placeholder="Código (Ej: PROMO20)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold uppercase outline-none">
+                                <input type="number" id="adm-nuevo-cupon-desc" placeholder="Porcentaje Descuento (Ej: 15)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold outline-none">
+                                <button onclick="adminCrearCupon()" class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Crear e Inyectar Cupón</button>
                             </div>
-                            <div id="admin-lista-aliados-bajas" class="mt-4 space-y-1.5 max-h-[150px] overflow-y-auto">
-                                </div>
+                            <div id="admin-lista-cupones" class="space-y-2 max-h-[140px] overflow-y-auto"></div>
                         </div>
 
-                        <div class="p-5 bg-gray-50 rounded-2xl border border-gray-200 shadow-sm">
-                            <h3 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2"><i class="fa-solid fa-tags"></i> NUEVA CATEGORÍA</h3>
-                            <div class="flex gap-2">
-                                <input type="text" id="adm-nueva-cat" placeholder="Ej: Charcutería" class="flex-grow p-3 bg-white rounded-xl border border-gray-200 text-sm outline-none">
-                                <button onclick="adminCrearCategoria()" class="bg-gray-800 hover:bg-black text-white px-4 rounded-xl font-bold text-sm transition cursor-pointer">Añadir</button>
+                        <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
+                            <h3 class="font-bold text-indigo-900 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> REGISTRO DE ALIADOS</h3>
+                            <div class="space-y-2 bg-white p-3 rounded-xl border border-indigo-100 mb-4">
+                                <input type="text" id="adm-nuevo-aliado-nom" placeholder="Nombre Comercial" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-img" placeholder="URL Foto/Logo" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-tel" placeholder="WhatsApp (Ej: 584128481584)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-clave" placeholder="Clave de acceso de la tienda" value="1234" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none font-mono">
+                                <label class="flex items-center gap-2 p-2 bg-indigo-100/60 rounded-xl text-[10px] font-bold text-indigo-800 cursor-pointer">
+                                    <input type="checkbox" id="adm-nuevo-aliado-toggle" class="w-3.5 h-3.5 accent-indigo-600"> ¿Redirigir directo a su WhatsApp?
+                                </label>
+                                <button onclick="adminCrearAliado()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Registrar Inyección</button>
                             </div>
+                            <div id="admin-lista-aliados-bajas" class="space-y-2 max-h-[150px] overflow-y-auto"></div>
                         </div>
                     </div>
 
-                    <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                        <h3 id="admin-form-title" class="font-black text-lg mb-4 text-gray-900 flex items-center gap-2"><i class="fa-solid fa-box-open text-indigo-600"></i> Registrar Producto</h3>
-                        <form onsubmit="adminGuardarProducto(event)" class="space-y-3.5">
+                    <div class="p-6 bg-white rounded-2xl border border-gray-200">
+                        <h3 id="admin-form-title" class="font-black text-lg mb-4 text-gray-900"><i class="fa-solid fa-box-open text-indigo-600"></i> Registrar / Editar Producto</h3>
+                        <form onsubmit="adminGuardarProducto(event, 'maestro')" class="space-y-3.5">
                             <input type="text" id="adm-nombre" placeholder="Nombre Comercial" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                            <textarea id="adm-desc" placeholder="Descripción resumida del artículo" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
-                            
+                            <textarea id="adm-desc" placeholder="Descripción resumida" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-16 resize-none"></textarea>
                             <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Precio ($ USD)</label>
-                                    <input type="number" step="0.01" id="adm-precio" placeholder="0.00" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Cantidad/Stock</label>
-                                    <input type="number" id="adm-stock" placeholder="10" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                                </div>
+                                <input type="number" step="0.01" id="adm-precio" placeholder="Precio ($)" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
+                                <input type="number" id="adm-stock" placeholder="Stock" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
                             </div>
-                            
-                            <input type="text" id="adm-img" placeholder="Enlace URL de la Foto (https://...)" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                            
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Asignar a Aliado Comercial</label>
-                                <select id="adm-aliado" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none font-semibold text-indigo-700"></select>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Seleccionar Categoría</label>
-                                <select id="adm-cat" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none"></select>
-                            </div>
-
-                            <label class="flex items-center gap-2 p-3 bg-red-50 border border-red-100 rounded-xl text-sm font-bold text-red-700 cursor-pointer">
-                                <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600"> ¿Colocar en sección de Promociones?
+                            <input type="text" id="adm-img" placeholder="URL de la Foto" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            <select id="adm-aliado" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none text-indigo-600 font-bold"></select>
+                            <select id="adm-cat" class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
+                            <label class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
+                                <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600"> ¿Colocar en sección Promociones?
                             </label>
-                            
-                            <button type="submit" id="btn-admin-guardar" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer">GUARDAR EN INVENTARIO</button>
-                            <button type="button" id="btn-admin-cancelar" onclick="cancelarEdicion()" class="hidden w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-xl font-bold transition cursor-pointer text-xs">Cancelar Edición</button>
+                            <button type="submit" id="btn-admin-guardar" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">GUARDAR PRODUCTO</button>
+                            <button type="button" id="btn-admin-cancelar" onclick="cancelarEdicion('maestro')" class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar Edición</button>
                         </form>
                     </div>
 
                     <div class="space-y-4">
-                        <h3 class="font-black text-lg text-gray-900 flex items-center gap-2"><i class="fa-solid fa-list-check text-indigo-600"></i> Existencias en Red</h3>
-                        <div id="admin-lista-productos" class="space-y-3 overflow-y-auto max-h-[550px] pr-2"></div>
+                        <h3 class="font-black text-lg text-gray-900"><i class="fa-solid fa-list-check text-indigo-600"></i> Existencias Globales</h3>
+                        <div id="admin-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
                     </div>
                 </div>
             </div>
+
+            <div id="admin-aliado-ui" class="hidden space-y-8">
+                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-shop text-emerald-600 mr-2"></i>Panel de Gestión Comercial</h2>
+                        <p class="text-xs text-gray-400 font-bold">Establecimiento: <span id="sub-nombre-tienda" class="text-indigo-600 uppercase"></span></p>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-2xl border border-gray-200">
+                            <span class="text-xs font-black text-gray-600 uppercase">Estado de Atención:</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="sub-tienda-abierto-toggle" onchange="toggleEstadoHorarioAliado()" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                            <span id="sub-tienda-abierto-badge" class="text-xs font-black uppercase"></span>
+                        </div>
+                        <button onclick="salirDePaneles()" class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Salir del Panel</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm h-fit">
+                        <h3 id="sub-form-title" class="font-black text-lg mb-4 text-gray-900"><i class="fa-solid fa-plus text-emerald-500"></i> Registrar Producto en mi Menú</h3>
+                        <form onsubmit="adminGuardarProducto(event, 'aliado')" class="space-y-3.5">
+                            <input type="text" id="sub-nombre" placeholder="Nombre del Plato o Artículo" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            <textarea id="sub-desc" placeholder="Ingredientes / Descripción de la oferta" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="number" step="0.01" id="sub-precio" placeholder="Precio ($)" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
+                                <input type="number" id="sub-stock" placeholder="Stock Disponible" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            </div>
+                            <input type="text" id="sub-img" placeholder="Enlace URL de la Imagen" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            <select id="sub-cat" class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
+                            <label class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
+                                <input type="checkbox" id="sub-promo" class="w-4 h-4 accent-red-600"> ¿Es una Promoción Especial?
+                            </label>
+                            <button type="submit" id="btn-sub-guardar" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">SUBIR A LA VITRINA</button>
+                            <button type="button" id="btn-sub-cancelar" onclick="cancelarEdicion('aliado')" class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar Edición</button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="font-black text-lg text-gray-900"><i class="fa-solid fa-utensils text-emerald-500"></i> Mis Productos en Menú</h3>
+                        <div id="sub-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -243,21 +356,27 @@
         let globalTasa = 1;
         let globalProductos = [];
         let globalCategorias = [];
-        let globalAliados = []; // Almacena el listado de tus aliados comerciales
+        let globalAliados = []; 
         let carrito = []; 
         let usuarioActual = null;
-        let idProductoEditando = null;
         
+        let idProductoEditando = null;
+        let modoAuthActual = 'login';
         let categoriaActual = 'todos';
         let aliadoSeleccionado = '';
         let busquedaActual = '';
+        
+        let loginAliadoActivo = null; 
+        let descuentoPorcentaje = 0;
+        let codigoCuponAplicado = "";
 
         async function inicializarPlataforma() {
             await obtenerConfigTasa();
-            await obtenerAliadosComerciales(); // Carga los aliados
+            await obtenerAliadosComerciales(); 
             await obtenerCategoriasDisponibles();
             await obtenerProductosInventario();
             await verificarEstadoUsuario();
+            await cargarMetricasGlobales(); 
         }
 
         async function obtenerConfigTasa() {
@@ -268,7 +387,7 @@
                     document.getElementById('tasa-display').innerText = globalTasa.toFixed(2);
                     document.getElementById('adm-tasa').value = globalTasa;
                 }
-            } catch (err) { console.error("Error cargando tasa:", err); }
+            } catch (err) { console.error(err); }
         }
 
         async function obtenerAliadosComerciales() {
@@ -276,24 +395,40 @@
                 const { data } = await supabaseCliente.from('aliados').select('*').order('nombre', { ascending: true });
                 globalAliados = data || [];
                 
-                // Rellenar el selector del formulario administrativo de productos
-                const selectorAliadosForm = document.getElementById('adm-aliado');
-                selectorAliadosForm.innerHTML = '<option value="" disabled selected>Selecciona un aliado aliado...</option>';
-                
-                // Rellenar lista de bajas en panel admin
-                const listaBajasAdmin = document.getElementById('admin-lista-aliados-bajas');
-                listaBajasAdmin.innerHTML = '';
+                document.getElementById('adm-aliado').innerHTML = '<option value="" disabled selected>Selecciona un aliado...</option>';
+                document.getElementById('gate-aliado-select').innerHTML = '';
+                document.getElementById('admin-lista-aliados-bajas').innerHTML = '';
 
                 globalAliados.forEach(a => {
-                    selectorAliadosForm.innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
-                    listaBajasAdmin.innerHTML += `
-                        <div class="flex justify-between items-center text-xs bg-white p-1.5 rounded border border-gray-100">
-                            <span class="truncate font-semibold text-gray-700">${a.nombre}</span>
-                            <button onclick="adminEliminarAliado(${a.id})" class="text-red-500 hover:text-red-700 px-1"><i class="fa-solid fa-trash-can"></i></button>
+                    document.getElementById('adm-aliado').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
+                    document.getElementById('gate-aliado-select').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
+                    
+                    const badgeModo = a.activo_directo ? 
+                        `<span class="bg-emerald-100 text-emerald-700 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-bolt"></i> DIRECTO</span>` : 
+                        `<span class="bg-gray-100 text-gray-500 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-user-tie"></i> CENTRAL</span>`;
+
+                    const badgeHorario = a.abierto ? 
+                        `<span class="bg-blue-100 text-blue-700 font-bold px-1 rounded text-[9px]">ABIERTO</span>` : 
+                        `<span class="bg-red-100 text-red-700 font-bold px-1 rounded text-[9px]">CERRADO</span>`;
+
+                    document.getElementById('admin-lista-aliados-bajas').innerHTML += `
+                        <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex flex-col gap-1 shadow-2xs">
+                            <div class="flex justify-between items-center">
+                                <span class="font-black text-xs text-gray-800 truncate max-w-[120px]">${a.nombre}</span>
+                                <div class="flex items-center gap-1">
+                                    ${badgeHorario}
+                                    ${badgeModo}
+                                    <button onclick="adminEliminarAliado(${a.id})" class="text-red-400 hover:text-red-600 p-0.5 cursor-pointer"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-[9px] font-mono font-bold text-gray-400">
+                                <span><i class="fa-brands fa-whatsapp text-emerald-500"></i> ${a.whatsapp || 'Sin Teléfono'}</span>
+                                <span class="text-indigo-500">Clave: ${a.clave_acceso || '1234'}</span>
+                            </div>
                         </div>
                     `;
                 });
-            } catch (e) { console.error("Error cargando aliados:", e); }
+            } catch (e) { console.error(e); }
         }
 
         async function obtenerCategoriasDisponibles() {
@@ -301,19 +436,18 @@
                 const { data } = await supabaseCliente.from('categorias').select('*').order('nombre', { ascending: true });
                 globalCategorias = data || [];
                 
-                const contenedorFiltros = document.getElementById('categorias-filtros');
-                const selectorFormulario = document.getElementById('adm-cat');
-                
-                contenedorFiltros.innerHTML = '';
-                selectorFormulario.innerHTML = '<option value="">Sin Categoría Específica</option>';
+                document.getElementById('categorias-filtros').innerHTML = '';
+                document.getElementById('adm-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
+                document.getElementById('sub-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
                 
                 globalCategorias.forEach(cat => {
-                    contenedorFiltros.innerHTML += `
-                        <button onclick="filtrar(${cat.id})" class="btn-filter bg-white text-gray-600 px-5 py-2 rounded-full font-bold shadow-sm border border-gray-200 hover:border-indigo-300 transition cursor-pointer">${cat.nombre}</button>
+                    document.getElementById('categorias-filtros').innerHTML += `
+                        <button onclick="filtrar(${cat.id})" class="bg-white text-gray-600 px-5 py rounded-full font-bold shadow-xs border border-gray-200 hover:border-indigo-300 transition cursor-pointer">${cat.nombre}</button>
                     `;
-                    selectorFormulario.innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
+                    document.getElementById('adm-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
+                    document.getElementById('sub-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
                 });
-            } catch (err) { console.error("Error cargando categorías:", err); }
+            } catch (err) { console.error(err); }
         }
 
         async function obtenerProductosInventario() {
@@ -322,10 +456,10 @@
                 globalProductos = data || [];
                 aplicarFiltrosYBusqueda();
                 renderizarInventarioAdmin();
-            } catch (err) { console.error("Error cargando productos:", err); }
+                if(loginAliadoActivo) renderizarInventarioAliado();
+            } catch (err) { console.error(err); }
         }
 
-        // CONTROLADOR GLOBAL DE FILTROS Y VISTAS
         function filtrar(tipo) {
             categoriaActual = tipo;
             aplicarFiltrosYBusqueda();
@@ -333,7 +467,6 @@
 
         function filtrarYBuscar() {
             busquedaActual = document.getElementById('buscador-productos').value.toLowerCase().trim();
-            // Si el usuario escribe algo en el buscador, lo redirigimos a la vista general de productos para procesar la búsqueda global
             if (busquedaActual !== '' && (categoriaActual === 'aliados_ver' || categoriaActual === 'aliado_especifico')) {
                 categoriaActual = 'todos';
             }
@@ -349,20 +482,16 @@
         function aplicarFiltrosYBusqueda() {
             let filtrados = globalProductos;
 
-            // CASO A: El usuario entra a la opción general de "Aliados Comerciales"
             if (categoriaActual === 'aliados_ver') {
                 document.getElementById('section-title').innerText = "Nuestros Aliados Comerciales";
                 renderizarGridAliados();
                 return;
             }
 
-            // CASO B: El usuario seleccionó un Aliado específico
             if (categoriaActual === 'aliado_especifico') {
                 document.getElementById('section-title').innerText = `Productos de: ${aliadoSeleccionado}`;
                 filtrados = filtrados.filter(p => p.aliado_comercial === aliadoSeleccionado);
-            } 
-            // CASO C: Secciones Tradicionales
-            else if (categoriaActual === 'promo') {
+            } else if (categoriaActual === 'promo') {
                 filtrados = filtrados.filter(p => p.es_promocion);
                 document.getElementById('section-title').innerText = "Promociones Especiales";
             } else if (categoriaActual !== 'todos') {
@@ -373,7 +502,6 @@
                 document.getElementById('section-title').innerText = "Todos los Productos";
             }
 
-            // Aplicación del filtro por buscador de texto si aplica
             if (busquedaActual !== '') {
                 filtrados = filtrados.filter(p => 
                     p.nombre.toLowerCase().includes(busquedaActual) || 
@@ -385,30 +513,25 @@
             renderizarCatalogoPublico(filtrados);
         }
 
-        // RENDERIZA LA REJILLA DE LOS COMERCIOS ASOCIADOS (ALIADOS)
         function renderizarGridAliados() {
             const container = document.getElementById('grid-productos');
             container.innerHTML = '';
 
-            if (globalAliados.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 font-medium">No hay aliados comerciales registrados por los momentos.</div>`;
-                return;
-            }
-
             globalAliados.forEach(a => {
-                // Contar cuántos productos tiene ese aliado cargados
                 const totalProds = globalProductos.filter(p => p.aliado_comercial === a.nombre).length;
+                const statusHtml = a.abierto ? 
+                    `<span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">ABIERTO</span>` : 
+                    `<span class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">CERRADO</span>`;
 
                 container.innerHTML += `
-                    <div class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-5 border border-gray-100 flex flex-col items-center text-center group relative cursor-pointer" onclick="verCatalogoDeAliado('${a.nombre}')">
-                        <div class="w-24 h-24 mb-4 overflow-hidden rounded-full bg-gray-50 border border-gray-100 shadow-inner flex items-center justify-center">
-                            <img src="${a.imagen_url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200?text=Aliado'">
+                    <div class="bg-white rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 p-5 border border-gray-100 flex flex-col items-center text-center group cursor-pointer" onclick="verCatalogoDeAliado('${a.nombre}')">
+                        <div class="w-24 h-24 mb-3 overflow-hidden rounded-full bg-gray-50 border shadow-inner flex items-center justify-center relative">
+                            <img src="${a.imagen_url}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='https://placehold.co/200?text=Aliado'">
+                            ${!a.abierto ? '<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white font-black text-xs">CERRADO</div>' : ''}
                         </div>
-                        <h3 class="font-black text-gray-900 text-lg mb-1 tracking-tight">${a.nombre}</h3>
-                        <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1 rounded-full">${totalProds} Productos disponibles</span>
-                        <button class="mt-4 w-full bg-gray-50 text-gray-700 group-hover:bg-indigo-600 group-hover:text-white font-bold py-2.5 rounded-xl text-xs transition duration-300">
-                            Ver Menú / Catálogo <i class="fa-solid fa-chevron-right ml-1"></i>
-                        </button>
+                        <h3 class="font-black text-gray-900 text-lg mb-0.5">${a.nombre}</h3>
+                        <span class="text-xs text-gray-400 font-bold">${totalProds} Productos</span>
+                        ${statusHtml}
                     </div>
                 `;
             });
@@ -418,39 +541,533 @@
             const container = document.getElementById('grid-productos');
             container.innerHTML = '';
             
-            if(lista.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 font-medium">No se encontraron artículos que coincidan con la selección.</div>`;
+            lista.forEach(p => {
+                const precioEnBs = (p.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2 });
+                const tiendaDuena = globalAliados.find(a => a.nombre === p.aliado_comercial);
+                const estaCerrada = tiendaDuena ? !tiendaDuena.abierto : false;
+
+                let badgeInferior = '';
+                let botonDeshabilitado = '';
+                
+                if (estaCerrada) {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">TIENDA CERRADA</span>`;
+                    botonDeshabilitado = 'disabled';
+                } else if (p.stock <= 0) {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-gray-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Agotado</span>`;
+                    botonDeshabilitado = 'disabled';
+                } else {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Stock: ${p.stock}</span>`;
+                }
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-3xl shadow-xs hover:shadow-md transition p-4 border border-gray-100 flex flex-col group relative ${estaCerrada ? 'opacity-70' : ''}">
+                        <div class="relative h-48 mb-3 overflow-hidden rounded-2xl bg-gray-50 border">
+                            <img src="${p.imagen_url}" class="w-full h-full object-cover group-hover:scale-103 transition duration-300" onerror="this.src='https://placehold.co/400x300?text=Comida'">
+                            ${p.es_promocion ? '<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">PROMO</span>' : ''}
+                            ${badgeInferior}
+                        </div>
+                        <p onclick="verCatalogoDeAliado('${p.aliado_comercial}')" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1 hover:underline cursor-pointer">
+                            <i class="fa-solid fa-handshake"></i> ${p.aliado_comercial}
+                        </p>
+                        <h3 class="font-bold text-gray-900 mb-1 truncate text-base">${p.nombre}</h3>
+                        <p class="text-xs text-gray-400 mb-4 line-clamp-2 min-h-[2rem]">${p.descripcion || 'Sin descripción.'}</p>
+                        <div class="mt-auto pt-2 border-t border-gray-50">
+                            <span class="text-xl font-black text-gray-900 block">$ ${parseFloat(p.precio_usd).toFixed(2)}</span>
+                            <span class="text-xs text-indigo-500 font-bold font-mono">${precioEnBs} Bs</span>
+                            <button onclick="agregarAlCarrito(${p.id})" ${botonDeshabilitado} class="w-full mt-3 ${botonDeshabilitado ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-indigo-600 cursor-pointer'} py-3 rounded-xl font-bold transition text-xs shadow-xs">
+                                ${estaCerrada ? 'Cerrado Temporalmente' : 'Añadir al Carrito'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function validarAplicarCupon() {
+            const input = document.getElementById('cart-coupon-input').value.trim().toUpperCase();
+            if(!input) return;
+
+            try {
+                const { data, error } = await supabaseCliente.from('cupones').select('*').eq('codigo', input).eq('activo', true).single();
+                if(error || !data) {
+                    alert("❌ El cupón no es válido o ya caducó.");
+                    descuentoPorcentaje = 0;
+                    codigoCuponAplicado = "";
+                    document.getElementById('coupon-badge').classList.add('hidden');
+                    actualizarInterfazCarrito();
+                    return;
+                }
+
+                descuentoPorcentaje = parseFloat(data.descuento_porcentaje);
+                codigoCuponAplicado = data.codigo;
+                
+                const badge = document.getElementById('coupon-badge');
+                badge.innerText = `Cupón Activo: ${data.codigo} (-${descuentoPorcentaje}%)`;
+                badge.classList.remove('hidden');
+                
+                alert(`🎉 ¡Cupón aplicado! Se descontará el ${descuentoPorcentaje}% del total.`);
+                actualizarInterfazCarrito();
+            } catch(e) { console.error(e); }
+        }
+
+        async function obtenerCuponesAdmin() {
+            try {
+                const { data } = await supabaseCliente.from('cupones').select('*').order('created_at', { ascending: false });
+                const container = document.getElementById('admin-lista-cupones');
+                container.innerHTML = '';
+                
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2">No hay cupones creados.</p>';
+                    return;
+                }
+
+                data.forEach(c => {
+                    container.innerHTML += `
+                        <div class="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center text-xs shadow-3xs">
+                            <div>
+                                <span class="font-black text-gray-800 tracking-wider font-mono">${c.codigo}</span>
+                                <span class="text-[10px] text-emerald-600 font-bold ml-1">-${c.descuento_porcentaje}%</span>
+                            </div>
+                            <button onclick="adminEliminarCupon(${c.id})" class="text-red-400 hover:text-red-600 p-1 transition cursor-pointer"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        async function adminCrearCupon() {
+            const cod = document.getElementById('adm-nuevo-cupon-cod').value.trim().toUpperCase();
+            const desc = parseFloat(document.getElementById('adm-nuevo-cupon-desc').value);
+
+            if(!cod || isNaN(desc)) return alert("Rellena todos los campos del cupón.");
+
+            try {
+                const { error } = await supabaseCliente.from('cupones').insert([{ codigo: cod, descuento_porcentaje: desc, activo: true }]);
+                if(error) { alert("Error al inyectar cupón: " + error.message); }
+                else {
+                    alert("🎟️ ¡Cupón activado y desplegado con éxito!");
+                    document.getElementById('adm-nuevo-cupon-cod').value = '';
+                    document.getElementById('adm-nuevo-cupon-desc').value = '';
+                    await obtenerCuponesAdmin();
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function adminEliminarCupon(id) {
+            if(confirm("¿Eliminar este cupón de la circulación?")) {
+                await supabaseCliente.from('cupones').delete().eq('id', id);
+                await obtenerCuponesAdmin();
+            }
+        }
+
+        function agregarAlCarrito(id) {
+            if (!usuarioActual) {
+                alert("Inicia sesión para poder procesar la orden de compra.");
+                abrirModal('modal-auth');
+                return;
+            }
+            const prod = globalProductos.find(p => p.id === id);
+            if (prod) {
+                const itemExistente = carrito.find(item => item.id === id);
+                if (itemExistente) {
+                    if (itemExistente.cantidad < prod.stock) itemExistente.cantidad++;
+                    else return alert("Límite de existencias alcanzado.");
+                } else {
+                    carrito.push({ ...prod, cantidad: 1 });
+                }
+                actualizarInterfazCarrito();
+            }
+        }
+
+        function cambiarCantidad(index, cambio) {
+            const item = carrito[index];
+            const prod = globalProductos.find(p => p.id === item.id);
+            let n = item.cantidad + cambio;
+            if (n <= 0) { carrito.splice(index, 1); }
+            else if (prod && n > prod.stock) { alert("Límite de inventario excedido."); return; }
+            else { item.cantidad = n; }
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarInterfazCarrito() {
+            let totalArt = 0;
+            carrito.forEach(i => totalArt += i.cantidad);
+            document.getElementById('cart-count').innerText = totalArt;
+            
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let brutoUSD = 0;
+
+            if (carrito.length === 0) {
+                container.innerHTML = `<p class="text-center py-6 text-gray-400 text-xs">El carrito está vacío.</p>`;
+                document.getElementById('cart-total-usd').innerText = "$0.00";
+                document.getElementById('cart-total-bs').innerText = "0.00 Bs";
                 return;
             }
 
-            lista.forEach(p => {
-                const precioEnBs = (p.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                const stockBadge = p.stock <= 0 ? 
-                    `<span class="absolute top-3 right-3 bg-gray-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Agotado</span>` : 
-                    `<span class="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Stock: ${p.stock}</span>`;
-
+            carrito.forEach((item, index) => {
+                const sub = parseFloat(item.precio_usd) * item.cantidad;
+                brutoUSD += sub;
                 container.innerHTML += `
-                    <div class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-4 border border-gray-100 flex flex-col group relative">
-                        <div class="relative h-56 mb-4 overflow-hidden rounded-2xl bg-gray-50 border border-gray-50">
-                            <img src="${p.imagen_url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400?text=Producto'">
-                            ${p.es_promocion ? '<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">PROMO</span>' : ''}
-                            ${stockBadge}
+                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-bold text-xs text-gray-900 truncate">${item.nombre}</h4>
+                            <p class="text-[10px] text-gray-400">${item.aliado_comercial} - $${parseFloat(item.precio_usd).toFixed(2)}</p>
                         </div>
-                        
-                        <p onclick="verCatalogoDeAliado('${p.aliado_comercial}')" class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1 flex items-center gap-1 hover:underline cursor-pointer">
-                            <i class="fa-solid fa-handshake text-[9px]"></i> ${p.aliado_comercial}
-                        </p>
-                        <h3 class="font-bold text-gray-900 mb-1.5 truncate text-base">${p.nombre}</h3>
-                        <p class="text-xs text-gray-400 mb-4 line-clamp-2 min-h-[2rem]">${p.descripcion || 'Sin descripción adicional.'}</p>
-                        
-                        <div class="mt-auto pt-2 border-t border-gray-50">
-                            <div class="flex flex-col">
-                                <span class="text-2xl font-black text-gray-900">$ ${parseFloat(p.precio_usd).toFixed(2)}</span>
-                                <span class="text-xs text-indigo-500 font-bold font-mono">${precioEnBs} Bs</span>
-                            </div>
-                            <button onclick="agregarAlCarrito(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} class="w-full mt-4 ${p.stock <= 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-indigo-600 cursor-pointer'} py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm">
-                                <i class="fa-solid fa-cart-plus text-xs"></i> Lo quiero
-                            </button>
+                        <div class="flex items-center gap-2 bg-white px-2 py-1 rounded-lg border">
+                            <button onclick="cambiarCantidad(${index}, -1)" class="text-gray-400 font-bold text-xs px-1 cursor-pointer">-</button>
+                            <span class="text-xs font-black">${item.cantidad}</span>
+                            <button onclick="cambiarCantidad(${index}, 1)" class="text-gray-400 font-bold text-xs px-1 cursor-pointer">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let totalUSD = brutoUSD;
+            if(descuentoPorcentaje > 0) {
+                totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
+            }
+
+            const totalBs = totalUSD * globalTasa;
+            document.getElementById('cart-total-usd').innerText = `$ ${totalUSD.toFixed(2)}`;
+            document.getElementById('cart-total-bs').innerText = `${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs`;
+        }
+
+        async function enviarPedidoWhatsApp() {
+            if (carrito.length === 0) return alert("El carrito está vacío.");
+            const nom = document.getElementById('checkout-nombre').value.trim();
+            const dir = document.getElementById('checkout-direccion').value.trim();
+            if(!nom || !dir) return alert("Completa tus datos de entrega.");
+
+            let numeroDestino = "584128481584"; 
+            if (carrito.length > 0) {
+                const primerAliado = carrito[0].aliado_comercial;
+                const mismoVendedor = carrito.every(item => item.aliado_comercial === primerAliado);
+                if (mismoVendedor) {
+                    const alConf = globalAliados.find(a => a.nombre === primerAliado);
+                    if (alConf && alConf.activo_directo && alConf.whatsapp) {
+                        numeroDestino = alConf.whatsapp.replace(/\s+/g, '');
+                    }
+                }
+            }
+
+            let brutoUSD = 0;
+            const mapaDetalle = carrito.map(item => {
+                brutoUSD += parseFloat(item.precio_usd) * item.cantidad;
+                return {
+                    producto_id: item.id,
+                    nombre: item.nombre,
+                    cantidad: item.cantidad,
+                    precio_unitario_usd: item.precio_usd,
+                    aliado: item.aliado_comercial
+                };
+            });
+
+            let totalUSD = brutoUSD;
+            if(descuentoPorcentaje > 0) {
+                totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
+            }
+            const totalBs = totalUSD * globalTasa;
+
+            try {
+                await supabaseCliente.from('pedidos').insert([{
+                    usuario_id: usuarioActual ? usuarioActual.id : null,
+                    cliente_nombre: nom,
+                    direccion: dir,
+                    total_usd: totalUSD,
+                    total_bs: totalBs,
+                    productos_detalle: mapaDetalle,
+                    estado: 'pendiente'
+                }]);
+            } catch(ex) { console.error(ex); }
+
+            let txt = `🛒 *NUEVO PEDIDO A TU PUERTA* 🛒\n\n`;
+            txt += `👤 *Cliente:* ${nom}\n📍 *Dirección:* ${dir}\n`;
+            if(codigoCuponAplicado) txt += `🎟️ *Cupón Aplicado:* ${codigoCuponAplicado} (-${descuentoPorcentaje}%)\n`;
+            txt += `───────────────\n\n`;
+            carrito.forEach((item, i) => {
+                txt += `${i+1}. *${item.nombre}* (x${item.cantidad})\n   _Tienda:_ ${item.aliado_comercial}\n\n`;
+            });
+            txt += `───────────────\n`;
+            txt += `💵 *TOTAL NETO:* $${totalUSD.toFixed(2)}\n🇻🇪 *TOTAL BS:* ${totalBs.toFixed(2)} Bs\n`;
+
+            window.open(`https://wa.me/${numeroDestino}?text=${encodeURIComponent(txt)}`, '_blank');
+        }
+
+        function cambiarAccesoGate(tipo) {
+            if(tipo === 'maestro') {
+                document.getElementById('gate-form-maestro').classList.remove('hidden');
+                document.getElementById('gate-form-aliado').classList.add('hidden');
+            } else {
+                document.getElementById('gate-form-aliado').classList.remove('hidden');
+                document.getElementById('gate-form-maestro').classList.add('hidden');
+            }
+        }
+
+        function validarAdminMaestro() {
+            if (document.getElementById('admin-key').value === '27146006') {
+                document.getElementById('admin-gate-ui').classList.add('hidden');
+                document.getElementById('admin-main-ui').classList.remove('hidden');
+                cargarMetricasGlobales();
+                obtenerCuponesAdmin(); 
+            } else { alert("Clave Incorrecta."); }
+        }
+
+        function validarAdminAliado() {
+            const tienda = document.getElementById('gate-aliado-select').value;
+            const claveInput = document.getElementById('gate-aliado-pass').value;
+
+            const baseAliado = globalAliados.find(a => a.nombre === tienda);
+            if(baseAliado && baseAliado.clave_acceso === claveInput) {
+                loginAliadoActivo = baseAliado.nombre;
+                
+                document.getElementById('sub-nombre-tienda').innerText = baseAliado.nombre;
+                document.getElementById('sub-tienda-abierto-toggle').checked = baseAliado.abierto;
+                actualizarBadgeHorarioTexto(baseAliado.abierto);
+
+                document.getElementById('admin-gate-ui').classList.add('hidden');
+                document.getElementById('admin-aliado-ui').classList.remove('hidden');
+                
+                renderizarInventarioAliado();
+            } else {
+                alert("❌ Credenciales inválidas para ese establecimiento.");
+            }
+        }
+
+        function salirDePaneles() {
+            loginAliadoActivo = null;
+            document.getElementById('admin-main-ui').classList.add('hidden');
+            document.getElementById('admin-aliado-ui').classList.add('hidden');
+            document.getElementById('admin-gate-ui').classList.remove('hidden');
+            document.getElementById('admin-key').value = '';
+            document.getElementById('gate-aliado-pass').value = '';
+        }
+
+        async function toggleEstadoHorarioAliado() {
+            const check = document.getElementById('sub-tienda-abierto-toggle').checked;
+            actualizarBadgeHorarioTexto(check);
+
+            const { error } = await supabaseCliente.from('aliados').update({ abierto: check }).eq('nombre', loginAliadoActivo);
+            if(error) alert("Error al cambiar horario: " + error.message);
+            else {
+                await obtenerAliadosComerciales();
+                await obtenerProductosInventario();
+            }
+        }
+
+        function actualizarBadgeHorarioTexto(abierto) {
+            const b = document.getElementById('sub-tienda-abierto-badge');
+            if(abierto) {
+                b.innerText = "Abierto / Recibiendo";
+                b.className = "text-xs font-black uppercase text-emerald-600";
+            } else {
+                b.innerText = "Cerrado / Pausado";
+                b.className = "text-xs font-black uppercase text-red-500";
+            }
+        }
+
+        async function cargarMetricasGlobales() {
+            try {
+                const { data, error } = await supabaseCliente.from('pedidos').select('*');
+                if (error || !data) return;
+
+                let ingresos = 0;
+                let conteo = data.length;
+                let mapaAliados = {};
+                let mapaProductos = {};
+
+                data.forEach(p => {
+                    ingresos += parseFloat(p.total_usd || 0);
+                    const detalles = p.productos_detalle || [];
+                    detalles.forEach(d => {
+                        mapaAliados[d.aliado] = (mapaAliados[d.aliado] || 0) + (parseFloat(d.precio_unitario_usd) * d.cantidad);
+                        mapaProductos[d.nombre] = (mapaProductos[d.nombre] || 0) + d.cantidad;
+                    });
+                });
+
+                let topAliado = "Ninguno"; let maxAl = 0;
+                for(let key in mapaAliados) {
+                    if(mapaAliados[key] > maxAl) { maxAl = mapaAliados[key]; topAliado = key; }
+                }
+
+                let topProd = "Ninguno"; let maxPr = 0;
+                for(let key in mapaProductos) {
+                    if(mapaProductos[key] > maxPr) { maxPr = mapaProductos[key]; topProd = key; }
+                }
+
+                document.getElementById('metric-total-usd').innerText = `$ ${ingresos.toFixed(2)}`;
+                document.getElementById('metric-total-pedidos').innerText = conteo;
+                document.getElementById('metric-top-aliado').innerText = topAliado !== "Ninguno" ? `${topAliado} ($${maxAl.toFixed(1)})` : "Sin datos";
+                document.getElementById('metric-top-producto').innerText = topProd !== "Ninguno" ? `${topProd} (${maxPr} und)` : "Sin datos";
+
+            } catch(e) { console.error(e); }
+        }
+
+        async function actualizarTasa() {
+            const v = parseFloat(document.getElementById('adm-tasa').value);
+            await supabaseCliente.from('configuracion').update({ tasa_dolar: v }).eq('id', 1);
+            window.location.reload();
+        }
+
+        async function adminCrearAliado() {
+            const nom = document.getElementById('adm-nuevo-aliado-nom').value.trim();
+            const img = document.getElementById('adm-nuevo-aliado-img').value.trim();
+            const tel = document.getElementById('adm-nuevo-aliado-tel').value.trim();
+            const clv = document.getElementById('adm-nuevo-aliado-clave').value.trim();
+            const tog = document.getElementById('adm-nuevo-aliado-toggle').checked;
+
+            await supabaseCliente.from('aliados').insert([{ nombre: nom, imagen_url: img, whatsapp: tel, clave_acceso: clv, activo_directo: tog }]);
+            window.location.reload();
+        }
+
+        async function adminEliminarAliado(id) {
+            if (confirm("¿Eliminar comercio aliado?")) {
+                await supabaseCliente.from('aliados').delete().eq('id', id);
+                window.location.reload();
+            }
+        }
+
+        async function adminGuardarProducto(e, rol) {
+            e.preventDefault();
+            let pEstructura = {};
+
+            if(rol === 'maestro') {
+                pEstructura = {
+                    nombre: document.getElementById('adm-nombre').value.trim(),
+                    descripcion: document.getElementById('adm-desc').value.trim(),
+                    precio_usd: parseFloat(document.getElementById('adm-precio').value),
+                    stock: parseInt(document.getElementById('adm-stock').value),
+                    imagen_url: document.getElementById('adm-img').value.trim(),
+                    aliado_comercial: document.getElementById('adm-aliado').value, 
+                    categoria_id: document.getElementById('adm-cat').value || null,
+                    es_promocion: document.getElementById('adm-promo').checked
+                };
+            } else {
+                pEstructura = {
+                    nombre: document.getElementById('sub-nombre').value.trim(),
+                    descripcion: document.getElementById('sub-desc').value.trim(),
+                    precio_usd: parseFloat(document.getElementById('sub-precio').value),
+                    stock: parseInt(document.getElementById('sub-stock').value),
+                    imagen_url: document.getElementById('sub-img').value.trim(),
+                    aliado_comercial: loginAliadoActivo, 
+                    categoria_id: document.getElementById('sub-cat').value || null,
+                    es_promocion: document.getElementById('sub-promo').checked
+                };
+            }
+
+            if (idProductoEditando !== null) {
+                await supabaseCliente.from('productos').update(pEstructura).eq('id', idProductoEditando);
+                alert("Modificación inyectada.");
+                cancelarEdicion(rol);
+            } else {
+                await supabaseCliente.from('productos').insert([pEstructura]);
+                alert("Guardado en vitrina.");
+                e.target.reset();
+            }
+            await obtenerProductosInventario();
+        }
+
+        function cargarProductoParaEditar(id, rol) {
+            const p = globalProductos.find(prod => prod.id === id);
+            if (!p) return;
+            idProductoEditando = p.id;
+
+            if(rol === 'maestro') {
+                document.getElementById('admin-form-title').innerText = "Editar Producto Maestro";
+                document.getElementById('btn-admin-guardar').innerText = "ACTUALIZAR";
+                document.getElementById('btn-admin-cancelar').classList.remove('hidden');
+
+                document.getElementById('adm-nombre').value = p.nombre;
+                document.getElementById('adm-desc').value = p.descripcion || '';
+                document.getElementById('adm-precio').value = p.precio_usd;
+                document.getElementById('adm-stock').value = p.stock;
+                document.getElementById('adm-img').value = p.imagen_url;
+                document.getElementById('adm-aliado').value = p.aliado_comercial;
+                document.getElementById('adm-cat').value = p.categoria_id || '';
+                document.getElementById('adm-promo').checked = p.es_promocion;
+            } else {
+                document.getElementById('sub-form-title').innerText = "Modificar mi Producto";
+                document.getElementById('btn-sub-guardar').innerText = "ACTUALIZAR MI ARTÍCULO";
+                document.getElementById('btn-sub-cancelar').classList.remove('hidden');
+
+                document.getElementById('sub-nombre').value = p.nombre;
+                document.getElementById('sub-desc').value = p.descripcion || '';
+                document.getElementById('sub-precio').value = p.precio_usd;
+                document.getElementById('sub-stock').value = p.stock;
+                document.getElementById('sub-img').value = p.imagen_url;
+                document.getElementById('sub-cat').value = p.categoria_id || '';
+                document.getElementById('sub-promo').checked = p.es_promocion;
+            }
+        }
+
+        function cancelarEdicion(rol) {
+            idProductoEditando = null;
+            if(rol === 'maestro') {
+                document.getElementById('admin-form-title').innerText = "Registrar Producto";
+                document.getElementById('btn-admin-guardar').innerText = "GUARDAR EN INVENTARIO";
+                document.getElementById('btn-admin-cancelar').classList.add('hidden');
+                document.getElementById('adm-nombre').value = ''; document.getElementById('adm-desc').value = '';
+                document.getElementById('adm-precio').value = ''; document.getElementById('adm-stock').value = '';
+                document.getElementById('adm-img').value = '';
+            } else {
+                document.getElementById('sub-form-title').innerText = "Registrar Producto en mi Menú";
+                document.getElementById('btn-sub-guardar').innerText = "SUBIR A LA VITRINA";
+                document.getElementById('btn-sub-cancelar').classList.add('hidden');
+                document.getElementById('sub-nombre').value = ''; document.getElementById('sub-desc').value = '';
+                document.getElementById('sub-precio').value = ''; document.getElementById('sub-stock').value = '';
+                document.getElementById('sub-img').value = '';
+            }
+        }
+
+        async function eliminarProducto(id, rol) {
+            if (confirm("¿Eliminar artículo definitivamente?")) {
+                await supabaseCliente.from('productos').delete().eq('id', id);
+                cancelarEdicion(rol);
+                await obtenerProductosInventario();
+            }
+        }
+
+        function renderizarInventarioAdmin() {
+            const container = document.getElementById('admin-lista-productos');
+            container.innerHTML = '';
+            globalProductos.forEach(p => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border text-xs">
+                        <div class="flex-grow min-w-0">
+                            <p class="font-bold text-gray-900 truncate">${p.nombre}</p>
+                            <p class="text-[10px] text-gray-400 truncate">$${parseFloat(p.precio_usd).toFixed(2)} | ${p.aliado_comercial}</p>
+                        </div>
+                        <div class="flex gap-1 flex-shrink-0">
+                            <button onclick="cargarProductoParaEditar(${p.id}, 'maestro')" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminarProducto(${p.id}, 'maestro')" class="text-red-500 bg-red-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderizarInventarioAliado() {
+            const container = document.getElementById('sub-lista-productos');
+            container.innerHTML = '';
+            
+            const misProductos = globalProductos.filter(p => p.aliado_comercial === loginAliadoActivo);
+            
+            if(misProductos.length === 0) {
+                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-xs">No has cargado ningún producto a tu vitrina todavía.</p>`;
+                return;
+            }
+
+            misProductos.forEach(p => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                        <img src="${p.imagen_url}" class="w-10 h-10 object-cover rounded-lg border bg-white" onerror="this.src='https://placehold.co/100'">
+                        <div class="flex-grow min-w-0">
+                            <p class="text-xs font-black text-gray-900 truncate">${p.nombre}</p>
+                            <p class="text-[10px] text-emerald-600 font-bold">Precio: $${parseFloat(p.precio_usd).toFixed(2)} | Stock: ${p.stock}</p>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="cargarProductoParaEditar(${p.id}, 'aliado')" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminarProducto(${p.id}, 'aliado')" class="text-red-500 bg-red-50 px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -464,356 +1081,26 @@
                 document.getElementById('auth-buttons').classList.add('hidden');
                 document.getElementById('user-menu').classList.remove('hidden');
                 document.getElementById('user-name').innerText = usuarioActual.email.split('@')[0];
-            } else {
-                usuarioActual = null;
-                document.getElementById('auth-buttons').classList.remove('hidden');
-                document.getElementById('user-menu').classList.add('hidden');
             }
         }
 
-        function cambiarModoAuth(modo) {
-            modoAuthActual = modo;
-            if (modo === 'registro') {
-                document.getElementById('auth-titulo').innerText = "Crear Cuenta";
-                document.getElementById('auth-desc').innerText = "Regístrate de forma gratuita usando tu correo electrónico.";
-                document.getElementById('btn-auth-principal').innerText = "Completar Registro";
-                document.getElementById('btn-auth-cambio').innerText = "¿Ya eres cliente? Inicia sesión aquí";
-                document.getElementById('btn-auth-cambio').setAttribute('onclick', "cambiarModoAuth('login')");
-            } else {
-                document.getElementById('auth-titulo').innerText = "Iniciar Sesión";
-                document.getElementById('auth-desc').innerText = "Necesitas una cuenta para añadir productos al carrito y comprar.";
-                document.getElementById('btn-auth-principal').innerText = "Ingresar";
-                document.getElementById('btn-auth-cambio').innerText = "¿No tienes cuenta? Regístrate gratis aquí";
-                document.getElementById('btn-auth-cambio').setAttribute('onclick', "cambiarModoAuth('registro')");
-            }
-        }
-
-        async function ejecutarAuth(modo) {
+        async function ejecutarAuth() {
             const email = document.getElementById('auth-email').value.trim();
             const pass = document.getElementById('auth-pass').value.trim();
-            if(!email || !pass) return alert("Por favor complete todos los recuadros.");
-
             if (modoAuthActual === 'login') {
-                const { error } = await supabaseCliente.auth.signInWithPassword({ email, password: pass });
-                if (error) return alert("Error de acceso: " + error.message);
-                cerrarModal('modal-auth');
+                await supabaseCliente.auth.signInWithPassword({ email, password: pass });
             } else {
-                const { data, error } = await supabaseCliente.auth.signUp({ email, password: pass });
-                if (error) return alert("Error en registro: " + error.message);
-                alert("¡Cuenta generada con éxito! Ya puedes ingresar con tus datos.");
-                cambiarModoAuth('login');
-                return;
+                await supabaseCliente.auth.signUp({ email, password: pass });
+                alert("¡Cuenta registrada!");
             }
             window.location.reload();
         }
 
-        async function cerrarSesion() {
-            await supabaseCliente.auth.signOut();
-            window.location.reload();
-        }
-
-        function agregarAlCarrito(id) {
-            if (!usuarioActual) {
-                alert("📢 ¡Atención! Para agregar productos al carrito e iniciar tu pedido, es obligatorio estar registrado o haber iniciado sesión.");
-                abrirModal('modal-auth');
-                return;
-            }
-            
-            const prod = globalProductos.find(p => p.id === id);
-            if (prod) {
-                const itemExistente = carrito.find(item => item.id === id);
-                if (itemExistente) {
-                    if (itemExistente.cantidad < prod.stock) {
-                        itemExistente.cantidad++;
-                    } else {
-                        alert(`Inventario límite: Solo quedan ${prod.stock} unidades de este artículo.`);
-                        return;
-                    }
-                } else {
-                    carrito.push({ ...prod, cantidad: 1 });
-                }
-                actualizarInterfazCarrito();
-            }
-        }
-
-        function cambiarCantidad(index, cambio) {
-            const item = carrito[index];
-            const prodInventario = globalProductos.find(p => p.id === item.id);
-            let nuevaCantidad = item.cantidad + cambio;
-            
-            if (nuevaCantidad <= 0) {
-                removerDelCarrito(index);
-                return;
-            }
-            if (prodInventario && nuevaCantidad > prodInventario.stock) {
-                alert(`Límite de Stock: Solo disponemos de ${prodInventario.stock} unidades.`);
-                return;
-            }
-            item.cantidad = nuevaCantidad;
-            actualizarInterfazCarrito();
-        }
-
-        function actualizarInterfazCarrito() {
-            let cuentaArticulos = 0;
-            carrito.forEach(i => cuentaArticulos += i.cantidad);
-            document.getElementById('cart-count').innerText = cuentaArticulos;
-            
-            const container = document.getElementById('cart-items');
-            container.innerHTML = '';
-            let totalUSD = 0;
-
-            if (carrito.length === 0) {
-                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-sm font-medium">El carrito se encuentra vacío.</p>`;
-                document.getElementById('cart-total-usd').innerText = "$0.00";
-                document.getElementById('cart-total-bs').innerText = "0.00 Bs";
-                return;
-            }
-
-            carrito.forEach((item, index) => {
-                const itemSubtotal = parseFloat(item.precio_usd) * item.cantidad;
-                totalUSD += itemSubtotal;
-                const subtotalBs = (itemSubtotal * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2 });
-                
-                container.innerHTML += `
-                    <div class="flex items-center gap-4 bg-gray-50 p-3.5 rounded-2xl border border-gray-100">
-                        <img src="${item.imagen_url}" class="w-14 h-14 object-cover rounded-xl shadow-sm bg-white" onerror="this.src='https://placehold.co/150'">
-                        <div class="flex-grow min-w-0">
-                            <h4 class="font-bold text-sm text-gray-900 truncate">${item.nombre}</h4>
-                            <p class="text-[11px] text-indigo-600 font-bold">$${parseFloat(item.precio_usd).toFixed(2)} c/u</p>
-                            <p class="text-xs text-gray-400 font-medium">Subtotal: $${itemSubtotal.toFixed(2)} (${subtotalBs} Bs)</p>
-                        </div>
-                        <div class="flex items-center gap-2 bg-white px-2.5 py-1.5 rounded-xl border border-gray-200 shadow-2xs">
-                            <button onclick="cambiarCantidad(${index}, -1)" class="text-gray-400 hover:text-indigo-600 px-1 font-bold text-sm transition cursor-pointer">-</button>
-                            <span class="text-xs font-black text-gray-800 min-w-[14px] text-center">${item.cantidad}</span>
-                            <button onclick="cambiarCantidad(${index}, 1)" class="text-gray-400 hover:text-indigo-600 px-1 font-bold text-sm transition cursor-pointer">+</button>
-                        </div>
-                        <button onclick="removerDelCarrito(${index})" class="text-gray-300 hover:text-red-500 p-2 transition cursor-pointer"><i class="fa-solid fa-trash-can text-sm"></i></button>
-                    </div>
-                `;
-            });
-
-            const totalBs = totalUSD * globalTasa;
-            document.getElementById('cart-total-usd').innerText = `$ ${totalUSD.toFixed(2)}`;
-            document.getElementById('cart-total-bs').innerText = `${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs`;
-        }
-
-        function removerDelCarrito(index) {
-            carrito.splice(index, 1);
-            actualizarInterfazCarrito();
-        }
-
-        async function enviarPedidoWhatsApp() {
-            if (carrito.length === 0) return alert("No posees artículos agregados al carrito.");
-            
-            const nombreCliente = document.getElementById('checkout-nombre').value.trim();
-            const direccionCliente = document.getElementById('checkout-direccion').value.trim();
-
-            if(!nombreCliente || !direccionCliente) {
-                return alert("Por favor, ingresa tu nombre y dirección antes de procesar por WhatsApp.");
-            }
-
-            let sumaTotalUSD = 0;
-            const mapaDetalleProductos = carrito.map(item => {
-                const sub = parseFloat(item.precio_usd) * item.cantidad;
-                sumaTotalUSD += sub;
-                return {
-                    producto_id: item.id,
-                    nombre: item.nombre,
-                    cantidad: item.cantidad,
-                    precio_unitario_usd: item.precio_usd,
-                    aliado: item.aliado_comercial
-                };
-            });
-
-            const sumaTotalBs = sumaTotalUSD * globalTasa;
-
-            try {
-                await supabaseCliente.from('pedidos').insert([
-                    {
-                        usuario_id: usuarioActual ? usuarioActual.id : null,
-                        cliente_nombre: nombreCliente,
-                        direccion: direccionCliente,
-                        total_usd: sumaTotalUSD,
-                        total_bs: sumaTotalBs,
-                        productos_detalle: mapaDetalleProductos,
-                        estado: 'pendiente'
-                    }
-                ]);
-            } catch(ex) { console.error("Fallo de red al registrar pedido:", ex); }
-
-            let textoPedido = `🛒 *NUEVO PEDIDO - A TU PUERTA* 🛒\n\n`;
-            textoPedido += `👤 *Cliente:* ${nombreCliente}\n`;
-            textoPedido += `📍 *Dirección:* ${direccionCliente}\n`;
-            textoPedido += `📧 *Usuario:* ${usuarioActual.email}\n`;
-            textoPedido += `───────────────\n\n`;
-            
-            carrito.forEach((item, i) => {
-                const subUSD = parseFloat(item.precio_usd) * item.cantidad;
-                textoPedido += `${i + 1}. *${item.nombre}* (x${item.cantidad})\n`;
-                textoPedido += `   _Vendedor:_ ${item.aliado_comercial}\n`;
-                textoPedido += `   _Subtotal:_ $${subUSD.toFixed(2)} (${(subUSD * globalTasa).toFixed(2)} Bs)\n\n`;
-            });
-
-            textoPedido += `───────────────\n`;
-            textoPedido += `💵 *TOTAL USD:* $${sumaTotalUSD.toFixed(2)}\n`;
-            textoPedido += `🇻🇪 *TOTAL BS:* ${sumaTotalBs.toFixed(2)} Bs\n\n`;
-            textoPedido += `*Nota:* El costo definitivo del envío será coordinado en este chat.\n`;
-            textoPedido += `_Tasa de conversión aplicada: ${globalTasa} Bs_`;
-
-            const numeroDestino = "584128481584"; 
-            const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(textoPedido)}`;
-            window.open(urlWhatsApp, '_blank');
-        }
-
-        function validarAdmin() {
-            const claveEntrada = document.getElementById('admin-key').value;
-            if (claveEntrada === '27146006') {
-                document.getElementById('admin-login-ui').classList.add('hidden');
-                document.getElementById('admin-main-ui').classList.remove('hidden');
-            } else {
-                alert("Acceso Restringido: Contraseña Maestra Errónea.");
-            }
-        }
-
-        async function actualizarTasa() {
-            const nuevoValor = parseFloat(document.getElementById('adm-tasa').value);
-            if(isNaN(nuevoValor) || nuevoValor <= 0) return alert("Ingrese un formato numérico válido.");
-            const { error } = await supabaseCliente.from('configuracion').update({ tasa_dolar: nuevoValor }).eq('id', 1);
-            if (error) return alert("Error al actualizar la tasa: " + error.message);
-            alert("Tasa de cambio guardada.");
-            window.location.reload();
-        }
-
-        // FUNCIONES DE CONTROL PARA CREAR Y ELIMINAR ALIADOS EN EL PANEL ADMIN
-        async function adminCrearAliado() {
-            const nombre = document.getElementById('adm-nuevo-aliado-nom').value.trim();
-            const img = document.getElementById('adm-nuevo-aliado-img').value.trim();
-
-            if (!nombre || !img) return alert("Por favor coloca el nombre y el enlace de la imagen o logo del aliado.");
-
-            const { error } = await supabaseCliente.from('aliados').insert([{ nombre: nombre, imagen_url: img }]);
-            if (error) return alert("Error al guardar aliado: " + error.message);
-
-            alert("Aliado comercial registrado exitosamente.");
-            document.getElementById('adm-nuevo-aliado-nom').value = '';
-            document.getElementById('adm-nuevo-aliado-img').value = '';
-            await obtenerAliadosComerciales();
-        }
-
-        async function adminEliminarAliado(id) {
-            if (!confirm("¿Seguro que deseas eliminar este aliado comercial? Esto no borrará sus productos, pero dejarán de aparecer agrupados en la sección de Aliados.")) return;
-            const { error } = await supabaseCliente.from('aliados').delete().eq('id', id);
-            if (error) return alert("No se pudo eliminar: " + error.message);
-            await obtenerAliadosComerciales();
-        }
-
-        async function adminCrearCategoria() {
-            const nombreCat = document.getElementById('adm-nueva-cat').value.trim();
-            if(!nombreCat) return alert("Escriba un nombre para la categoría.");
-            const { error } = await supabaseCliente.from('categorias').insert([{ nombre: nombreCat }]);
-            if (error) return alert("Inconveniente guardando categoría: " + error.message);
-            alert("Categoría guardada correctamente.");
-            document.getElementById('adm-nueva-cat').value = '';
-            await obtenerCategoriasDisponibles();
-        }
-
-        async function adminGuardarProducto(e) {
-            e.preventDefault();
-            const productoEstructura = {
-                nombre: document.getElementById('adm-nombre').value.trim(),
-                descripcion: document.getElementById('adm-desc').value.trim(),
-                precio_usd: parseFloat(document.getElementById('adm-precio').value),
-                stock: parseInt(document.getElementById('adm-stock').value),
-                imagen_url: document.getElementById('adm-img').value.trim(),
-                aliado_comercial: document.getElementById('adm-aliado').value, // Toma la selección string del dropdown
-                categoria_id: document.getElementById('adm-cat').value || null,
-                es_promocion: document.getElementById('adm-promo').checked
-            };
-
-            if (idProductoEditando !== null) {
-                const { error } = await supabaseCliente.from('productos').update(productoEstructura).eq('id', idProductoEditando);
-                if (error) return alert("Fallo al actualizar producto: " + error.message);
-                alert("Producto modificado correctamente.");
-                cancelarEdicion();
-            } else {
-                const { error } = await supabaseCliente.from('productos').insert([productoEstructura]);
-                if (error) return alert("Fallo al insertar producto: " + error.message);
-                alert("Producto guardado con éxito.");
-                e.target.reset();
-            }
-            await obtenerProductosInventario();
-        }
-
-        function cargarProductoParaEditar(id) {
-            const p = globalProductos.find(prod => prod.id === id);
-            if (!p) return;
-
-            idProductoEditando = p.id;
-            document.getElementById('admin-form-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-500"></i> Editar Producto`;
-            const btnGuardar = document.getElementById('btn-admin-guardar');
-            btnGuardar.innerText = "ACTUALIZAR PRODUCTO";
-            btnGuardar.className = "w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer";
-            document.getElementById('btn-admin-cancelar').classList.remove('hidden');
-
-            document.getElementById('adm-nombre').value = p.nombre;
-            document.getElementById('adm-desc').value = p.descripcion || '';
-            document.getElementById('adm-precio').value = p.precio_usd;
-            document.getElementById('adm-stock').value = p.stock;
-            document.getElementById('adm-img').value = p.imagen_url;
-            document.getElementById('adm-aliado').value = p.aliado_comercial;
-            document.getElementById('adm-cat').value = p.categoria_id || '';
-            document.getElementById('adm-promo').checked = p.es_promocion;
-        }
-
-        function cancelarEdicion() {
-            idProductoEditando = null;
-            document.getElementById('admin-form-title').innerHTML = `<i class="fa-solid fa-box-open text-indigo-600"></i> Registrar Producto`;
-            const btnGuardar = document.getElementById('btn-admin-guardar');
-            btnGuardar.innerText = "GUARDAR EN INVENTARIO";
-            btnGuardar.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer";
-            document.getElementById('btn-admin-cancelar').classList.add('hidden');
-            document.getElementById('adm-nombre').value = '';
-            document.getElementById('adm-desc').value = '';
-            document.getElementById('adm-precio').value = '';
-            document.getElementById('adm-stock').value = '';
-            document.getElementById('adm-img').value = '';
-            document.getElementById('adm-aliado').value = '';
-            document.getElementById('adm-cat').value = '';
-            document.getElementById('adm-promo').checked = false;
-        }
-
-        async function eliminarProducto(id) {
-            if (!confirm("¿Está seguro de que desea eliminar este artículo del catálogo general?")) return;
-            const { error } = await supabaseCliente.from('productos').delete().eq('id', id);
-            if (error) return alert("No se pudo remover el ítem: " + error.message);
-            if(idProductoEditando === id) cancelarEdicion();
-            await obtenerProductosInventario();
-        }
-
-        function renderizarInventarioAdmin() {
-            const container = document.getElementById('admin-lista-productos');
-            container.innerHTML = '';
-            globalProductos.forEach(p => {
-                container.innerHTML += `
-                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
-                        <img src="${p.imagen_url}" class="w-10 h-10 object-cover rounded-lg bg-white border" onerror="this.src='https://placehold.co/50'">
-                        <div class="flex-grow min-w-0">
-                            <p class="text-xs font-bold text-gray-900 truncate">${p.nombre}</p>
-                            <p class="text-[10px] text-gray-400 truncate">$${parseFloat(p.precio_usd).toFixed(2)} | Vendedor: ${p.aliado_comercial}</p>
-                        </div>
-                        <div class="flex gap-1.5 flex-shrink-0">
-                            <button onclick="cargarProductoParaEditar(${p.id})" class="text-indigo-600 hover:text-indigo-800 text-xs font-bold px-2.5 py-1 bg-indigo-50 rounded-lg transition cursor-pointer"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2.5 py-1 bg-red-50 rounded-lg transition cursor-pointer"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
+        async function cerrarSesion() { await supabaseCliente.auth.signOut(); window.location.reload(); }
         function abrirModal(id) { document.getElementById(id).classList.add('active'); }
         function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
 
         inicializarPlataforma();
     </script>
 </body>
-</html>
+    </html>
