@@ -3,28 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico en Vivo - Tienda</title>
+    <title>Tienda - Control de Red</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("❌ EL NAVEGADOR DETECTÓ UN ERROR:\n\n" + message + "\n\nEn la línea: " + lineno);
+            return false;
+        };
+    </script>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased">
 
-    <nav class="bg-red-600 shadow-sm sticky top-0 z-50 text-white">
+    <nav class="bg-indigo-600 shadow-sm sticky top-0 z-50 text-white">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold tracking-tight">A tu puerta <span class="text-yellow-300 font-black">[DIAGNÓSTICO ACTIVO]</span></span>
-            <button onclick="document.getElementById('modal-admin-login').style.display = 'flex';" class="text-xs bg-white text-red-600 font-bold transition rounded py-2 px-3 hover:bg-gray-100 cursor-pointer">Admin</button>
+            <span class="text-xl font-bold tracking-tight">A tu puerta <span class="text-xs bg-indigo-800 px-2 py-1 rounded ml-2">v3.0</span></span>
+            <button onclick="document.getElementById('modal-admin-login').style.display = 'flex';" class="text-xs bg-white text-indigo-600 font-bold transition rounded py-2 px-3 hover:bg-gray-100 cursor-pointer">Admin</button>
         </div>
     </nav>
 
     <main id="vista-cliente" class="max-w-6xl mx-auto px-4 py-12">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Revisa el estado de la consola azul de abajo para saber qué está haciendo el sistema.</p>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Monitoreo de inicialización en tiempo real.</p>
         </div>
 
         <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center py-12 col-span-3 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                <p class="text-gray-500 font-bold animate-pulse text-lg">Procesando catálogo...</p>
+                <p class="text-gray-500 font-bold animate-pulse text-lg">Cargando interfaz de usuario...</p>
                 <p id="consola-debug" class="text-sm text-blue-600 mt-3 font-mono bg-blue-50 p-2 inline-block rounded border border-blue-200">
                     ⏳ Esperando que el motor JavaScript despierte...
                 </p>
@@ -43,18 +50,18 @@
                 <div>
                     <input type="password" id="admin-password" placeholder="Contraseña" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
-                <button type="submit" id="btn-login-submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
+                <button type="submit" id="btn-login-submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
             </form>
         </div>
     </div>
 
     <div id="vista-admin" class="max-w-6xl mx-auto px-4 py-12" style="display: none;">
         <div class="flex items-center justify-between border-b pb-6 mb-8">
-            <h1 class="text-3xl font-extrabold">Panel Control Activado</h1>
-            <button onclick="window.location.reload()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">Salir / Volver</button>
+            <h1 class="text-3xl font-extrabold">Panel Administrativo</h1>
+            <button onclick="window.location.reload()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">Salir</button>
         </div>
-        <div class="bg-white p-6 rounded-xl border">
-            <p class="text-emerald-600 font-bold mb-4">✓ Acceso concedido al área de administración.</p>
+        <div class="bg-white p-6 rounded-xl border text-center">
+            <p class="text-emerald-600 font-bold">✓ Conexión establecida con éxito.</p>
         </div>
     </main>
 
@@ -63,68 +70,77 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
         let supabase = null;
-        const consola = document.getElementById('consola-debug');
 
-        // Reportamos de inmediato que el JavaScript está vivo
-        if (consola) consola.innerText = "🚀 Paso 1: JavaScript en ejecución. Buscando librerías...";
+        // Función segura para actualizar el estado en pantalla sin importar el orden de carga
+        function reportarEstado(texto, esError = false) {
+            console.log(texto);
+            const selector = document.getElementById('consola-debug');
+            if (selector) {
+                selector.innerText = texto;
+                if (esError) {
+                    selector.className = "text-sm text-red-600 mt-3 font-mono bg-red-50 p-2 inline-block rounded border border-red-200";
+                }
+            }
+        }
 
-        // Función para romper bloqueos de red (8 segundos límite)
+        // Forzar la ruptura de solicitudes colgadas en la red
         function conTimeout(promesa, ms = 8000) {
             return Promise.race([
                 promesa,
-                new Promise((_, reject) => setTimeout(() => reject(new Error("La red tardó más de 8 segundos en responder.")), ms))
+                new Promise(function(_, reject) {
+                    setTimeout(function() {
+                        reject(new Error("Límite de tiempo agotado (La red no respondió)"));
+                    }, ms);
+                })
             ]);
         }
 
-        // FUNCIÓN DE ARRANQUE DIRECTO (Sin esperar eventos de página)
-        async function inicializarApp() {
-            const libSupabase = window.supabase || window.Supabase;
+        // Inicialización obligatoria e inmediata
+        async function arrancarSistema() {
+            reportarEstado("🚀 Paso 1: Motor despierto. Buscando librerías externas...");
             
+            const libSupabase = window.supabase || window.Supabase;
             if (!libSupabase) {
-                if (consola) consola.innerHTML = "❌ <span class='text-red-600 font-bold'>Error: La librería de Supabase no cargó en el navegador. Revisa si tu proveedor de internet bloquea 'cdn.jsdelivr.net'.</span>";
+                reportarEstado("❌ Error: La librería de Supabase fue bloqueada o no cargó.", true);
                 return;
             }
 
             try {
-                if (consola) consola.innerText = "🔗 Paso 2: Librería detectada. Conectando cliente Supabase...";
+                reportarEstado("🔗 Paso 2: Librería encontrada. Creando enlace de conexión...");
                 supabase = libSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
-                if (consola) consola.innerText = "📡 Paso 3: Cliente listo. Solicitando datos a las tablas...";
-                await cargarProductosCliente();
-
+                reportarEstado("📡 Paso 3: Buscando productos en la base de datos...");
+                await solicitarInventario();
             } catch (err) {
-                if (consola) consola.innerText = "💥 Error crítico en arranque: " + err.message;
+                reportarEstado("💥 Fallo general en la carga: " + err.message, true);
             }
         }
 
-        async function cargarProductosCliente() {
+        async function solicitarInventario() {
             if (!supabase) return;
             const contenedor = document.getElementById('lista-productos');
             try {
-                // Hacemos la consulta con el cronómetro de 8 segundos activado
                 const { data: productos, error } = await conTimeout(
                     supabase.from('productos').select('*'),
                     8000
                 );
                 
                 if (error) {
-                    contenedor.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-lg col-span-3 text-center font-mono text-xs">Error de Base de Datos: ${error.message}</div>`;
+                    contenedor.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-xl col-span-3 text-center text-xs font-mono">Supabase Error: ${error.message}</div>`;
                     return;
                 }
 
                 if (!productos || productos.length === 0) {
-                    contenedor.innerHTML = `<div class="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-xl col-span-3 text-center font-bold">¡Conexión Exitosa! Pero tu tabla 'productos' en Supabase está vacía. Añade uno desde el panel Admin.</div>`;
+                    contenedor.innerHTML = `<div class="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-xl col-span-3 text-center font-bold">¡Conectado! Tu tabla 'productos' en Supabase existe pero no tiene filas agregadas.</div>`;
                     return;
                 }
 
-                // Si todo sale bien, muestra cuántos encontró
-                contenedor.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-800 rounded-xl col-span-3 text-center font-bold">¡Éxito Total! Conectado a Supabase. Se encontraron ${productos.length} productos en inventario.</div>`;
+                contenedor.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-800 rounded-xl col-span-3 text-center font-bold">¡Éxito! Se sincronizaron ${productos.length} productos correctamente.</div>`;
             } catch (err) {
-                // Si la conexión se queda colgada, esto se ejecutará obligatoriamente a los 8 segundos
                 contenedor.innerHTML = `
                     <div class="text-center py-6 col-span-3 bg-orange-50 text-orange-700 border border-orange-200 rounded-2xl p-6">
-                        <p class="font-bold text-lg">⚠️ Conexión Interrumpida (Límite de Tiempo)</p>
-                        <p class="text-sm mt-1 text-gray-600">El navegador se cansó de esperar respuesta de los servidores de Supabase.</p>
+                        <p class="font-bold text-lg">⚠️ Conexión Interrumpida</p>
+                        <p class="text-sm mt-1 text-gray-600">Tu proveedor de internet (CANTV/Línea móvil) dejó la consulta en espera y el script la detuvo para evitar que se congele.</p>
                         <p class="text-xs bg-gray-200 p-2 rounded mt-3 font-mono text-left text-gray-800">Causa: ${err.message}</p>
                     </div>`;
             }
@@ -136,7 +152,7 @@
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
 
-            btn.innerText = "CONECTANDO...";
+            btn.innerText = "PROCESANDO ACCESO...";
             btn.disabled = true;
 
             try {
@@ -146,7 +162,7 @@
                 );
 
                 if (error) {
-                    alert("Credenciales incorrectas: " + error.message);
+                    alert("Acceso denegado: " + error.message);
                     btn.innerText = "Ingresar";
                     btn.disabled = false;
                 } else if (data && data.session) {
@@ -155,14 +171,14 @@
                     document.getElementById('vista-admin').style.display = 'block';
                 }
             } catch (err) {
-                alert("El login no respondió a tiempo:\n" + err.message);
+                alert("Tiempo de espera agotado en Login:\n" + err.message);
                 btn.innerText = "Ingresar";
                 btn.disabled = false;
             }
         }
 
-        // EJECUCIÓN INMEDIATA FORZADA
-        inicializarApp();
+        // Ejecución forzada al cargar el script
+        arrancarSistema();
     </script>
 </body>
 </html>
