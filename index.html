@@ -3,180 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda - Conexión Limpia</title>
+    <title>A Tu Puerta - E-commerce Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            alert("❌ EL NAVEGADOR DETECTÓ UN ERROR:\n\n" + message + "\n\nEn la línea: " + lineno);
-            return false;
-        };
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        .grid-products { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 1.5rem; 
+        }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 100; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1rem; 
+            backdrop-filter: blur(4px);
+        }
+        .modal.active { display: flex; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased">
+<body class="bg-gray-50 text-gray-800 antialiased">
 
-    <nav class="bg-indigo-600 shadow-sm sticky top-0 z-50 text-white">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold tracking-tight">A tu puerta <span class="text-xs bg-indigo-800 px-2 py-1 rounded ml-2">v3.1</span></span>
-            <button onclick="document.getElementById('modal-admin-login').style.display = 'flex';" class="text-xs bg-white text-indigo-600 font-bold transition rounded py-2 px-3 hover:bg-gray-100 cursor-pointer">Admin</button>
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="filtrar('todos')">
+                <i class="fa-solid fa-store text-indigo-600 text-2xl"></i>
+                <span class="text-2xl font-black text-gray-900 tracking-tighter">A TU PUERTA</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div id="auth-buttons" class="hidden flex gap-2">
+                    <button onclick="abrirModal('modal-auth')" class="text-sm font-bold text-indigo-600 px-4 py-2 hover:bg-indigo-50 rounded-xl transition cursor-pointer">Iniciar Sesión / Registro</button>
+                </div>
+                <div id="user-menu" class="hidden flex items-center gap-3">
+                    <span class="text-sm font-medium text-gray-600 flex items-center gap-1">
+                        <i class="fa-regular fa-user text-indigo-500"></i> <span id="user-name"></span>
+                    </span>
+                    <button onclick="cerrarSesion()" class="text-xs text-red-500 font-bold hover:underline cursor-pointer">Salir</button>
+                </div>
+
+                <button onclick="abrirModal('modal-carrito')" class="relative p-3 bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition cursor-pointer">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                </button>
+                
+                <button onclick="abrirModal('modal-admin')" class="text-[11px] text-gray-300 hover:text-gray-500 ml-1 transition cursor-pointer"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </div>
+        <div class="bg-indigo-600 text-white text-center py-1.5 text-xs font-bold tracking-widest uppercase">
+            Tasa Oficial del Día: 1 $ = <span id="tasa-display">--</span> Bs
         </div>
     </nav>
 
-    <main id="vista-cliente" class="max-w-6xl mx-auto px-4 py-12">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-4">Productos Exclusivos</h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Monitoreo de inicialización en tiempo real.</p>
+    <main class="max-w-7xl mx-auto px-4 mt-8 pb-24">
+        <div class="flex flex-wrap gap-3 justify-center mb-10">
+            <button onclick="filtrar('todos')" class="btn-filter bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md transition cursor-pointer">Todo</button>
+            <button onclick="filtrar('promo')" class="btn-filter bg-white text-gray-600 px-6 py-2.5 rounded-full font-bold shadow-sm hover:shadow-md border border-gray-200 transition cursor-pointer text-red-500 flex items-center gap-1">
+                <i class="fa-solid fa-fire text-xs"></i> Promociones
+            </button>
+            <div id="categorias-filtros" class="flex flex-wrap gap-3"></div>
         </div>
 
-        <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center py-12 col-span-3 bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                <p class="text-gray-500 font-bold animate-pulse text-lg">Cargando interfaz de usuario...</p>
-                <p id="consola-debug" class="text-sm text-blue-600 mt-3 font-mono bg-blue-50 p-2 inline-block rounded border border-blue-200">
-                    ⏳ Esperando que el motor JavaScript despierte...
-                </p>
+        <h2 id="section-title" class="text-3xl font-black mb-8 tracking-tight text-gray-900">Todos los Productos</h2>
+        <div id="grid-productos" class="grid-products">
             </div>
-        </div>
     </main>
 
-    <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" style="display: none;">
-        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-            <button onclick="document.getElementById('modal-admin-login').style.display = 'none';" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
-            <h2 class="text-xl font-bold mb-6 text-center text-gray-800">Acceso Administrador</h2>
-            <form onsubmit="loginAdmin(event)" class="space-y-4">
-                <div>
-                    <input type="email" id="admin-email" placeholder="Correo electrónico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
+    <div id="modal-auth" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+            <button onclick="cerrarModal('modal-auth')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="auth-ui">
+                <h2 id="auth-titulo" class="text-3xl font-black mb-2 text-gray-900">Iniciar Sesión</h2>
+                <p id="auth-desc" class="text-gray-500 mb-6 text-sm">Necesitas una cuenta para añadir productos al carrito y comprar.</p>
+                
+                <div class="space-y-4">
+                    <input type="email" id="auth-email" placeholder="Correo electrónico" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    <input type="password" id="auth-pass" placeholder="Contraseña" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    
+                    <button id="btn-auth-principal" onclick="ejecutarAuth('login')" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-indigo-700 transition cursor-pointer">Ingresar</button>
+                    
+                    <div class="text-center pt-2">
+                        <button id="btn-auth-cambio" onclick="cambiarModoAuth('registro')" class="text-indigo-600 text-xs font-bold hover:underline cursor-pointer">¿No tienes cuenta? Regístrate gratis aquí</button>
+                    </div>
                 </div>
-                <div>
-                    <input type="password" id="admin-password" placeholder="Contraseña" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
-                </div>
-                <button type="submit" id="btn-login-submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <div id="vista-admin" class="max-w-6xl mx-auto px-4 py-12" style="display: none;">
-        <div class="flex items-center justify-between border-b pb-6 mb-8">
-            <h1 class="text-3xl font-extrabold">Panel Administrativo</h1>
-            <button onclick="window.location.reload()" class="bg-gray-200 px-4 py-2 rounded-lg text-sm">Salir</button>
+    <div id="modal-carrito" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-2xl p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModal('modal-carrito')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-3xl font-black mb-6 text-gray-900">Tu Carrito</h2>
+            
+            <div id="cart-items" class="space-y-4 mb-6">
+                </div>
+            
+            <div class="border-t border-gray-100 pt-6">
+                <div class="flex justify-between items-baseline mb-6">
+                    <span class="text-xl font-bold text-gray-500">Total Estimado:</span>
+                    <div class="text-right">
+                        <p id="cart-total-usd" class="text-3xl font-black text-gray-900">$0.00</p>
+                        <p id="cart-total-bs" class="text-sm font-bold text-indigo-600">0.00 Bs</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-2xl mb-6 space-y-3 border border-gray-100">
+                    <p class="text-xs font-black text-gray-400 uppercase tracking-wider mb-1">Datos de Despacho</p>
+                    <input type="text" id="checkout-nombre" placeholder="Nombre completo de quien recibe" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+                    <input type="text" id="checkout-direccion" placeholder="Dirección exacta de entrega" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+                </div>
+
+                <button onclick="enviarPedidoWhatsApp()" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 transition flex items-center justify-center gap-3 cursor-pointer">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP
+                </button>
+            </div>
         </div>
-        <div class="bg-white p-6 rounded-xl border text-center">
-            <p class="text-emerald-600 font-bold">✓ Conexión establecida con éxito.</p>
+    </div>
+
+    <div id="modal-admin" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-6xl p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            <button onclick="cerrarModal('modal-admin')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="admin-login-ui" class="max-w-sm mx-auto py-12">
+                <div class="text-center mb-6">
+                    <i class="fa-solid fa-lock-open text-3xl text-gray-400 mb-2"></i>
+                    <h2 class="text-2xl font-black text-gray-900">Panel Administrativo</h2>
+                </div>
+                <input type="password" id="admin-key" placeholder="Contraseña Maestra" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl mb-4 outline-none text-center font-bold tracking-widest">
+                <button onclick="validarAdmin()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition cursor-pointer">Ingresar</button>
+            </div>
+
+            <div id="admin-main-ui" class="hidden">
+                <div class="border-b border-gray-100 pb-4 mb-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-screwdriver-wrench text-indigo-600 mr-2"></i>Consola de Control</h2>
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Modo Administrador</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="space-y-6">
+                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200 shadow-sm">
+                            <h3 class="font-bold text-amber-800 text-sm mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-money-bill-trend-up"></i> CONTROL DE DIVISA
+                            </h3>
+                            <label class="block text-[10px] font-black text-amber-700 mb-1 uppercase">Valor Dólar BCV</label>
+                            <div class="flex gap-2">
+                                <input type="number" step="0.01" id="adm-tasa" class="flex-grow p-3 bg-white rounded-xl border border-amber-300 font-bold text-gray-800 outline-none">
+                                <button onclick="actualizarTasa()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 rounded-xl font-bold text-sm transition cursor-pointer">Fijar</button>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-gray-50 rounded-2xl border border-gray-200 shadow-sm">
+                            <h3 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-tags"></i> NUEVA CATEGORÍA
+                            </h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="adm-nueva-cat" placeholder="Ej: Charcutería" class="flex-grow p-3 bg-white rounded-xl border border-gray-200 text-sm outline-none">
+                                <button onclick="adminCrearCategoria()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 rounded-xl font-bold text-sm transition cursor-pointer">Añadir</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
+                        <h3 class="font-black text-lg mb-4 text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-box-open text-indigo-600"></i> Registrar Producto
+                        </h3>
+                        <form onsubmit="adminCrearProducto(event)" class="space-y-3.5">
+                            <input type="text" id="adm-nombre" placeholder="Nombre Comercial" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            <textarea id="adm-desc" placeholder="Descripción resumida del artículo" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Precio ($ USD)</label>
+                                    <input type="number" step="0.01" id="adm-precio" placeholder="0.00" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none font-bold">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Cantidad/Stock</label>
+                                    <input type="number" id="adm-stock" placeholder="10" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                                </div>
+                            </div>
+                            
+                            <input type="text" id="adm-img" placeholder="Enlace URL de la Foto (https://...)" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            <input type="text" id="adm-aliado" placeholder="Nombre de Aliado Comercial / Distribuidor" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            
+                            <div>
+                                <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Seleccionar Categoría</label>
+                                <select id="adm-cat" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none"></select>
+                            </div>
+
+                            <label class="flex items-center gap-2 p-3 bg-red-50 border border-red-100 rounded-xl text-sm font-bold text-red-700 cursor-pointer">
+                                <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600"> ¿Colocar en sección de Promociones?
+                            </label>
+                            
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black tracking-wide shadow-md transition cursor-pointer">GUARDAR EN INVENTARIO</button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="font-black text-lg text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i> Existencias en Red
+                        </h3>
+                        <div id="admin-lista-productos" class="space-y-3 overflow-y-auto max-h-[550px] pr-2">
+                            </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
+    </div>
 
     <script>
+        // Configuración Global de Conexiones
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
-        // CAMBIO CLAVE: Nombre cambiado para evitar colisiones con el navegador
-        let supabaseCliente = null;
+        // Cambio clave preventivo para evitar colisiones globales
+        const supabaseCliente = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        function reportarEstado(texto, esError = false) {
-            console.log(texto);
-            const selector = document.getElementById('consola-debug');
-            if (selector) {
-                selector.innerText = texto;
-                if (esError) {
-                    selector.className = "text-sm text-red-600 mt-3 font-mono bg-red-50 p-2 inline-block rounded border border-red-200";
+        let globalTasa = 1;
+        let globalProductos = [];
+        let globalCategorias = [];
+        let carrito = [];
+        let usuarioActual = null;
+        let modoAuthActual = 'login';
+
+        // Inicialización Forzada del E-commerce
+        async function inicializarPlataforma() {
+            await obtenerConfigTasa();
+            await obtenerCategoriasDisponibles();
+            await obtenerProductosInventario();
+            await verificarEstadoUsuario();
+        }
+
+        // CONTROL DE DATOS - SUPABASE
+        async function obtenerConfigTasa() {
+            try {
+                const { data } = await supabaseCliente.from('configuracion').select('*').eq('id', 1).single();
+                if (data) {
+                    globalTasa = parseFloat(data.tasa_dolar);
+                    document.getElementById('tasa-display').innerText = globalTasa.toFixed(2);
+                    document.getElementById('adm-tasa').value = globalTasa;
                 }
-            }
+            } catch (err) { console.error("Error cargando tasa:", err); }
         }
 
-        function conTimeout(promesa, ms = 8000) {
-            return Promise.race([
-                promesa,
-                new Promise(function(_, reject) {
-                    setTimeout(function() {
-                        reject(new Error("Límite de tiempo agotado (La red no respondió)"));
-                    }, ms);
-                })
-            ]);
+        async function obtenerCategoriasDisponibles() {
+            try {
+                const { data } = await supabaseCliente.from('categorias').select('*').order('nombre', { ascending: true });
+                globalCategorias = data || [];
+                
+                const contenedorFiltros = document.getElementById('categorias-filtros');
+                const selectorFormulario = document.getElementById('adm-cat');
+                
+                contenedorFiltros.innerHTML = '';
+                selectorFormulario.innerHTML = '<option value="">Sin Categoría Específica</option>';
+                
+                globalCategorias.forEach(cat => {
+                    contenedorFiltros.innerHTML += `
+                        <button onclick="filtrar(${cat.id})" class="btn-filter bg-white text-gray-600 px-5 py-2 rounded-full font-bold shadow-sm border border-gray-200 hover:border-indigo-300 transition cursor-pointer">${cat.nombre}</button>
+                    `;
+                    selectorFormulario.innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
+                });
+            } catch (err) { console.error("Error cargando categorías:", err); }
         }
 
-        async function arrancarSistema() {
-            reportarEstado("🚀 Paso 1: Motor despierto. Buscando librerías externas...");
+        async function obtenerProductosInventario() {
+            try {
+                const { data } = await supabaseCliente.from('productos').select('*').order('created_at', { ascending: false });
+                globalProductos = data || [];
+                renderizarCatalogoPublico(globalProductos);
+                renderizarInventarioAdmin();
+            } catch (err) { console.error("Error cargando productos:", err); }
+        }
+
+        // RENDERIZADO VISUAL DE PRODUCTOS (VISTA CLIENTE)
+        function renderizarCatalogoPublico(lista) {
+            const container = document.getElementById('grid-productos');
+            container.innerHTML = '';
             
-            const libSupabase = window.supabase || window.Supabase;
-            if (!libSupabase) {
-                reportarEstado("❌ Error: La librería de Supabase fue bloqueada o no cargó.", true);
+            if(lista.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400 font-medium">No se encontraron artículos disponibles en esta sección.</div>`;
                 return;
             }
 
-            try {
-                reportarEstado("🔗 Paso 2: Librería encontrada. Creando enlace de conexión...");
-                supabaseCliente = libSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                
-                reportarEstado("📡 Paso 3: Buscando productos en la base de datos...");
-                await solicitarInventario();
-            } catch (err) {
-                reportarEstado("💥 Fallo general en la carga: " + err.message, true);
+            lista.forEach(p => {
+                const precioEnBs = (p.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const stockBadge = p.stock <= 0 ? 
+                    `<span class="absolute top-3 right-3 bg-gray-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Agotado</span>` : 
+                    `<span class="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Stock: ${p.stock}</span>`;
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-all duration-300 p-4 border border-gray-100 flex flex-col group relative">
+                        <div class="relative h-56 mb-4 overflow-hidden rounded-2xl bg-gray-50 border border-gray-50">
+                            <img src="${p.imagen_url}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x400?text=Producto'">
+                            ${p.es_promocion ? '<span class="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">PROMO</span>' : ''}
+                            ${stockBadge}
+                        </div>
+                        
+                        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1 flex items-center gap-1">
+                            <i class="fa-solid fa-handshake text-[9px]"></i> ${p.aliado_comercial}
+                        </p>
+                        <h3 class="font-bold text-gray-900 mb-1.5 truncate text-base">${p.nombre}</h3>
+                        <p class="text-xs text-gray-400 mb-4 line-clamp-2 min-h-[2rem]">${p.descripcion || 'Sin descripción adicional.'}</p>
+                        
+                        <div class="mt-auto pt-2 border-t border-gray-50">
+                            <div class="flex flex-col">
+                                <span class="text-2xl font-black text-gray-900">$ ${parseFloat(p.precio_usd).toFixed(2)}</span>
+                                <span class="text-xs text-indigo-500 font-bold font-mono">${precioEnBs} Bs</span>
+                            </div>
+                            <button onclick="agregarAlCarrito(${p.id})" ${p.stock <= 0 ? 'disabled' : ''} class="w-full mt-4 ${p.stock <= 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-900 text-white hover:bg-indigo-600 cursor-pointer'} py-3.5 rounded-xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-sm">
+                                <i class="fa-solid fa-cart-plus text-xs"></i> Lo quiero
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // SISTEMA DE CONTROL DE USUARIOS (AUTH)
+        async function verificarEstadoUsuario() {
+            const { data } = await supabaseCliente.auth.getSession();
+            if (data && data.session) {
+                usuarioActual = data.session.user;
+                document.getElementById('auth-buttons').classList.add('hidden');
+                document.getElementById('user-menu').classList.remove('hidden');
+                document.getElementById('user-name').innerText = usuarioActual.email.split('@')[0];
+            } else {
+                usuarioActual = null;
+                document.getElementById('auth-buttons').classList.remove('hidden');
+                document.getElementById('user-menu').classList.add('hidden');
             }
         }
 
-        async function solicitarInventario() {
-            if (!supabaseCliente) return;
-            const contenedor = document.getElementById('lista-productos');
-            try {
-                const { data: productos, error } = await conTimeout(
-                    supabaseCliente.from('productos').select('*'),
-                    8000
-                );
-                
-                if (error) {
-                    contenedor.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-xl col-span-3 text-center text-xs font-mono">Supabase Error: ${error.message}</div>`;
-                    return;
-                }
-
-                if (!productos || productos.length === 0) {
-                    contenedor.innerHTML = `<div class="p-4 bg-yellow-50 text-yellow-800 border border-yellow-200 rounded-xl col-span-3 text-center font-bold">¡Conectado! Tu tabla 'productos' en Supabase existe pero no tiene filas agregadas.</div>`;
-                    return;
-                }
-
-                contenedor.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-800 rounded-xl col-span-3 text-center font-bold">¡Éxito! Se sincronizaron ${productos.length} productos correctamente.</div>`;
-            } catch (err) {
-                contenedor.innerHTML = `
-                    <div class="text-center py-6 col-span-3 bg-orange-50 text-orange-700 border border-orange-200 rounded-2xl p-6">
-                        <p class="font-bold text-lg">⚠️ Conexión Interrumpida</p>
-                        <p class="text-sm mt-1 text-gray-600">Tu proveedor de internet dejó la consulta en espera y el script la detuvo.</p>
-                        <p class="text-xs bg-gray-200 p-2 rounded mt-3 font-mono text-left text-gray-800">Causa: ${err.message}</p>
-                    </div>`;
+        function cambiarModoAuth(modo) {
+            modoAuthActual = modo;
+            if (modo === 'registro') {
+                document.getElementById('auth-titulo').innerText = "Crear Cuenta";
+                document.getElementById('auth-desc').innerText = "Regístrate de forma gratuita usando tu correo electrónico.";
+                document.getElementById('btn-auth-principal').innerText = "Completar Registro";
+                document.getElementById('btn-auth-cambio').innerText = "¿Ya eres cliente? Inicia sesión aquí";
+                document.getElementById('btn-auth-cambio').setAttribute('onclick', "cambiarModoAuth('login')");
+            } else {
+                document.getElementById('auth-titulo').innerText = "Iniciar Sesión";
+                document.getElementById('auth-desc').innerText = "Necesitas una cuenta para añadir productos al carrito y comprar.";
+                document.getElementById('btn-auth-principal').innerText = "Ingresar";
+                document.getElementById('btn-auth-cambio').innerText = "¿No tienes cuenta? Regístrate gratis aquí";
+                document.getElementById('btn-auth-cambio').setAttribute('onclick', "cambiarModoAuth('registro')");
             }
         }
 
-        async function loginAdmin(e) {
+        async function ejecutarAuth(modo) {
+            const email = document.getElementById('auth-email').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            
+            if(!email || !pass) return alert("Por favor complete todos los recuadros.");
+
+            if (modoAuthActual === 'login') {
+                const { error } = await supabaseCliente.auth.signInWithPassword({ email, password: pass });
+                if (error) return alert("Error de acceso: " + error.message);
+                cerrarModal('modal-auth');
+            } else {
+                const { error } = await supabaseCliente.auth.signUp({ email, password: pass });
+                if (error) return alert("Error en registro: " + error.message);
+                alert("¡Cuenta generada con éxito! Ya puedes ingresar con tus datos.");
+                cambiarModoAuth('login');
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function cerrarSesion() {
+            await supabaseCliente.auth.signOut();
+            window.location.reload();
+        }
+
+        // FLUJO DEL CARRITO DE COMPRAS
+        function agregarAlCarrito(id) {
+            // REGLA CRÍTICA: Bloqueo inmediato para usuarios no registrados
+            if (!usuarioActual) {
+                alert("📢 ¡Atención! Para agregar productos al carrito e iniciar tu pedido, es obligatorio estar registrado o haber iniciado sesión.");
+                abrirModal('modal-auth');
+                return;
+            }
+            
+            const prod = globalProductos.find(p => p.id === id);
+            if (prod) {
+                carrito.push(prod);
+                actualizarInterfazCarrito();
+            }
+        }
+
+        function actualizarInterfazCarrito() {
+            document.getElementById('cart-count').innerText = carrito.length;
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            
+            let totalUSD = 0;
+
+            if (carrito.length === 0) {
+                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-sm font-medium">El carrito se encuentra vacío.</p>`;
+                document.getElementById('cart-total-usd').innerText = "$0.00";
+                document.getElementById('cart-total-bs').innerText = "0.00 Bs";
+                return;
+            }
+
+            carrito.forEach((item, index) => {
+                totalUSD += parseFloat(item.precio_usd);
+                const precioBsItem = (item.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2 });
+                
+                container.innerHTML += `
+                    <div class="flex items-center gap-4 bg-gray-50 p-3.5 rounded-2xl border border-gray-100">
+                        <img src="${item.imagen_url}" class="w-14 h-14 object-cover rounded-xl shadow-sm bg-white" onerror="this.src='https://placehold.co/150'">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-bold text-sm text-gray-900 truncate">${item.nombre}</h4>
+                            <p class="text-xs text-gray-400 font-medium">${item.aliado_comercial}</p>
+                            <p class="text-xs text-indigo-600 font-bold mt-0.5">$${item.precio_usd} <span class="text-gray-300 font-normal">|</span> ${precioBsItem} Bs</p>
+                        </div>
+                        <button onclick="removerDelCarrito(${index})" class="text-gray-400 hover:text-red-500 p-2 transition cursor-pointer"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    </div>
+                `;
+            });
+
+            const totalBs = totalUSD * globalTasa;
+            document.getElementById('cart-total-usd').innerText = `$ ${totalUSD.toFixed(2)}`;
+            document.getElementById('cart-total-bs').innerText = `${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs`;
+        }
+
+        function removerDelCarrito(index) {
+            carrito.splice(index, 1);
+            actualizarInterfazCarrito();
+        }
+
+        function enviarPedidoWhatsApp() {
+            if (carrito.length === 0) return alert("No posees artículos agregados al carrito.");
+            
+            const nombreCliente = document.getElementById('checkout-nombre').value.trim();
+            const direccionCliente = document.getElementById('checkout-direccion').value.trim();
+
+            if(!nombreCliente || !direccionCliente) {
+                return alert("Por favor, ingresa tu nombre y dirección antes de procesar por WhatsApp.");
+            }
+
+            let textoPedido = `🛒 *NUEVO PEDIDO - A TU PUERTA* 🛒\n\n`;
+            textoPedido += `👤 *Cliente:* ${nombreCliente}\n`;
+            textoPedido += `📍 *Dirección:* ${direccionCliente}\n`;
+            textoPedido += `📧 *Usuario:* ${usuarioActual.email}\n`;
+            textoPedido += `───────────────\n\n`;
+            
+            let sumaTotal = 0;
+            carrito.forEach((prod, i) => {
+                textoPedido += `${i + 1}. *${prod.nombre}*\n`;
+                textoPedido += `   _Vendedor:_ ${prod.aliado_comercial}\n`;
+                textoPedido += `   _Precio:_ $${parseFloat(prod.precio_usd).toFixed(2)} (${(prod.precio_usd * globalTasa).toFixed(2)} Bs)\n\n`;
+                sumaTotal += parseFloat(prod.precio_usd);
+            });
+
+            textoPedido += `───────────────\n`;
+            textoPedido += `💵 *TOTAL USD:* $${sumaTotal.toFixed(2)}\n`;
+            textoPedido += `🇻🇪 *TOTAL BS:* ${(sumaTotal * globalTasa).toFixed(2)} Bs\n\n`;
+            textoPedido += `_Tasa de conversión aplicada: ${globalTasa} Bs_`;
+
+            // Enlace directo de WhatsApp con mensaje pre-cargado
+            const numeroDestino = "584128481584"; 
+            const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${encodeURIComponent(textoPedido)}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        // CONSOLE / MODAL DE ADMINISTRACIÓN (MECÁNICAS BACKEND)
+        function validarAdmin() {
+            const claveEntrada = document.getElementById('admin-key').value;
+            // Clave maestra establecida por requerimientos de negocio
+            if (claveEntrada === '27146006') {
+                document.getElementById('admin-login-ui').classList.add('hidden');
+                document.getElementById('admin-main-ui').classList.remove('hidden');
+            } else {
+                alert("Acceso Restringido: Contraseña Maestra Errónea.");
+            }
+        }
+
+        async function actualizarTasa() {
+            const nuevoValor = parseFloat(document.getElementById('adm-tasa').value);
+            if(isNaN(nuevoValor) || nuevoValor <= 0) return alert("Ingrese un formato numérico válido.");
+
+            const { error } = await supabaseCliente.from('configuracion').update({ tasa_dolar: nuevoValor }).eq('id', 1);
+            if (error) return alert("Error al actualizar la tasa: " + error.message);
+            
+            alert("Tasa de cambio guardada. El catálogo recalculará su valor.");
+            window.location.reload();
+        }
+
+        async function adminCrearCategoria() {
+            const nombreCat = document.getElementById('adm-nueva-cat').value.trim();
+            if(!nombreCat) return alert("Escriba un nombre para la categoría.");
+
+            const { error } = await supabaseCliente.from('categorias').insert([{ nombre: nombreCat }]);
+            if (error) return alert("Inconveniente guardando categoría: " + error.message);
+
+            alert("Categoría guardada correctamente.");
+            document.getElementById('adm-nueva-cat').value = '';
+            await obtenerCategoriasDisponibles();
+        }
+
+        async function adminCrearProducto(e) {
             e.preventDefault();
-            const btn = document.getElementById('btn-login-submit');
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
+            
+            const productoNuevo = {
+                nombre: document.getElementById('adm-nombre').value.trim(),
+                descripcion: document.getElementById('adm-desc').value.trim(),
+                precio_usd: parseFloat(document.getElementById('adm-precio').value),
+                stock: parseInt(document.getElementById('adm-stock').value),
+                imagen_url: document.getElementById('adm-img').value.trim(),
+                aliado_comercial: document.getElementById('adm-aliado').value.trim(),
+                categoria_id: document.getElementById('adm-cat').value || null,
+                es_promocion: document.getElementById('adm-promo').checked
+            };
 
-            btn.innerText = "PROCESANDO ACCESO...";
-            btn.disabled = true;
+            const { error } = await supabaseCliente.from('productos').insert([productoNuevo]);
+            if (error) return alert("Fallo al insertar producto: " + error.message);
 
-            try {
-                const { data, error } = await conTimeout(
-                    supabaseCliente.auth.signInWithPassword({ email, password }),
-                    8000
-                );
-
-                if (error) {
-                    alert("Acceso denegado: " + error.message);
-                    btn.innerText = "Ingresar";
-                    btn.disabled = false;
-                } else if (data && data.session) {
-                    document.getElementById('modal-admin-login').style.display = 'none';
-                    document.getElementById('vista-cliente').style.display = 'none';
-                    document.getElementById('vista-admin').style.display = 'block';
-                }
-            } catch (err) {
-                alert("Tiempo de espera agotado en Login:\n" + err.message);
-                btn.innerText = "Ingresar";
-                btn.disabled = false;
-            }
+            alert("Producto guardado y sincronizado con éxito.");
+            e.target.reset();
+            await obtenerProductosInventario();
         }
 
-        // Ejecución forzada
-        arrancarSistema();
+        async function eliminarProducto(id) {
+            if (!confirm("¿Está seguro de que desea eliminar este artículo del catálogo general?")) return;
+            
+            const { error } = await supabaseCliente.from('productos').delete().eq('id', id);
+            if (error) return alert("No se pudo remover el ítem: " + error.message);
+            
+            await obtenerProductosInventario();
+        }
+
+        function renderizarInventarioAdmin() {
+            const container = document.getElementById('admin-lista-productos');
+            container.innerHTML = '';
+            
+            globalProductos.forEach(p => {
+                container.innerHTML += `
+                    <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
+                        <img src="${p.imagen_url}" class="w-10 h-10 object-cover rounded-lg bg-white border" onerror="this.src='https://placehold.co/50'">
+                        <div class="flex-grow min-w-0">
+                            <p class="text-xs font-bold text-gray-900 truncate">${p.nombre}</p>
+                            <p class="text-[10px] text-gray-400 truncate">$${parseFloat(p.precio_usd).toFixed(2)} | Stock: ${p.stock} | ${p.aliado_comercial}</p>
+                        </div>
+                        <button onclick="eliminarProducto(${p.id})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 py-1 bg-red-50 rounded-lg transition cursor-pointer">Borrar</button>
+                    </div>
+                `;
+            });
+        }
+
+        // MOTOR DE FILTRADO DE LA INTERFAZ
+        function filtrar(tipo) {
+            let filtrados = [];
+            
+            // Estilos estéticos de botones activos
+            const botones = document.querySelectorAll('.btn-filter');
+            botones.forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+                b.classList.add('bg-white', 'text-gray-600', 'shadow-sm');
+            });
+
+            if (tipo === 'todos') {
+                filtrados = globalProductos;
+                document.getElementById('section-title').innerText = "Todos los Productos";
+            } else if (tipo === 'promo') {
+                filtrados = globalProductos.filter(p => p.es_promocion);
+                document.getElementById('section-title').innerText = "Promociones Especiales";
+            } else {
+                filtrados = globalProductos.filter(p => p.categoria_id == tipo);
+                const categoriaEncontrada = globalCategorias.find(c => c.id == tipo);
+                document.getElementById('section-title').innerText = categoriaEncontrada ? categoriaEncontrada.nombre : "Productos Seleccionados";
+            }
+            
+            renderizarCatalogoPublico(filtrados);
+        }
+
+        // HERRAMIENTAS INTERNAS DE MODALES
+        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Inicializar al cargar el documento
+        inicializarPlataforma();
     </script>
 </body>
 </html>
