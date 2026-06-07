@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda - Control de Red</title>
+    <title>Tienda - Conexión Limpia</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -18,7 +18,7 @@
 
     <nav class="bg-indigo-600 shadow-sm sticky top-0 z-50 text-white">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-bold tracking-tight">A tu puerta <span class="text-xs bg-indigo-800 px-2 py-1 rounded ml-2">v3.0</span></span>
+            <span class="text-xl font-bold tracking-tight">A tu puerta <span class="text-xs bg-indigo-800 px-2 py-1 rounded ml-2">v3.1</span></span>
             <button onclick="document.getElementById('modal-admin-login').style.display = 'flex';" class="text-xs bg-white text-indigo-600 font-bold transition rounded py-2 px-3 hover:bg-gray-100 cursor-pointer">Admin</button>
         </div>
     </nav>
@@ -69,9 +69,9 @@
         const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
         
-        let supabase = null;
+        // CAMBIO CLAVE: Nombre cambiado para evitar colisiones con el navegador
+        let supabaseCliente = null;
 
-        // Función segura para actualizar el estado en pantalla sin importar el orden de carga
         function reportarEstado(texto, esError = false) {
             console.log(texto);
             const selector = document.getElementById('consola-debug');
@@ -83,7 +83,6 @@
             }
         }
 
-        // Forzar la ruptura de solicitudes colgadas en la red
         function conTimeout(promesa, ms = 8000) {
             return Promise.race([
                 promesa,
@@ -95,7 +94,6 @@
             ]);
         }
 
-        // Inicialización obligatoria e inmediata
         async function arrancarSistema() {
             reportarEstado("🚀 Paso 1: Motor despierto. Buscando librerías externas...");
             
@@ -107,7 +105,7 @@
 
             try {
                 reportarEstado("🔗 Paso 2: Librería encontrada. Creando enlace de conexión...");
-                supabase = libSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseCliente = libSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 
                 reportarEstado("📡 Paso 3: Buscando productos en la base de datos...");
                 await solicitarInventario();
@@ -117,11 +115,11 @@
         }
 
         async function solicitarInventario() {
-            if (!supabase) return;
+            if (!supabaseCliente) return;
             const contenedor = document.getElementById('lista-productos');
             try {
                 const { data: productos, error } = await conTimeout(
-                    supabase.from('productos').select('*'),
+                    supabaseCliente.from('productos').select('*'),
                     8000
                 );
                 
@@ -140,7 +138,7 @@
                 contenedor.innerHTML = `
                     <div class="text-center py-6 col-span-3 bg-orange-50 text-orange-700 border border-orange-200 rounded-2xl p-6">
                         <p class="font-bold text-lg">⚠️ Conexión Interrumpida</p>
-                        <p class="text-sm mt-1 text-gray-600">Tu proveedor de internet (CANTV/Línea móvil) dejó la consulta en espera y el script la detuvo para evitar que se congele.</p>
+                        <p class="text-sm mt-1 text-gray-600">Tu proveedor de internet dejó la consulta en espera y el script la detuvo.</p>
                         <p class="text-xs bg-gray-200 p-2 rounded mt-3 font-mono text-left text-gray-800">Causa: ${err.message}</p>
                     </div>`;
             }
@@ -157,7 +155,7 @@
 
             try {
                 const { data, error } = await conTimeout(
-                    supabase.auth.signInWithPassword({ email, password }),
+                    supabaseCliente.auth.signInWithPassword({ email, password }),
                     8000
                 );
 
@@ -177,7 +175,7 @@
             }
         }
 
-        // Ejecución forzada al cargar el script
+        // Ejecución forzada
         arrancarSistema();
     </script>
 </body>
