@@ -67,14 +67,14 @@
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
             <button onclick="document.getElementById('modal-admin-login').style.display = 'none';" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
             <h2 class="text-xl font-bold mb-6 text-center">Acceso Administrador</h2>
-            <form onsubmit="loginAdmin(event)" class="space-y-4">
+            <form id="form-login-admin" onsubmit="loginAdmin(event)" class="space-y-4">
                 <div>
                     <input type="email" id="admin-email" placeholder="Correo electr&oacute;nico" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
                 <div>
                     <input type="password" id="admin-password" placeholder="Contrase&ntilde;a" required class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer">Ingresar</button>
+                <button type="submit" id="btn-login-submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg transition cursor-pointer disabled:bg-gray-400">Ingresar</button>
             </form>
         </div>
     </div>
@@ -149,20 +149,29 @@
         let productosCargados = [];
         let productoSeleccionado = null;
 
+        // Función auxiliar para evitar que la página se quede colgada esperando a internet
+        function conTimeout(promesa, ms = 10000) {
+            return Promise.race([
+                promesa,
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Tiempo de espera agotado (La conexión con la base de datos tardó demasiado)")), ms))
+            ]);
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             const libSupabase = window.supabase || window.Supabase;
             
             if (libSupabase) {
                 try {
                     supabase = libSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    await cargarProductosCliente();
-                    await evaluarSesionActual();
+                    // Los ejecutamos por separado para que un fallo de red no bloquee el resto de la página
+                    cargarProductosCliente().catch(err => console.error("Fallo inicial de productos:", err));
+                    evaluarSesionActual().catch(err => console.error("Fallo inicial de sesión:", err));
                 } catch (err) {
-                    alert("Error al inicializar Supabase: " + err.message);
+                    alert("Error al configurar el cliente: " + err.message);
                 }
             } else {
                 document.getElementById('lista-productos').innerHTML = 
-                    `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error: No se pudo cargar la librería de Supabase desde el CDN.</div>`;
+                    `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error: No se pudo cargar la librería de Supabase. Revisa tu conexión.</div>`;
             }
         });
 
@@ -170,13 +179,14 @@
             if (!supabase) return;
             const contenedor = document.getElementById('lista-productos');
             try {
-                const { data: productos, error } = await supabase
-                    .from('productos')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                // Forzamos un tiempo límite de 10 segundos
+                const { data: productos, error } = await conTimeout(
+                    supabase.from('productos').select('*').order('created_at', { ascending: false }),
+                    10000
+                );
                 
                 if (error) {
-                    contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error de Supabase: ${error.message}</div>`;
+                    contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error de base de datos: ${error.message}</div>`;
                     return;
                 }
 
@@ -203,8 +213,11 @@
                     </div>
                 `).join('');
             } catch (err) {
-                contenedor.innerHTML = `<div class="text-center py-12 col-span-3 text-red-500 font-bold">Error crítico de conexión: ${err.message}</div>`;
-                alert("Error de red al intentar conectar con Supabase: " + err.message + "\n\nNota: Esto ocurre si estás sin datos o si tu proveedor de internet bloquea las peticiones.");
+                contenedor.innerHTML = `
+                    <div class="text-center py-12 col-span-3 text-red-500 font-bold p-4 bg-red-50 rounded-xl">
+                        ⚠️ Error de conexión: El servidor no responde.<br>
+                        <span class="text-xs font-normal text-gray-600">Detalle: ${err.message}</span>
+                    </div>`;
             }
         }
 
@@ -218,48 +231,57 @@
             e.preventDefault();
             if (!productoSeleccionado) return;
 
-            try {
-                const nombre = document.getElementById('cli-nombre').value;
-                const edad = document.getElementById('cli-edad').value;
-                const cedula = document.getElementById('cli-cedula').value;
-                const telefono = document.getElementById('cli-telefono').value;
-                const ubicacion = document.getElementById('cli-ubicacion').value;
+            const nombre = document.getElementById('cli-nombre').value;
+            const edad = document.getElementById('cli-edad').value;
+            const cedula = document.getElementById('cli-cedula').value;
+            const telefono = document.getElementById('cli-telefono').value;
+            const ubicacion = document.getElementById('cli-ubicacion').value;
 
-                const numeroWhatsapp = "584128481584"; 
-                const textoMensaje = `Hola acabo de realizar un pedido.\n\n*Detalles del Pedido:*\n- Producto: ${productoSeleccionado.nombre}\n- Precio: Bs ${productoSeleccionado.precio}\n\n*Datos del Cliente:*\n- Nombre: ${nombre}\n- Edad: ${edad} años\n- Cédula: ${cedula}\n- Teléfono: ${telefono}\n- Ubicación: ${ubicacion}`;
+            const numeroWhatsapp = "584128481584"; 
+            const textoMensaje = `Hola acabo de realizar un pedido.\n\n*Detalles del Pedido:*\n- Producto: ${productoSeleccionado.nombre}\n- Precio: Bs ${productoSeleccionado.precio}\n\n*Datos del Cliente:*\n- Nombre: ${nombre}\n- Edad: ${edad} años\n- Cédula: ${cedula}\n- Teléfono: ${telefono}\n- Ubicación: ${ubicacion}`;
 
-                window.location.href = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
-                document.getElementById('modal-compra').style.display = 'none';
-                document.getElementById('form-pedido').reset();
-            } catch (err) {
-                alert("Error en el formulario: " + err.message);
-            }
+            window.location.href = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodeURIComponent(textoMensaje)}`;
+            document.getElementById('modal-compra').style.display = 'none';
+            document.getElementById('form-pedido').reset();
         }
 
         async function loginAdmin(e) {
             e.preventDefault();
-            if (!supabase) {
-                alert("La base de datos aún no se ha conectado o está caída.");
-                return;
-            }
             
+            const btn = document.getElementById('btn-login-submit');
             const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
 
+            if (!supabase) {
+                alert("La base de datos no está disponible en este momento.");
+                return;
+            }
+
+            // Damos feedback visual cambiando el botón
+            btn.innerText = "Conectando... por favor espera";
+            btn.disabled = true;
+
             try {
-                // Intento de Login atrapando cualquier caída de red
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                // Forzamos un límite de 12 segundos para el inicio de sesión
+                const { data, error } = await conTimeout(
+                    supabase.auth.signInWithPassword({ email, password }),
+                    12000
+                );
 
                 if (error) {
-                    alert("Error de Supabase Auth: " + error.message);
+                    alert("Acceso denegado: " + error.message);
                 } else if (data && data.session) {
                     document.getElementById('modal-admin-login').style.display = 'none';
                     cambiarAVistaAdmin();
                 } else {
-                    alert("Credenciales incorrectas o la cuenta no está verificada.");
+                    alert("No se pudo obtener una sesión activa. Verifica tus datos.");
                 }
             } catch (err) {
-                alert("Error crítico al enviar los datos de acceso: " + err.message + "\n\nRevisa si tu proyecto en el panel de Supabase está en pausa.");
+                alert("⚠️ Error de Red / Tiempo de espera agotado.\n\n" + err.message + "\n\nNota: Si el internet está bien, entra al panel de la web de Supabase y asegúrate de que tu proyecto no esté Pausado (Free Tier).");
+            } finally {
+                // Devolvemos el botón a su estado normal
+                btn.innerText = "Ingresar";
+                btn.disabled = false;
             }
         }
 
@@ -269,14 +291,14 @@
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) cambiarAVistaAdmin();
             } catch (err) {
-                console.error("Error al evaluar sesión:", err);
+                console.error("No se pudo verificar sesión previa:", err);
             }
         }
 
         function cambiarAVistaAdmin() {
             document.getElementById('vista-cliente').style.display = 'none';
             document.getElementById('vista-admin').style.display = 'block';
-            cargarProductosAdmin();
+            cargarProductosAdmin().catch(err => console.error(err));
         }
 
         async function logoutAdmin() {
@@ -287,7 +309,10 @@
                 document.getElementById('vista-cliente').style.display = 'block';
                 await cargarProductosCliente();
             } catch (err) {
-                alert("Error al cerrar sesión: " + err.message);
+                console.error(err);
+                // Forzar el cambio de vista de todos modos
+                document.getElementById('vista-admin').style.display = 'none';
+                document.getElementById('vista-cliente').style.display = 'block';
             }
         }
 
@@ -303,7 +328,7 @@
                 }
 
                 if (!productos || productos.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">No hay productos.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-gray-400">No hay productos registrados.</td></tr>`;
                     return;
                 }
 
@@ -343,7 +368,7 @@
                     await cargarProductosAdmin();
                 }
             } catch (err) {
-                alert("Error de red al intentar crear el producto: " + err.message);
+                alert("Error de red al guardar: " + err.message);
             }
         }
 
@@ -355,10 +380,10 @@
                     if (error) alert("Error al eliminar: " + error.message);
                     else await cargarProductosAdmin();
                 } catch (err) {
-                    alert("Error de red al intentar eliminar: " + err.message);
+                    alert("Error de red al eliminar: " + err.message);
                 }
             }
         }
     </script>
 </body>
-    </html>
+</html>
