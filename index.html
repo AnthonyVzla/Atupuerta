@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Tu Puerta - E-commerce</title>
+    <title>A Tu Puerta - E-commerce Híbrido Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -78,7 +83,7 @@
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex items-center gap-2 cursor-pointer" onclick="filtrar('todos')">
-                <i class="fa-solid fa-store text-indigo-600 text-2xl"></i>
+                <img src="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png" alt="Logo Cadetes Delivery" class="h-10 w-10 object-contain">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter">A TU PUERTA</span>
             </div>
             
@@ -1039,7 +1044,7 @@
                         </div>
                         <div class="flex gap-1 flex-shrink-0">
                             <button onclick="cargarProductoParaEditar(${p.id}, 'maestro')" class="text-indigo-600 bg-indigo-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminarProducto(${p.id}, 'maestro')" class="text-red-500 bg-red-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="eliminarProducto(${p.id}, 'maestro')" class="text-red-500 bg-red-50 px-2 py-1 rounded cursor-pointer"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
                         </div>
                     </div>
                 `;
@@ -1067,7 +1072,7 @@
                         </div>
                         <div class="flex gap-1">
                             <button onclick="cargarProductoParaEditar(${p.id}, 'aliado')" class="text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminarProducto(${p.id}, 'aliado')" class="text-red-500 bg-red-50 px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="eliminarProducto(${p.id}, 'aliado')" class="text-red-500 bg-red-50 px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
                         </div>
                     </div>
                 `;
@@ -1099,6 +1104,17 @@
         async function cerrarSesion() { await supabaseCliente.auth.signOut(); window.location.reload(); }
         function abrirModal(id) { document.getElementById(id).classList.add('active'); }
         function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // Registro del Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(registration => {
+                    console.log('PWA Lista - ServiceWorker registrado exitosamente');
+                }).catch(err => {
+                    console.log('Error al registrar el ServiceWorker:', err);
+                });
+            });
+        }
 
         inicializarPlataforma();
     </script>
