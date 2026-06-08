@@ -1,0 +1,21 @@
+{
+  "name": "A Tu Puerta - Delivery",
+  "short_name": "A Tu Puerta",
+  "description": "Pide directo a tu puerta en Maracay con los mejores negocios.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
