@@ -1736,18 +1736,7 @@
                                     cargarPedidosParaMoto();
                                 }
                             }
-                            async function ejecutarAuth() {
-                                const email = document.getElementById('auth-email').value.trim();
-                                const pass = document.getElementById('auth-pass').value.trim();
-                                if (modoAuthActual === 'login') {
-                                    await supabaseCliente.auth.signInWithPassword({ email, password: pass });
-                                } else {
-                                    await supabaseCliente.auth.signUp({ email, password: pass });
-                                    alert("¡Cuenta registrada!");
-                                }
-                                window.location.reload();
-                            }
-
+                            
                             async function cerrarSesion() { await supabaseCliente.auth.signOut(); window.location.reload(); }
                             function abrirModal(id) { document.getElementById(id).classList.add('active'); }
                             function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
