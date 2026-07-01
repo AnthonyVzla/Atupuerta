@@ -1,96 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Tu Puerta - Delivery</title>
-
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon"
-        href="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png">
-
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png">
+    
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    
     <style>
-        .grid-products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+        .grid-products { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 1.5rem; 
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.6); 
+            z-index: 100; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 1rem; 
             backdrop-filter: blur(4px);
         }
-
-        .modal.active {
-            display: flex;
-        }
+        .modal.active { display: flex; }
 
         /* --- ESTILO: CINTILLO ANIMADO --- */
         .scrolling-container {
             overflow: hidden;
             white-space: nowrap;
         }
-
         .scrolling-text {
             display: inline-block;
             animation: scroller 25s linear infinite;
         }
-
         .scrolling-container:hover .scrolling-text {
             animation-play-state: paused;
         }
-
         @keyframes scroller {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                transform: translateX(-100%);
-            }
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
     </style>
 </head>
-
 <body class="bg-gray-50 text-gray-800 antialiased relative">
 
-    <a href="https://wa.me/584128481584?text=Hola!%20Necesito%20soporte." target="_blank"
-        class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition-all duration-300 z-50 hover:scale-110">
+    <a href="https://wa.me/584128481584?text=Hola!%20Necesito%20soporte." target="_blank" class="fixed bottom-6 right-6 bg-emerald-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:bg-emerald-600 transition-all duration-300 z-50 hover:scale-110">
         <i class="fa-brands fa-whatsapp text-3xl"></i>
     </a>
 
     <div class="bg-gray-900 text-white shadow-inner scrolling-container py-2 border-b border-gray-700">
         <div class="scrolling-text text-xs font-semibold tracking-wide flex items-center gap-2">
             <span>Síguenos en nuestras redes:</span>
-            <a href="https://www.instagram.com/Atupuertamcy" target="_blank"
-                class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+            <a href="https://www.instagram.com/Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
                 <i class="fa-brands fa-instagram text-lg text-indigo-300"></i>
                 <span class="font-black">@Atupuertamcy</span>
             </a>
             <span class="text-gray-600 mx-2">|</span>
-            <a href="https://www.tiktok.com/@Atupuertamcy" target="_blank"
-                class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+            <a href="https://www.tiktok.com/@Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
                 <i class="fa-brands fa-tiktok text-lg text-gray-100"></i>
                 <span class="font-black">@Atupuertamcy</span>
             </a>
             <span class="text-gray-600 mx-2">|</span>
             <span class="ml-4 text-emerald-400">¡Pedidos directo a tu puerta!</span>
             <span class="text-gray-600 mx-2">|</span>
-            <a href="https://www.instagram.com/Atupuertamcy" target="_blank"
-                class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
+            <a href="https://www.instagram.com/Atupuertamcy" target="_blank" class="flex items-center gap-1 hover:text-indigo-400 transition cursor-pointer">
                 <i class="fa-brands fa-instagram text-lg text-indigo-300"></i>
                 <span class="font-black">@Atupuertamcy</span>
             </a>
@@ -100,128 +81,91 @@
     <nav class="bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             <div class="flex items-center gap-2 cursor-pointer" onclick="filtrar('todos')">
-                <img src="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png"
-                    alt="Logo Cadetes Delivery" class="h-10 w-10 object-contain">
+                <img src="https://i.postimg.cc/VksCSQmq/Logo-cadetes-delivery-icono-rojo-20260607-173401-0000.png" alt="Logo Cadetes Delivery" class="h-10 w-10 object-contain">
                 <span class="text-2xl font-black text-gray-900 tracking-tighter">A TU PUERTA</span>
             </div>
-
+            
             <div class="flex items-center gap-4">
                 <div id="auth-buttons" class="hidden flex gap-2">
-                    <button onclick="abrirModal('modal-auth')"
-                        class="text-sm font-bold text-indigo-600 px-4 py-2 hover:bg-indigo-50 rounded-xl transition cursor-pointer">Iniciar
-                        Sesión</button>
+                    <button onclick="abrirModal('modal-auth')" class="text-sm font-bold text-indigo-600 px-4 py-2 hover:bg-indigo-50 rounded-xl transition cursor-pointer">Iniciar Sesión</button>
                 </div>
                 <div id="user-menu" class="hidden flex items-center gap-3">
                     <span class="text-sm font-medium text-gray-600 flex items-center gap-1">
                         <i class="fa-regular fa-user text-indigo-500"></i> <span id="user-name"></span>
                     </span>
-                    <button onclick="abrirPerfil()"
-                        class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-100 transition cursor-pointer">Mi
-                        Perfil</button>
-                    <button onclick="cerrarSesion()"
-                        class="text-xs text-red-500 font-bold hover:underline cursor-pointer">Salir</button>
+                    <button onclick="abrirPerfil()" class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-100 transition cursor-pointer">Mi Perfil</button>
+                    <button onclick="cerrarSesion()" class="text-xs text-red-500 font-bold hover:underline cursor-pointer">Salir</button>
                 </div>
 
-                <div id="user-menu" class="hidden flex items-center gap-3">
-                    <span class="text-sm font-medium text-gray-600 flex items-center gap-1">
-                        <i class="fa-regular fa-user text-indigo-500"></i> <span id="user-name"></span>
-                    </span>
-                    <button onclick="abrirPerfil()"
-                        class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-100 transition cursor-pointer">Mi
-                        Perfil</button>
+				<div id="user-menu" class="hidden flex items-center gap-3">
+    <span class="text-sm font-medium text-gray-600 flex items-center gap-1">
+        <i class="fa-regular fa-user text-indigo-500"></i> <span id="user-name"></span>
+    </span>
+    <button onclick="abrirPerfil()" class="text-xs bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg font-bold hover:bg-indigo-100 transition cursor-pointer">Mi Perfil</button>
+    
+    <button id="btn-panel-moto" onclick="abrirPanelMotorizado()" class="hidden text-xs bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg font-bold hover:bg-amber-100 transition cursor-pointer shadow-sm"><i class="fa-solid fa-motorcycle"></i> Entregas</button>
+    
+    <button onclick="cerrarSesion()" class="text-xs text-red-500 font-bold hover:underline cursor-pointer">Salir</button>
+</div>
 
-                    <button id="btn-panel-moto" onclick="abrirPanelMotorizado()"
-                        class="hidden text-xs bg-amber-50 text-amber-600 px-3 py-1.5 rounded-lg font-bold hover:bg-amber-100 transition cursor-pointer shadow-sm"><i
-                            class="fa-solid fa-motorcycle"></i> Entregas</button>
-
-                    <button onclick="cerrarSesion()"
-                        class="text-xs text-red-500 font-bold hover:underline cursor-pointer">Salir</button>
-                </div>
-
-                <button onclick="abrirModal('modal-carrito')"
-                    class="relative p-3 bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition cursor-pointer">
+                <button onclick="abrirModal('modal-carrito')" class="relative p-3 bg-indigo-100 text-indigo-600 rounded-full hover:bg-indigo-200 transition cursor-pointer">
                     <i class="fa-solid fa-cart-shopping"></i>
-                    <span id="cart-count"
-                        class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
                 </button>
+				
+				<div id="modal-motorizado" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-4xl p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModal('modal-motorizado')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6 mt-2">
+                <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-motorcycle text-amber-500 mr-2"></i>Consola de Cadete</h2>
+            </div>
 
-                <div id="modal-motorizado" class="modal">
-                    <div
-                        class="bg-white rounded-3xl w-full max-w-4xl p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                        <button onclick="cerrarModal('modal-motorizado')"
-                            class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i
-                                class="fa-solid fa-xmark text-xl"></i></button>
-
-                        <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6 mt-2">
-                            <h2 class="text-2xl font-black text-gray-900"><i
-                                    class="fa-solid fa-motorcycle text-amber-500 mr-2"></i>Consola de Cadete</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                    <h3 class="text-sm font-black text-gray-800 mb-4 tracking-wide uppercase"><i class="fa-solid fa-satellite-dish text-emerald-500 mr-1"></i> Radar de Entregas</h3>
+                    <div id="moto-lista-disponibles" class="space-y-3 overflow-y-auto max-h-[400px]">
                         </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
-                                <h3 class="text-sm font-black text-gray-800 mb-4 tracking-wide uppercase"><i
-                                        class="fa-solid fa-satellite-dish text-emerald-500 mr-1"></i> Radar de Entregas
-                                </h3>
-                                <div id="moto-lista-disponibles" class="space-y-3 overflow-y-auto max-h-[400px]">
-                                </div>
-                            </div>
-
-                            <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
-                                <h3 class="text-sm font-black text-indigo-900 mb-4 tracking-wide uppercase"><i
-                                        class="fa-solid fa-route text-indigo-500 mr-1"></i> Mis Viajes Activos</h3>
-                                <div id="moto-lista-mis-viajes" class="space-y-3 overflow-y-auto max-h-[400px]">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div id="modal-perfil" class="modal">
-                    <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
-                        <button onclick="cerrarModal('modal-perfil')"
-                            class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i
-                                class="fa-solid fa-xmark text-xl"></i></button>
-                        <h2 class="text-2xl font-black mb-1 text-gray-900"><i
-                                class="fa-solid fa-address-card text-indigo-600 mr-2"></i>Mis Datos</h2>
-                        <p class="text-gray-500 mb-6 text-xs font-bold">Guarda tu información para pedir más rápido.</p>
-
-                        <div class="space-y-4">
-                            <div>
-                                <label
-                                    class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Nombre
-                                    Completo</label>
-                                <input type="text" id="perfil-nombre" placeholder="Ej: Anthony Aponte"
-                                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">WhatsApp
-                                    Activo</label>
-                                <input type="text" id="perfil-telefono" placeholder="Ej: 04128481584"
-                                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                            </div>
-                            <div>
-                                <label
-                                    class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Dirección
-                                    Exacta de Entrega</label>
-                                <textarea id="perfil-direccion" placeholder="Ej: Las Delicias, Calle X, Casa Y..."
-                                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
-                            </div>
-                            <button onclick="guardarPerfil()" id="btn-guardar-perfil"
-                                class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-black shadow-md hover:bg-indigo-700 transition cursor-pointer mt-2">GUARDAR
-                                DATOS</button>
+                <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                    <h3 class="text-sm font-black text-indigo-900 mb-4 tracking-wide uppercase"><i class="fa-solid fa-route text-indigo-500 mr-1"></i> Mis Viajes Activos</h3>
+                    <div id="moto-lista-mis-viajes" class="space-y-3 overflow-y-auto max-h-[400px]">
                         </div>
-                    </div>
                 </div>
+            </div>
+        </div>
+    </div>
+				
+				<div id="modal-perfil" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+            <button onclick="cerrarModal('modal-perfil')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-2xl font-black mb-1 text-gray-900"><i class="fa-solid fa-address-card text-indigo-600 mr-2"></i>Mis Datos</h2>
+            <p class="text-gray-500 mb-6 text-xs font-bold">Guarda tu información para pedir más rápido.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
+                    <input type="text" id="perfil-nombre" placeholder="Ej: Anthony Aponte" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">WhatsApp Activo</label>
+                    <input type="text" id="perfil-telefono" placeholder="Ej: 04128481584" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Dirección Exacta de Entrega</label>
+                    <textarea id="perfil-direccion" placeholder="Ej: Las Delicias, Calle X, Casa Y..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                </div>
+                <button onclick="guardarPerfil()" id="btn-guardar-perfil" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-black shadow-md hover:bg-indigo-700 transition cursor-pointer mt-2">GUARDAR DATOS</button>
+            </div>
+        </div>
+    </div>
 
-                <button id="btn-instalar"
-                    class="hidden bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition cursor-pointer flex items-center gap-1.5">
+                <button id="btn-instalar" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md transition cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-cloud-arrow-down"></i> Instalar App
                 </button>
-
-                <button onclick="abrirModal('modal-admin')"
-                    class="text-gray-400 hover:text-indigo-600 ml-1 transition cursor-pointer text-lg"><i
-                        class="fa-solid fa-sliders"></i></button>
+                
+                <button onclick="abrirModal('modal-admin')" class="text-gray-400 hover:text-indigo-600 ml-1 transition cursor-pointer text-lg"><i class="fa-solid fa-sliders"></i></button>
             </div>
         </div>
         <div class="bg-indigo-600 text-white text-center py-1.5 text-xs font-bold tracking-widest uppercase">
@@ -231,23 +175,16 @@
 
     <main class="max-w-7xl mx-auto px-4 mt-8 pb-24">
         <div class="max-w-xl mx-auto mb-8">
-            <div
-                class="relative flex items-center bg-white rounded-2xl border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+            <div class="relative flex items-center bg-white rounded-2xl border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
                 <span class="pl-4 text-gray-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-                <input type="text" id="buscador-productos" oninput="filtrarYBuscar()" placeholder="¿Qué buscas hoy?..."
-                    class="w-full p-4 bg-transparent outline-none text-sm text-gray-800">
+                <input type="text" id="buscador-productos" oninput="filtrarYBuscar()" placeholder="¿Qué buscas hoy?..." class="w-full p-4 bg-transparent outline-none text-sm text-gray-800">
             </div>
         </div>
 
         <div class="flex flex-wrap gap-3 justify-center mb-10">
-            <button onclick="filtrar('todos')"
-                class="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold shadow-sm transition cursor-pointer">Todo</button>
-            <button onclick="filtrar('promo')"
-                class="bg-white text-red-500 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i
-                    class="fa-solid fa-fire text-xs"></i> Promociones</button>
-            <button onclick="filtrar('aliados_ver')"
-                class="bg-white text-indigo-600 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i
-                    class="fa-solid fa-handshake text-xs"></i> Negocios</button>
+            <button onclick="filtrar('todos')" class="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold shadow-sm transition cursor-pointer">Todo</button>
+            <button onclick="filtrar('promo')" class="bg-white text-red-500 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i class="fa-solid fa-fire text-xs"></i> Promociones</button>
+            <button onclick="filtrar('aliados_ver')" class="bg-white text-indigo-600 px-6 py-2.5 rounded-full font-bold shadow-xs border border-gray-200 transition cursor-pointer flex items-center gap-1"><i class="fa-solid fa-handshake text-xs"></i> Negocios</button>
             <div id="categorias-filtros" class="flex flex-wrap gap-3"></div>
         </div>
 
@@ -257,520 +194,383 @@
 
     <div id="modal-auth" class="modal">
         <div class="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
-            <button onclick="cerrarModal('modal-auth')"
-                class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i
-                    class="fa-solid fa-xmark text-xl"></i></button>
+            <button onclick="cerrarModal('modal-auth')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
             <h2 id="auth-titulo" class="text-3xl font-black mb-2 text-gray-900">Iniciar Sesión</h2>
             <p id="auth-desc" class="text-gray-500 mb-6 text-sm">Ingresa tu cuenta para comprar.</p>
             <div class="space-y-4">
-                <input type="email" id="auth-email" placeholder="Correo electrónico"
-                    class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
-                <input type="password" id="auth-pass" placeholder="Contraseña"
-                    class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+    <input type="email" id="auth-email" placeholder="Correo electrónico" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+    <input type="password" id="auth-pass" placeholder="Contraseña" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none">
+    
+    <!-- CONTENEDOR DEL TIPO DE CUENTA (Oculto por defecto en el Login) -->
+    <div id="auth-tipo-container" class="hidden bg-gray-50 p-3 rounded-2xl border border-gray-200">
+        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Tipo de Cuenta a Registrar</label>
+        <select id="auth-tipo" class="w-full bg-transparent font-bold text-gray-700 outline-none">
+            <option value="cliente">Cliente (Comprador)</option>
+            <option value="aliado">Aliado Comercial</option>
+            <option value="motorizado">Motorizado / Cadete</option>
+        </select>
+    </div>
 
-                <!-- CONTENEDOR DEL TIPO DE CUENTA (Oculto por defecto en el Login) -->
-                <div id="auth-tipo-container" class="hidden bg-gray-50 p-3 rounded-2xl border border-gray-200">
-                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Tipo de
-                        Cuenta a Registrar</label>
-                    <select id="auth-tipo" class="w-full bg-transparent font-bold text-gray-700 outline-none">
-                        <option value="cliente">Cliente (Comprador)</option>
-                        <option value="aliado">Aliado Comercial</option>
-                        <option value="motorizado">Motorizado / Cadete</option>
+    <button onclick="ejecutarAuth()" id="btn-auth-principal" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-md hover:bg-indigo-700 transition cursor-pointer">Ingresar</button>
+    <div class="text-center pt-2">
+        <button id="btn-auth-cambio" onclick="cambiarModoAuth('registro')" class="text-indigo-600 text-xs font-bold hover:underline cursor-pointer">¿No tienes cuenta? Regístrate aquí</button>
+    </div>
+</div>
+    </div>
+
+    <div id="modal-carrito" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-2xl p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="cerrarModal('modal-carrito')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h2 class="text-3xl font-black mb-6 text-gray-900">Tu Carrito</h2>
+            <div id="cart-items" class="space-y-4 mb-6"></div>
+            
+            <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 flex items-center gap-3">
+                <div class="flex-grow">
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">¿Tienes un Cupón de Descuento?</label>
+                    <input type="text" id="cart-coupon-input" placeholder="Ej: MARACAYDEAL" class="w-full p-2 bg-white border border-gray-200 rounded-xl text-sm font-bold uppercase outline-none">
+                </div>
+                <button onclick="validarAplicarCupon()" class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-4 py-3 rounded-xl mt-4 transition cursor-pointer">Aplicar</button>
+            </div>
+
+            <div class="border-t border-gray-100 pt-6">
+                <div class="flex justify-between items-baseline mb-6">
+                    <div>
+                        <span class="text-xl font-bold text-gray-500">Total Estimado:</span>
+                        <p id="coupon-badge" class="text-xs text-emerald-600 font-bold hidden"></p>
+                    </div>
+                    <div class="text-right">
+                        <p id="cart-total-usd" class="text-3xl font-black text-gray-900">$0.00</p>
+                        <p id="cart-total-bs" class="text-sm font-bold text-indigo-600">0.00 Bs</p>
+                    </div>
+                </div>
+                <!-- NUEVO CHECKOUT CON PAGO MÓVIL -->
+                <div class="bg-gray-50 p-4 rounded-2xl mb-6 space-y-3 border border-gray-100">
+                    <input type="text" id="checkout-nombre" placeholder="Nombre completo de quien recibe" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+                    <input type="text" id="checkout-direccion" placeholder="Dirección exacta de entrega" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+                    
+                    <select id="checkout-metodo-pago" onchange="togglePagoMovil()" class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none font-bold text-gray-700">
+                        <option value="efectivo">Pago en Efectivo (Divisas/Bs al recibir)</option>
+                        <option value="pagomovil">Transferencia / Pago Móvil</option>
                     </select>
+
+                    <div id="checkout-pagomovil-container" class="hidden space-y-3 bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 mt-2 transition-all">
+                        <p class="text-xs font-black text-indigo-900 uppercase tracking-wide"><i class="fa-solid fa-building-columns"></i> Datos para Pago Móvil:</p>
+                        <div id="datos-pagomovil-dinamicos" class="text-xs text-gray-800 space-y-1.5 bg-white p-3 rounded-lg border border-indigo-50 font-mono">
+                            <!-- Se llena por JS -->
+                        </div>
+                        <div class="pt-2">
+                            <label class="block text-[10px] font-black text-gray-500 uppercase tracking-wider mb-2">Adjuntar Capture de Transferencia:</label>
+                            <input type="file" id="checkout-capture" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-enviar-pedido" onclick="enviarPedidoWhatsApp()" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 transition flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-wait">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP
+                </button>
+
+    <div id="modal-admin" class="modal">
+        <div class="bg-white rounded-3xl w-full max-w-6xl p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
+            <button onclick="cerrarModal('modal-admin')" class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="admin-gate-ui" class="max-w-md mx-auto py-8 text-center space-y-6">
+                <h2 class="text-3xl font-black text-gray-900">Consola de Configuración</h2>
+                <p class="text-sm text-gray-500">Selecciona tu nivel de acceso para ingresar al panel técnico.</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="cambiarAccesoGate('maestro')" class="p-5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-crown text-2xl"></i> Maestro / Admin
+                    </button>
+                    <button onclick="cambiarAccesoGate('aliado')" class="p-5 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
+                        <i class="fa-solid fa-shop text-2xl"></i> Aliado Comercial
+                    </button>
                 </div>
 
-                <button onclick="ejecutarAuth()" id="btn-auth-principal"
-                    class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-md hover:bg-indigo-700 transition cursor-pointer">Ingresar</button>
-                <div class="text-center pt-2">
-                    <button id="btn-auth-cambio" onclick="cambiarModoAuth('registro')"
-                        class="text-indigo-600 text-xs font-bold hover:underline cursor-pointer">¿No tienes cuenta?
-                        Regístrate aquí</button>
+                <div id="gate-form-maestro" class="hidden border-t pt-6 text-left animate-fadeIn">
+                    <input type="password" id="admin-key" placeholder="Contraseña Maestra" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl mb-3 outline-none text-center font-bold tracking-widest">
+                    <button onclick="validarAdminMaestro()" class="w-full bg-gray-900 text-white py-3.5 rounded-2xl font-bold hover:bg-black transition cursor-pointer">Entrar como Dueño</button>
+                </div>
+
+                <div id="gate-form-aliado" class="hidden border-t pt-6 text-left space-y-3 animate-fadeIn">
+                    <label class="block text-xs font-bold text-gray-500">Selecciona tu Establecimiento</label>
+                    <select id="gate-aliado-select" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-700 outline-none"></select>
+                    <input type="password" id="gate-aliado-pass" placeholder="Clave de Acceso de Aliado" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center font-bold tracking-widest outline-none">
+                    <button onclick="validarAdminAliado()" class="w-full bg-indigo-600 text-white py-3.5 rounded-2xl font-bold hover:bg-indigo-700 transition cursor-pointer">Entrar a mi Tienda</button>
+                </div>
+            </div>
+
+            <div id="admin-main-ui" class="hidden space-y-8">
+                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
+                    <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-crown text-indigo-600 mr-2"></i>Consola Principal Maestro</h2>
+                    <button onclick="salirDePaneles()" class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Cerrar Sesión Panel</button>
+                </div>
+
+                <div class="bg-gray-900 text-white p-6 rounded-3xl border border-gray-800 shadow-xl">
+                    <h3 class="text-xs font-black text-indigo-400 tracking-widest uppercase mb-4"><i class="fa-solid fa-chart-line"></i> Estadísticas en Tiempo Real</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Volumen Facturado</span>
+                            <span id="metric-total-usd" class="text-2xl font-black text-emerald-400">$0.00</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Órdenes Procesadas</span>
+                            <span id="metric-total-pedidos" class="text-2xl font-black text-white">0</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Negocio Más Exitoso</span>
+                            <span id="metric-top-aliado" class="text-sm font-black text-indigo-300 truncate block mt-1">Calculando...</span>
+                        </div>
+                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
+                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Producto Estrella</span>
+                            <span id="metric-top-producto" class="text-sm font-black text-amber-300 truncate block mt-1">Calculando...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="space-y-6">
+                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
+                            <h3 class="font-bold text-amber-800 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-money-bill-trend-up"></i> CONTROL DE TASA</h3>
+                            <div class="flex gap-2">
+                                <input type="number" step="0.01" id="adm-tasa" class="w-full p-3 bg-white rounded-xl border border-amber-300 font-bold outline-none">
+                                <button onclick="actualizarTasa()" class="bg-amber-600 text-white px-4 rounded-xl font-bold text-xs cursor-pointer">Fijar</button>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+                            <h3 class="font-bold text-emerald-900 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-ticket"></i> CONTROL DE CUPONES</h3>
+                            <div class="space-y-2 bg-white p-3 rounded-xl border border-emerald-100 mb-3">
+                                <input type="text" id="adm-nuevo-cupon-cod" placeholder="Código (Ej: PROMO20)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold uppercase outline-none">
+                                <input type="number" id="adm-nuevo-cupon-desc" placeholder="Porcentaje Descuento (Ej: 15)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold outline-none">
+                                <button onclick="adminCrearCupon()" class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Crear Cupón</button>
+                            </div>
+                            <div id="admin-lista-cupones" class="space-y-2 max-h-[140px] overflow-y-auto"></div>
+                        </div>
+
+                        <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
+                            <h3 class="font-bold text-indigo-900 text-xs mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake"></i> REGISTRO DE ALIADOS</h3>
+                            <div class="space-y-2 bg-white p-3 rounded-xl border border-indigo-100 mb-4">
+                                <input type="text" id="adm-nuevo-aliado-nom" placeholder="Nombre Comercial" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-img" placeholder="URL Foto/Logo" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-tel" placeholder="WhatsApp (Ej: 584128481584)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+								<input type="text" id="adm-nuevo-aliado-pm-banco" placeholder="Banco Pago Móvil (Ej: Banesco)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+								<input type="text" id="adm-nuevo-aliado-pm-cedula" placeholder="Cédula/RIF (Ej: V12345678)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+								<input type="text" id="adm-nuevo-aliado-pm-tel" placeholder="Teléfono Pago Móvil (Ej: 04128481584)" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
+                                <input type="text" id="adm-nuevo-aliado-clave" placeholder="Clave de acceso de la tienda" value="1234" class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none font-mono">
+                                <label class="flex items-center gap-2 p-2 bg-indigo-100/60 rounded-xl text-[10px] font-bold text-indigo-800 cursor-pointer">
+                                    <input type="checkbox" id="adm-nuevo-aliado-toggle" class="w-3.5 h-3.5 accent-indigo-600"> Redirigir a su WhatsApp
+                                </label>
+                                <button onclick="adminCrearAliado()" class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Registrar Aliado</button>
+                            </div>
+                            <div id="admin-lista-aliados-bajas" class="space-y-2 max-h-[150px] overflow-y-auto"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white rounded-2xl border border-gray-200">
+                        <h3 id="admin-form-title" class="font-black text-lg mb-4 text-gray-900"><i class="fa-solid fa-box-open text-indigo-600"></i> Registrar / Editar Producto</h3>
+                        <form onsubmit="adminGuardarProducto(event, 'maestro')" class="space-y-3.5">
+                            <input type="text" id="adm-nombre" placeholder="Nombre Comercial" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            <textarea id="adm-desc" placeholder="Descripción resumida" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-16 resize-none"></textarea>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="number" step="0.01" id="adm-precio" placeholder="Precio ($)" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
+                                <input type="number" id="adm-stock" placeholder="Stock" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            </div>
+                            <input type="text" id="adm-img" placeholder="URL de la Foto" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            <select id="adm-aliado" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none text-indigo-600 font-bold"></select>
+                            <select id="adm-cat" class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
+                            <label class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
+                                <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600"> ¿Colocar en sección Promociones?
+                            </label>
+                            <button type="submit" id="btn-admin-guardar" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">GUARDAR PRODUCTO</button>
+                            <button type="button" id="btn-admin-cancelar" onclick="cancelarEdicion('maestro')" class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar Edición</button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="font-black text-lg text-gray-900"><i class="fa-solid fa-list-check text-indigo-600"></i> Existencias Globales</h3>
+                        <div id="admin-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-aliado-ui" class="hidden space-y-8">
+                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-gray-900"><i class="fa-solid fa-shop text-emerald-600 mr-2"></i>Panel de Gestión Comercial</h2>
+                        <p class="text-xs text-gray-400 font-bold">Establecimiento: <span id="sub-nombre-tienda" class="text-indigo-600 uppercase"></span></p>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-2xl border border-gray-200">
+                            <span class="text-xs font-black text-gray-600 uppercase">Estado de Atención:</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="sub-tienda-abierto-toggle" onchange="toggleEstadoHorarioAliado()" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                            </label>
+                            <span id="sub-tienda-abierto-badge" class="text-xs font-black uppercase"></span>
+                        </div>
+                        <button onclick="salirDePaneles()" class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Salir del Panel</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm h-fit">
+                        <h3 id="sub-form-title" class="font-black text-lg mb-4 text-gray-900"><i class="fa-solid fa-plus text-emerald-500"></i> Registrar Producto en mi Menú</h3>
+                        <form onsubmit="adminGuardarProducto(event, 'aliado')" class="space-y-3.5">
+                            <input type="text" id="sub-nombre" placeholder="Nombre del Plato o Artículo" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
+                            <textarea id="sub-desc" placeholder="Ingredientes / Descripción de la oferta" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="number" step="0.01" id="sub-precio" placeholder="Precio ($)" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
+                                <input type="number" id="sub-stock" placeholder="Stock Disponible" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            </div>
+                            <input type="text" id="sub-img" placeholder="Enlace URL de la Imagen" required class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
+                            <select id="sub-cat" class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
+                            <label class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
+                                <input type="checkbox" id="sub-promo" class="w-4 h-4 accent-red-600"> ¿Es una Promoción Especial?
+                            </label>
+                            <button type="submit" id="btn-sub-guardar" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">SUBIR A LA VITRINA</button>
+                            <button type="button" id="btn-sub-cancelar" onclick="cancelarEdicion('aliado')" class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar Edición</button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="font-black text-lg text-gray-900"><i class="fa-solid fa-utensils text-emerald-500"></i> Mis Productos en Menú</h3>
+                        <div id="sub-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]"></div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="modal-carrito" class="modal">
-            <div class="bg-white rounded-3xl w-full max-w-2xl p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                <button onclick="cerrarModal('modal-carrito')"
-                    class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i
-                        class="fa-solid fa-xmark text-xl"></i></button>
-                <h2 class="text-3xl font-black mb-6 text-gray-900">Tu Carrito</h2>
-                <div id="cart-items" class="space-y-4 mb-6"></div>
+    <footer class="text-center py-6 border-t border-gray-100 mt-12 bg-white">
+        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">
+            &copy; 2026 Atupuerta delivery. Todos los derechos reservados.
+        </p>
+    </footer>
 
-                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 mb-6 flex items-center gap-3">
-                    <div class="flex-grow">
-                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">¿Tienes
-                            un Cupón de Descuento?</label>
-                        <input type="text" id="cart-coupon-input" placeholder="Ej: MARACAYDEAL"
-                            class="w-full p-2 bg-white border border-gray-200 rounded-xl text-sm font-bold uppercase outline-none">
-                    </div>
-                    <button onclick="validarAplicarCupon()"
-                        class="bg-gray-900 hover:bg-black text-white text-xs font-bold px-4 py-3 rounded-xl mt-4 transition cursor-pointer">Aplicar</button>
-                </div>
+    <script>
+        const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
+        
+        const supabaseCliente = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-                <div class="border-t border-gray-100 pt-6">
-                    <div class="flex justify-between items-baseline mb-6">
-                        <div>
-                            <span class="text-xl font-bold text-gray-500">Total Estimado:</span>
-                            <p id="coupon-badge" class="text-xs text-emerald-600 font-bold hidden"></p>
-                        </div>
-                        <div class="text-right">
-                            <p id="cart-total-usd" class="text-3xl font-black text-gray-900">$0.00</p>
-                            <p id="cart-total-bs" class="text-sm font-bold text-indigo-600">0.00 Bs</p>
-                        </div>
-                    </div>
-                    <!-- NUEVO CHECKOUT CON PAGO MÓVIL -->
-                    <div class="bg-gray-50 p-4 rounded-2xl mb-6 space-y-3 border border-gray-100">
-                        <input type="text" id="checkout-nombre" placeholder="Nombre completo de quien recibe"
-                            class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
-                        <input type="text" id="checkout-direccion" placeholder="Dirección exacta de entrega"
-                            class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+        let globalTasa = 1;
+        let globalProductos = [];
+        let globalCategorias = [];
+        let globalAliados = []; 
+        let carrito = []; 
+        let usuarioActual = null;
+        
+        let idProductoEditando = null;
+        let modoAuthActual = 'login';
+        let categoriaActual = 'todos';
+        let aliadoSeleccionado = '';
+        let busquedaActual = '';
+        
+        let loginAliadoActivo = null; 
+        let descuentoPorcentaje = 0;
+		let datosPerfilUsuario = null;
+        let codigoCuponAplicado = "";
 
-                        <select id="checkout-metodo-pago" onchange="togglePagoMovil()"
-                            class="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm outline-none font-bold text-gray-700">
-                            <option value="efectivo">Pago en Efectivo (Divisas/Bs al recibir)</option>
-                            <option value="pagomovil">Transferencia / Pago Móvil</option>
-                        </select>
+        async function inicializarPlataforma() {
+            await obtenerConfigTasa();
+            await obtenerAliadosComerciales(); 
+            await obtenerCategoriasDisponibles();
+            await obtenerProductosInventario();
+            await verificarEstadoUsuario();
+            await cargarMetricasGlobales(); 
+        }
 
-                        <div id="checkout-pagomovil-container"
-                            class="hidden space-y-3 bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 mt-2 transition-all">
-                            <p class="text-xs font-black text-indigo-900 uppercase tracking-wide"><i
-                                    class="fa-solid fa-building-columns"></i> Datos para Pago Móvil:</p>
-                            <div id="datos-pagomovil-dinamicos"
-                                class="text-xs text-gray-800 space-y-1.5 bg-white p-3 rounded-lg border border-indigo-50 font-mono">
-                                <!-- Se llena por JS -->
-                            </div>
-                            <div class="pt-2">
-                                <label
-                                    class="block text-[10px] font-black text-gray-500 uppercase tracking-wider mb-2">Adjuntar
-                                    Capture de Transferencia:</label>
-                                <input type="file" id="checkout-capture" accept="image/*"
-                                    class="w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer">
-                            </div>
-                        </div>
-                    </div>
-                    <button id="btn-enviar-pedido" onclick="enviarPedidoWhatsApp()"
-                        class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-600 transition flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 disabled:cursor-wait">
-                        <i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP
-                    </button>
+// Abre la ventana y busca los datos en la tabla 'perfiles'
+async function abrirPerfil() {
+    if (!usuarioActual) return;
+    abrirModal('modal-perfil');
+    
+    const btn = document.getElementById('btn-guardar-perfil');
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cargando...`;
+    
+    try {
+        const { data, error } = await supabaseCliente.from('perfiles').select('*').eq('id', usuarioActual.id).single();
+        if (data) {
+            datosPerfilUsuario = data; // Lo guardamos en memoria
+            document.getElementById('perfil-nombre').value = data.nombre_completo || '';
+            document.getElementById('perfil-telefono').value = data.telefono || '';
+            document.getElementById('perfil-direccion').value = data.direccion_principal || '';
+            
+            // Auto-rellenar carrito si está abierto
+            if(document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = data.nombre_completo || '';
+            if(document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = data.direccion_principal || '';
+        }
+    } catch (e) { console.error(e); }
+    
+    btn.innerText = 'GUARDAR DATOS';
+}
 
-                    <div id="modal-admin" class="modal">
-                        <div
-                            class="bg-white rounded-3xl w-full max-w-6xl p-8 shadow-2xl relative max-h-[92vh] overflow-y-auto">
-                            <button onclick="cerrarModal('modal-admin')"
-                                class="absolute top-6 right-6 text-gray-400 hover:text-gray-600 cursor-pointer"><i
-                                    class="fa-solid fa-xmark text-xl"></i></button>
+// Guarda los datos modificados en la base de datos
+async function guardarPerfil() {
+    const nom = document.getElementById('perfil-nombre').value.trim();
+    const tel = document.getElementById('perfil-telefono').value.trim();
+    const dir = document.getElementById('perfil-direccion').value.trim();
+    const btn = document.getElementById('btn-guardar-perfil');
+    
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Guardando...`;
+    btn.disabled = true;
 
-                            <div id="admin-gate-ui" class="max-w-md mx-auto py-8 text-center space-y-6">
-                                <h2 class="text-3xl font-black text-gray-900">Consola de Configuración</h2>
-                                <p class="text-sm text-gray-500">Selecciona tu nivel de acceso para ingresar al panel
-                                    técnico.</p>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <button onclick="cambiarAccesoGate('maestro')"
-                                        class="p-5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
-                                        <i class="fa-solid fa-crown text-2xl"></i> Maestro / Admin
-                                    </button>
-                                    <button onclick="cambiarAccesoGate('aliado')"
-                                        class="p-5 bg-gray-50 border border-gray-200 hover:bg-gray-100 text-gray-700 rounded-2xl font-bold flex flex-col items-center gap-2 transition cursor-pointer">
-                                        <i class="fa-solid fa-shop text-2xl"></i> Aliado Comercial
-                                    </button>
-                                </div>
+    try {
+        const { error } = await supabaseCliente.from('perfiles')
+            .update({ nombre_completo: nom, telefono: tel, direccion_principal: dir })
+            .eq('id', usuarioActual.id);
+            
+        if (error) throw error;
+        
+        alert("✅ Datos actualizados correctamente.");
+        datosPerfilUsuario = { nombre_completo: nom, telefono: tel, direccion_principal: dir };
+        
+        // Actualizamos los campos del carrito para que ya estén listos
+        if(document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = nom;
+        if(document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = dir;
 
-                                <div id="gate-form-maestro" class="hidden border-t pt-6 text-left animate-fadeIn">
-                                    <input type="password" id="admin-key" placeholder="Contraseña Maestra"
-                                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl mb-3 outline-none text-center font-bold tracking-widest">
-                                    <button onclick="validarAdminMaestro()"
-                                        class="w-full bg-gray-900 text-white py-3.5 rounded-2xl font-bold hover:bg-black transition cursor-pointer">Entrar
-                                        como Dueño</button>
-                                </div>
+        cerrarModal('modal-perfil');
+    } catch (e) {
+        alert("Error al guardar. Asegúrate de tener conexión.");
+        console.error(e);
+    }
+    
+    btn.innerText = 'GUARDAR DATOS';
+    btn.disabled = false;
+}
+		
+        async function obtenerConfigTasa() {
+            try {
+                const { data } = await supabaseCliente.from('configuracion').select('*').eq('id', 1).single();
+                if (data) {
+                    globalTasa = parseFloat(data.tasa_dolar);
+                    document.getElementById('tasa-display').innerText = globalTasa.toFixed(2);
+                    document.getElementById('adm-tasa').value = globalTasa;
+                }
+            } catch (err) { console.error(err); }
+        }
 
-                                <div id="gate-form-aliado"
-                                    class="hidden border-t pt-6 text-left space-y-3 animate-fadeIn">
-                                    <label class="block text-xs font-bold text-gray-500">Selecciona tu
-                                        Establecimiento</label>
-                                    <select id="gate-aliado-select"
-                                        class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm font-semibold text-gray-700 outline-none"></select>
-                                    <input type="password" id="gate-aliado-pass" placeholder="Clave de Acceso de Aliado"
-                                        class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl text-center font-bold tracking-widest outline-none">
-                                    <button onclick="validarAdminAliado()"
-                                        class="w-full bg-indigo-600 text-white py-3.5 rounded-2xl font-bold hover:bg-indigo-700 transition cursor-pointer">Entrar
-                                        a mi Tienda</button>
-                                </div>
-                            </div>
+        async function obtenerAliadosComerciales() {
+            try {
+                const { data } = await supabaseCliente.from('aliados').select('*').order('nombre', { ascending: true });
+                globalAliados = data || [];
+                
+                document.getElementById('adm-aliado').innerHTML = '<option value="" disabled selected>Selecciona un aliado...</option>';
+                document.getElementById('gate-aliado-select').innerHTML = '';
+                document.getElementById('admin-lista-aliados-bajas').innerHTML = '';
 
-                            <div id="admin-main-ui" class="hidden space-y-8">
-                                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
-                                    <h2 class="text-2xl font-black text-gray-900"><i
-                                            class="fa-solid fa-crown text-indigo-600 mr-2"></i>Consola Principal Maestro
-                                    </h2>
-                                    <button onclick="salirDePaneles()"
-                                        class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Cerrar
-                                        Sesión Panel</button>
-                                </div>
+                globalAliados.forEach(a => {
+                    document.getElementById('adm-aliado').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
+                    document.getElementById('gate-aliado-select').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
+                    
+                    const badgeModo = a.activo_directo ? 
+                        `<span class="bg-emerald-100 text-emerald-700 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-bolt"></i> DIRECTO</span>` : 
+                        `<span class="bg-gray-100 text-gray-500 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-user-tie"></i> CENTRAL</span>`;
 
-                                <div class="bg-gray-900 text-white p-6 rounded-3xl border border-gray-800 shadow-xl">
-                                    <h3 class="text-xs font-black text-indigo-400 tracking-widest uppercase mb-4"><i
-                                            class="fa-solid fa-chart-line"></i> Estadísticas en Tiempo Real</h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
-                                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Volumen
-                                                Facturado</span>
-                                            <span id="metric-total-usd"
-                                                class="text-2xl font-black text-emerald-400">$0.00</span>
-                                        </div>
-                                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
-                                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Órdenes
-                                                Procesadas</span>
-                                            <span id="metric-total-pedidos"
-                                                class="text-2xl font-black text-white">0</span>
-                                        </div>
-                                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
-                                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Negocio
-                                                Más Exitoso</span>
-                                            <span id="metric-top-aliado"
-                                                class="text-sm font-black text-indigo-300 truncate block mt-1">Calculando...</span>
-                                        </div>
-                                        <div class="bg-gray-800/60 p-4 rounded-2xl border border-gray-700/50">
-                                            <span class="text-gray-400 text-[11px] font-bold block uppercase">Producto
-                                                Estrella</span>
-                                            <span id="metric-top-producto"
-                                                class="text-sm font-black text-amber-300 truncate block mt-1">Calculando...</span>
-                                        </div>
-                                    </div>
-                                </div>
+                    const badgeHorario = a.abierto ? 
+                        `<span class="bg-blue-100 text-blue-700 font-bold px-1 rounded text-[9px]">ABIERTO</span>` : 
+                        `<span class="bg-red-100 text-red-700 font-bold px-1 rounded text-[9px]">CERRADO</span>`;
 
-                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                    <div class="space-y-6">
-                                        <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200">
-                                            <h3 class="font-bold text-amber-800 text-xs mb-3 flex items-center gap-2"><i
-                                                    class="fa-solid fa-money-bill-trend-up"></i> CONTROL DE TASA</h3>
-                                            <div class="flex gap-2">
-                                                <input type="number" step="0.01" id="adm-tasa"
-                                                    class="w-full p-3 bg-white rounded-xl border border-amber-300 font-bold outline-none">
-                                                <button onclick="actualizarTasa()"
-                                                    class="bg-amber-600 text-white px-4 rounded-xl font-bold text-xs cursor-pointer">Fijar</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
-                                            <h3 class="font-bold text-emerald-900 text-xs mb-3 flex items-center gap-2">
-                                                <i class="fa-solid fa-ticket"></i> CONTROL DE CUPONES</h3>
-                                            <div
-                                                class="space-y-2 bg-white p-3 rounded-xl border border-emerald-100 mb-3">
-                                                <input type="text" id="adm-nuevo-cupon-cod"
-                                                    placeholder="Código (Ej: PROMO20)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold uppercase outline-none">
-                                                <input type="number" id="adm-nuevo-cupon-desc"
-                                                    placeholder="Porcentaje Descuento (Ej: 15)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs font-bold outline-none">
-                                                <button onclick="adminCrearCupon()"
-                                                    class="w-full bg-emerald-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Crear
-                                                    Cupón</button>
-                                            </div>
-                                            <div id="admin-lista-cupones"
-                                                class="space-y-2 max-h-[140px] overflow-y-auto"></div>
-                                        </div>
-
-                                        <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
-                                            <h3 class="font-bold text-indigo-900 text-xs mb-3 flex items-center gap-2">
-                                                <i class="fa-solid fa-handshake"></i> REGISTRO DE ALIADOS</h3>
-                                            <div
-                                                class="space-y-2 bg-white p-3 rounded-xl border border-indigo-100 mb-4">
-                                                <input type="text" id="adm-nuevo-aliado-nom"
-                                                    placeholder="Nombre Comercial"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-img" placeholder="URL Foto/Logo"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-tel"
-                                                    placeholder="WhatsApp (Ej: 584128481584)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-pm-banco"
-                                                    placeholder="Banco Pago Móvil (Ej: Banesco)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-pm-cedula"
-                                                    placeholder="Cédula/RIF (Ej: V12345678)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-pm-tel"
-                                                    placeholder="Teléfono Pago Móvil (Ej: 04128481584)"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none">
-                                                <input type="text" id="adm-nuevo-aliado-clave"
-                                                    placeholder="Clave de acceso de la tienda" value="1234"
-                                                    class="w-full p-2 bg-gray-50 border rounded-lg text-xs outline-none font-mono">
-                                                <label
-                                                    class="flex items-center gap-2 p-2 bg-indigo-100/60 rounded-xl text-[10px] font-bold text-indigo-800 cursor-pointer">
-                                                    <input type="checkbox" id="adm-nuevo-aliado-toggle"
-                                                        class="w-3.5 h-3.5 accent-indigo-600"> Redirigir a su WhatsApp
-                                                </label>
-                                                <button onclick="adminCrearAliado()"
-                                                    class="w-full bg-indigo-600 text-white py-2 rounded-xl font-bold text-xs cursor-pointer">Registrar
-                                                    Aliado</button>
-                                            </div>
-                                            <div id="admin-lista-aliados-bajas"
-                                                class="space-y-2 max-h-[150px] overflow-y-auto"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="p-6 bg-white rounded-2xl border border-gray-200">
-                                        <h3 id="admin-form-title" class="font-black text-lg mb-4 text-gray-900"><i
-                                                class="fa-solid fa-box-open text-indigo-600"></i> Registrar / Editar
-                                            Producto</h3>
-                                        <form onsubmit="adminGuardarProducto(event, 'maestro')" class="space-y-3.5">
-                                            <input type="text" id="adm-nombre" placeholder="Nombre Comercial" required
-                                                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                                            <textarea id="adm-desc" placeholder="Descripción resumida"
-                                                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-16 resize-none"></textarea>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <input type="number" step="0.01" id="adm-precio"
-                                                    placeholder="Precio ($)" required
-                                                    class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
-                                                <input type="number" id="adm-stock" placeholder="Stock" required
-                                                    class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
-                                            </div>
-                                            <input type="text" id="adm-img" placeholder="URL de la Foto" required
-                                                class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
-                                            <select id="adm-aliado" required
-                                                class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none text-indigo-600 font-bold"></select>
-                                            <select id="adm-cat"
-                                                class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
-                                            <label
-                                                class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
-                                                <input type="checkbox" id="adm-promo" class="w-4 h-4 accent-red-600">
-                                                ¿Colocar en sección Promociones?
-                                            </label>
-                                            <button type="submit" id="btn-admin-guardar"
-                                                class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">GUARDAR
-                                                PRODUCTO</button>
-                                            <button type="button" id="btn-admin-cancelar"
-                                                onclick="cancelarEdicion('maestro')"
-                                                class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar
-                                                Edición</button>
-                                        </form>
-                                    </div>
-
-                                    <div class="space-y-4">
-                                        <h3 class="font-black text-lg text-gray-900"><i
-                                                class="fa-solid fa-list-check text-indigo-600"></i> Existencias Globales
-                                        </h3>
-                                        <div id="admin-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="admin-aliado-ui" class="hidden space-y-8">
-                                <div class="border-b border-gray-100 pb-4 flex justify-between items-center">
-                                    <div>
-                                        <h2 class="text-2xl font-black text-gray-900"><i
-                                                class="fa-solid fa-shop text-emerald-600 mr-2"></i>Panel de Gestión
-                                            Comercial</h2>
-                                        <p class="text-xs text-gray-400 font-bold">Establecimiento: <span
-                                                id="sub-nombre-tienda" class="text-indigo-600 uppercase"></span></p>
-                                    </div>
-
-                                    <div class="flex items-center gap-4">
-                                        <div
-                                            class="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-2xl border border-gray-200">
-                                            <span class="text-xs font-black text-gray-600 uppercase">Estado de
-                                                Atención:</span>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" id="sub-tienda-abierto-toggle"
-                                                    onchange="toggleEstadoHorarioAliado()" class="sr-only peer">
-                                                <div
-                                                    class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500">
-                                                </div>
-                                            </label>
-                                            <span id="sub-tienda-abierto-badge"
-                                                class="text-xs font-black uppercase"></span>
-                                        </div>
-                                        <button onclick="salirDePaneles()"
-                                            class="text-xs text-red-500 font-bold border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-50 cursor-pointer">Salir
-                                            del Panel</button>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    <div class="p-6 bg-white rounded-2xl border border-gray-200 shadow-sm h-fit">
-                                        <h3 id="sub-form-title" class="font-black text-lg mb-4 text-gray-900"><i
-                                                class="fa-solid fa-plus text-emerald-500"></i> Registrar Producto en mi
-                                            Menú</h3>
-                                        <form onsubmit="adminGuardarProducto(event, 'aliado')" class="space-y-3.5">
-                                            <input type="text" id="sub-nombre" placeholder="Nombre del Plato o Artículo"
-                                                required
-                                                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none">
-                                            <textarea id="sub-desc"
-                                                placeholder="Ingredientes / Descripción de la oferta"
-                                                class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none h-20 resize-none"></textarea>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <input type="number" step="0.01" id="sub-precio"
-                                                    placeholder="Precio ($)" required
-                                                    class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none font-bold">
-                                                <input type="number" id="sub-stock" placeholder="Stock Disponible"
-                                                    required
-                                                    class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
-                                            </div>
-                                            <input type="text" id="sub-img" placeholder="Enlace URL de la Imagen"
-                                                required
-                                                class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none">
-                                            <select id="sub-cat"
-                                                class="w-full p-3 bg-gray-50 border rounded-xl text-sm outline-none"></select>
-                                            <label
-                                                class="flex items-center gap-2 p-2.5 bg-red-50 border border-red-100 rounded-xl text-xs font-bold text-red-700 cursor-pointer">
-                                                <input type="checkbox" id="sub-promo" class="w-4 h-4 accent-red-600">
-                                                ¿Es una Promoción Especial?
-                                            </label>
-                                            <button type="submit" id="btn-sub-guardar"
-                                                class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-black text-sm cursor-pointer">SUBIR
-                                                A LA VITRINA</button>
-                                            <button type="button" id="btn-sub-cancelar"
-                                                onclick="cancelarEdicion('aliado')"
-                                                class="hidden w-full bg-gray-200 text-gray-700 py-2 rounded-xl font-bold text-xs cursor-pointer">Cancelar
-                                                Edición</button>
-                                        </form>
-                                    </div>
-
-                                    <div class="space-y-4">
-                                        <h3 class="font-black text-lg text-gray-900"><i
-                                                class="fa-solid fa-utensils text-emerald-500"></i> Mis Productos en Menú
-                                        </h3>
-                                        <div id="sub-lista-productos" class="space-y-3 overflow-y-auto max-h-[500px]">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <footer class="text-center py-6 border-t border-gray-100 mt-12 bg-white">
-                        <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">
-                            &copy; 2026 Atupuerta delivery. Todos los derechos reservados.
-                        </p>
-                    </footer>
-
-                    <script>
-                        const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
-                        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
-
-                        const supabaseCliente = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-                        let globalTasa = 1;
-                        let globalProductos = [];
-                        let globalCategorias = [];
-                        let globalAliados = [];
-                        let carrito = [];
-                        let usuarioActual = null;
-
-                        let idProductoEditando = null;
-                        let modoAuthActual = 'login';
-                        let categoriaActual = 'todos';
-                        let aliadoSeleccionado = '';
-                        let busquedaActual = '';
-
-                        let loginAliadoActivo = null;
-                        let descuentoPorcentaje = 0;
-                        let datosPerfilUsuario = null;
-                        let codigoCuponAplicado = "";
-
-                        async function inicializarPlataforma() {
-                            await obtenerConfigTasa();
-                            await obtenerAliadosComerciales();
-                            await obtenerCategoriasDisponibles();
-                            await obtenerProductosInventario();
-                            await verificarEstadoUsuario();
-                            await cargarMetricasGlobales();
-                        }
-
-                        // Abre la ventana y busca los datos en la tabla 'perfiles'
-                        async function abrirPerfil() {
-                            if (!usuarioActual) return;
-                            abrirModal('modal-perfil');
-
-                            const btn = document.getElementById('btn-guardar-perfil');
-                            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Cargando...`;
-
-                            try {
-                                const { data, error } = await supabaseCliente.from('perfiles').select('*').eq('id', usuarioActual.id).single();
-                                if (data) {
-                                    datosPerfilUsuario = data; // Lo guardamos en memoria
-                                    document.getElementById('perfil-nombre').value = data.nombre_completo || '';
-                                    document.getElementById('perfil-telefono').value = data.telefono || '';
-                                    document.getElementById('perfil-direccion').value = data.direccion_principal || '';
-
-                                    // Auto-rellenar carrito si está abierto
-                                    if (document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = data.nombre_completo || '';
-                                    if (document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = data.direccion_principal || '';
-                                }
-                            } catch (e) { console.error(e); }
-
-                            btn.innerText = 'GUARDAR DATOS';
-                        }
-
-                        // Guarda los datos modificados en la base de datos
-                        async function guardarPerfil() {
-                            const nom = document.getElementById('perfil-nombre').value.trim();
-                            const tel = document.getElementById('perfil-telefono').value.trim();
-                            const dir = document.getElementById('perfil-direccion').value.trim();
-                            const btn = document.getElementById('btn-guardar-perfil');
-
-                            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Guardando...`;
-                            btn.disabled = true;
-
-                            try {
-                                const { error } = await supabaseCliente.from('perfiles')
-                                    .update({ nombre_completo: nom, telefono: tel, direccion_principal: dir })
-                                    .eq('id', usuarioActual.id);
-
-                                if (error) throw error;
-
-                                alert("✅ Datos actualizados correctamente.");
-                                datosPerfilUsuario = { nombre_completo: nom, telefono: tel, direccion_principal: dir };
-
-                                // Actualizamos los campos del carrito para que ya estén listos
-                                if (document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = nom;
-                                if (document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = dir;
-
-                                cerrarModal('modal-perfil');
-                            } catch (e) {
-                                alert("Error al guardar. Asegúrate de tener conexión.");
-                                console.error(e);
-                            }
-
-                            btn.innerText = 'GUARDAR DATOS';
-                            btn.disabled = false;
-                        }
-
-                        async function obtenerConfigTasa() {
-                            try {
-                                const { data } = await supabaseCliente.from('configuracion').select('*').eq('id', 1).single();
-                                if (data) {
-                                    globalTasa = parseFloat(data.tasa_dolar);
-                                    document.getElementById('tasa-display').innerText = globalTasa.toFixed(2);
-                                    document.getElementById('adm-tasa').value = globalTasa;
-                                }
-                            } catch (err) { console.error(err); }
-                        }
-
-                        async function obtenerAliadosComerciales() {
-                            try {
-                                const { data } = await supabaseCliente.from('aliados').select('*').order('nombre', { ascending: true });
-                                globalAliados = data || [];
-
-                                document.getElementById('adm-aliado').innerHTML = '<option value="" disabled selected>Selecciona un aliado...</option>';
-                                document.getElementById('gate-aliado-select').innerHTML = '';
-                                document.getElementById('admin-lista-aliados-bajas').innerHTML = '';
-
-                                globalAliados.forEach(a => {
-                                    document.getElementById('adm-aliado').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
-                                    document.getElementById('gate-aliado-select').innerHTML += `<option value="${a.nombre}">${a.nombre}</option>`;
-
-                                    const badgeModo = a.activo_directo ?
-                                        `<span class="bg-emerald-100 text-emerald-700 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-bolt"></i> DIRECTO</span>` :
-                                        `<span class="bg-gray-100 text-gray-500 font-extrabold px-1.5 py-0.5 rounded text-[9px]"><i class="fa-solid fa-user-tie"></i> CENTRAL</span>`;
-
-                                    const badgeHorario = a.abierto ?
-                                        `<span class="bg-blue-100 text-blue-700 font-bold px-1 rounded text-[9px]">ABIERTO</span>` :
-                                        `<span class="bg-red-100 text-red-700 font-bold px-1 rounded text-[9px]">CERRADO</span>`;
-
-                                    document.getElementById('admin-lista-aliados-bajas').innerHTML += `
+                    document.getElementById('admin-lista-aliados-bajas').innerHTML += `
                         <div class="bg-white p-2.5 rounded-xl border border-gray-200 flex flex-col gap-1 shadow-2xs">
                             <div class="flex justify-between items-center">
                                 <span class="font-black text-xs text-gray-800 truncate max-w-[120px]">${a.nombre}</span>
@@ -786,142 +586,142 @@
                             </div>
                         </div>
                     `;
-                                });
-                            } catch (e) { console.error(e); }
-                        }
+                });
+            } catch (e) { console.error(e); }
+        }
 
-                        async function obtenerCategoriasDisponibles() {
-                            try {
-                                const { data } = await supabaseCliente.from('categorias').select('*').order('nombre', { ascending: true });
-                                globalCategorias = data || [];
-
-                                document.getElementById('categorias-filtros').innerHTML = '';
-                                document.getElementById('adm-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
-                                document.getElementById('sub-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
-
-                                globalCategorias.forEach(cat => {
-                                    document.getElementById('categorias-filtros').innerHTML += `
+        async function obtenerCategoriasDisponibles() {
+            try {
+                const { data } = await supabaseCliente.from('categorias').select('*').order('nombre', { ascending: true });
+                globalCategorias = data || [];
+                
+                document.getElementById('categorias-filtros').innerHTML = '';
+                document.getElementById('adm-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
+                document.getElementById('sub-cat').innerHTML = '<option value="">Sin Categoría Específica</option>';
+                
+                globalCategorias.forEach(cat => {
+                    document.getElementById('categorias-filtros').innerHTML += `
                         <button onclick="filtrar(${cat.id})" class="bg-white text-gray-600 px-5 py rounded-full font-bold shadow-xs border border-gray-200 hover:border-indigo-300 transition cursor-pointer">${cat.nombre}</button>
                     `;
-                                    document.getElementById('adm-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
-                                    document.getElementById('sub-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
-                                });
-                            } catch (err) { console.error(err); }
-                        }
+                    document.getElementById('adm-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
+                    document.getElementById('sub-cat').innerHTML += `<option value="${cat.id}">${cat.nombre}</option>`;
+                });
+            } catch (err) { console.error(err); }
+        }
 
-                        async function obtenerProductosInventario() {
-                            try {
-                                const { data } = await supabaseCliente.from('productos').select('*').order('created_at', { ascending: false });
-                                globalProductos = data || [];
-                                aplicarFiltrosYBusqueda();
-                                renderizarInventarioAdmin();
-                                if (loginAliadoActivo) renderizarInventarioAliado();
-                            } catch (err) { console.error(err); }
-                        }
+        async function obtenerProductosInventario() {
+            try {
+                const { data } = await supabaseCliente.from('productos').select('*').order('created_at', { ascending: false });
+                globalProductos = data || [];
+                aplicarFiltrosYBusqueda();
+                renderizarInventarioAdmin();
+                if(loginAliadoActivo) renderizarInventarioAliado();
+            } catch (err) { console.error(err); }
+        }
 
-                        function filtrar(tipo) {
-                            categoriaActual = tipo;
-                            aplicarFiltrosYBusqueda();
-                        }
+        function filtrar(tipo) {
+            categoriaActual = tipo;
+            aplicarFiltrosYBusqueda();
+        }
 
-                        function filtrarYBuscar() {
-                            busquedaActual = document.getElementById('buscador-productos').value.toLowerCase().trim();
-                            if (busquedaActual !== '' && (categoriaActual === 'aliados_ver' || categoriaActual === 'aliado_especifico')) {
-                                categoriaActual = 'todos';
-                            }
-                            aplicarFiltrosYBusqueda();
-                        }
+        function filtrarYBuscar() {
+            busquedaActual = document.getElementById('buscador-productos').value.toLowerCase().trim();
+            if (busquedaActual !== '' && (categoriaActual === 'aliados_ver' || categoriaActual === 'aliado_especifico')) {
+                categoriaActual = 'todos';
+            }
+            aplicarFiltrosYBusqueda();
+        }
 
-                        function verCatalogoDeAliado(nombreAliado) {
-                            categoriaActual = 'aliado_especifico';
-                            aliadoSeleccionado = nombreAliado;
-                            aplicarFiltrosYBusqueda();
-                        }
+        function verCatalogoDeAliado(nombreAliado) {
+            categoriaActual = 'aliado_especifico';
+            aliadoSeleccionado = nombreAliado;
+            aplicarFiltrosYBusqueda();
+        }
 
-                        function aplicarFiltrosYBusqueda() {
-                            let filtrados = globalProductos;
+        function aplicarFiltrosYBusqueda() {
+            let filtrados = globalProductos;
 
-                            if (categoriaActual === 'aliados_ver') {
-                                document.getElementById('section-title').innerText = "Nuestros Aliados Comerciales";
-                                renderizarGridAliados();
-                                return;
-                            }
+            if (categoriaActual === 'aliados_ver') {
+                document.getElementById('section-title').innerText = "Nuestros Aliados Comerciales";
+                renderizarGridAliados();
+                return;
+            }
 
-                            if (categoriaActual === 'aliado_especifico') {
-                                document.getElementById('section-title').innerText = `Productos de: ${aliadoSeleccionado}`;
-                                filtrados = filtrados.filter(p => p.aliado_comercial === aliadoSeleccionado);
-                            } else if (categoriaActual === 'promo') {
-                                filtrados = filtrados.filter(p => p.es_promocion);
-                                document.getElementById('section-title').innerText = "Promociones Especiales";
-                            } else if (categoriaActual !== 'todos') {
-                                filtrados = filtrados.filter(p => p.categoria_id == categoriaActual);
-                                const cat = globalCategorias.find(c => c.id == categoriaActual);
-                                document.getElementById('section-title').innerText = cat ? cat.nombre : "Productos Seleccionados";
-                            } else {
-                                document.getElementById('section-title').innerText = "Todos los Productos";
-                            }
+            if (categoriaActual === 'aliado_especifico') {
+                document.getElementById('section-title').innerText = `Productos de: ${aliadoSeleccionado}`;
+                filtrados = filtrados.filter(p => p.aliado_comercial === aliadoSeleccionado);
+            } else if (categoriaActual === 'promo') {
+                filtrados = filtrados.filter(p => p.es_promocion);
+                document.getElementById('section-title').innerText = "Promociones Especiales";
+            } else if (categoriaActual !== 'todos') {
+                filtrados = filtrados.filter(p => p.categoria_id == categoriaActual);
+                const cat = globalCategorias.find(c => c.id == categoriaActual);
+                document.getElementById('section-title').innerText = cat ? cat.nombre : "Productos Seleccionados";
+            } else {
+                document.getElementById('section-title').innerText = "Todos los Productos";
+            }
 
-                            if (busquedaActual !== '') {
-                                filtrados = filtrados.filter(p =>
-                                    p.nombre.toLowerCase().includes(busquedaActual) ||
-                                    (p.descripcion && p.descripcion.toLowerCase().includes(busquedaActual)) ||
-                                    p.aliado_comercial.toLowerCase().includes(busquedaActual)
-                                );
-                            }
+            if (busquedaActual !== '') {
+                filtrados = filtrados.filter(p => 
+                    p.nombre.toLowerCase().includes(busquedaActual) || 
+                    (p.descripcion && p.descripcion.toLowerCase().includes(busquedaActual)) ||
+                    p.aliado_comercial.toLowerCase().includes(busquedaActual)
+                );
+            }
 
-                            renderizarCatalogoPublico(filtrados);
-                        }
+            renderizarCatalogoPublico(filtrados);
+        }
+		
+		function togglePagoMovil() {
+				const metodo = document.getElementById('checkout-metodo-pago').value;
+				const container = document.getElementById('checkout-pagomovil-container');
+				if (metodo === 'pagomovil') {
+				container.classList.remove('hidden');
+				determinarDatosPagoMovil();
+				} else {
+				container.classList.add('hidden');
+			}
+		}
 
-                        function togglePagoMovil() {
-                            const metodo = document.getElementById('checkout-metodo-pago').value;
-                            const container = document.getElementById('checkout-pagomovil-container');
-                            if (metodo === 'pagomovil') {
-                                container.classList.remove('hidden');
-                                determinarDatosPagoMovil();
-                            } else {
-                                container.classList.add('hidden');
-                            }
-                        }
-
-                        function determinarDatosPagoMovil() {
-                            if (carrito.length === 0) return;
-
-                            // Si todos los productos son de un solo aliado, buscamos sus datos.
-                            const primerAliado = carrito[0].aliado_comercial;
-                            const mismoVendedor = carrito.every(item => item.aliado_comercial === primerAliado);
-
-                            // Datos por defecto (De la empresa central)
-                            let banco = "Banesco", cedula = "J-123456789", telefono = "0412-8481584";
-                            let tituloDestino = "CUENTA CENTRAL (A TU PUERTA)";
-
-                            if (mismoVendedor) {
-                                const alConf = globalAliados.find(a => a.nombre === primerAliado);
-                                if (alConf && alConf.pm_banco && alConf.pm_cedula && alConf.pm_telefono) {
-                                    banco = alConf.pm_banco;
-                                    cedula = alConf.pm_cedula;
-                                    telefono = alConf.pm_telefono;
-                                    tituloDestino = `CUENTA DIRECTA: ${alConf.nombre.toUpperCase()}`;
-                                }
-                            }
-
-                            document.getElementById('datos-pagomovil-dinamicos').innerHTML = `
+		function determinarDatosPagoMovil() {
+			if (carrito.length === 0) return;
+			
+			// Si todos los productos son de un solo aliado, buscamos sus datos.
+			const primerAliado = carrito[0].aliado_comercial;
+			const mismoVendedor = carrito.every(item => item.aliado_comercial === primerAliado);
+			
+			// Datos por defecto (De la empresa central)
+			let banco = "Banesco", cedula = "J-123456789", telefono = "0412-8481584"; 
+			let tituloDestino = "CUENTA CENTRAL (A TU PUERTA)";
+			
+			if (mismoVendedor) {
+				const alConf = globalAliados.find(a => a.nombre === primerAliado);
+				if (alConf && alConf.pm_banco && alConf.pm_cedula && alConf.pm_telefono) {
+					banco = alConf.pm_banco;
+					cedula = alConf.pm_cedula;
+					telefono = alConf.pm_telefono;
+					tituloDestino = `CUENTA DIRECTA: ${alConf.nombre.toUpperCase()}`;
+				}
+			}
+			
+			document.getElementById('datos-pagomovil-dinamicos').innerHTML = `
 				<p class="text-[10px] text-indigo-500 font-bold mb-1">${tituloDestino}</p>
 				<p><strong>Banco:</strong> ${banco}</p>
 				<p><strong>Cédula/RIF:</strong> ${cedula}</p>
 				<p><strong>Teléfono:</strong> ${telefono}</p>
 			`;
-                        }
-                        function renderizarGridAliados() {
-                            const container = document.getElementById('grid-productos');
-                            container.innerHTML = '';
+		}
+        function renderizarGridAliados() {
+            const container = document.getElementById('grid-productos');
+            container.innerHTML = '';
 
-                            globalAliados.forEach(a => {
-                                const totalProds = globalProductos.filter(p => p.aliado_comercial === a.nombre).length;
-                                const statusHtml = a.abierto ?
-                                    `<span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">ABIERTO</span>` :
-                                    `<span class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">CERRADO</span>`;
+            globalAliados.forEach(a => {
+                const totalProds = globalProductos.filter(p => p.aliado_comercial === a.nombre).length;
+                const statusHtml = a.abierto ? 
+                    `<span class="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">ABIERTO</span>` : 
+                    `<span class="bg-red-100 text-red-700 text-[10px] font-black px-2.5 py-0.5 rounded-full mt-2">CERRADO</span>`;
 
-                                container.innerHTML += `
+                container.innerHTML += `
                     <div class="bg-white rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300 p-5 border border-gray-100 flex flex-col items-center text-center group cursor-pointer" onclick="verCatalogoDeAliado('${a.nombre}')">
                         <div class="w-24 h-24 mb-3 overflow-hidden rounded-full bg-gray-50 border shadow-inner flex items-center justify-center relative">
                             <img src="${a.imagen_url}" class="w-full h-full object-cover group-hover:scale-105 transition" onerror="this.src='https://placehold.co/200?text=Aliado'">
@@ -932,32 +732,32 @@
                         ${statusHtml}
                     </div>
                 `;
-                            });
-                        }
+            });
+        }
 
-                        function renderizarCatalogoPublico(lista) {
-                            const container = document.getElementById('grid-productos');
-                            container.innerHTML = '';
+        function renderizarCatalogoPublico(lista) {
+            const container = document.getElementById('grid-productos');
+            container.innerHTML = '';
+            
+            lista.forEach(p => {
+                const precioEnBs = (p.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2 });
+                const tiendaDuena = globalAliados.find(a => a.nombre === p.aliado_comercial);
+                const estaCerrada = tiendaDuena ? !tiendaDuena.abierto : false;
 
-                            lista.forEach(p => {
-                                const precioEnBs = (p.precio_usd * globalTasa).toLocaleString('es-VE', { minimumFractionDigits: 2 });
-                                const tiendaDuena = globalAliados.find(a => a.nombre === p.aliado_comercial);
-                                const estaCerrada = tiendaDuena ? !tiendaDuena.abierto : false;
+                let badgeInferior = '';
+                let botonDeshabilitado = '';
+                
+                if (estaCerrada) {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">TIENDA CERRADA</span>`;
+                    botonDeshabilitado = 'disabled';
+                } else if (p.stock <= 0) {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-gray-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Agotado</span>`;
+                    botonDeshabilitado = 'disabled';
+                } else {
+                    badgeInferior = `<span class="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Stock: ${p.stock}</span>`;
+                }
 
-                                let badgeInferior = '';
-                                let botonDeshabilitado = '';
-
-                                if (estaCerrada) {
-                                    badgeInferior = `<span class="absolute top-3 right-3 bg-red-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">TIENDA CERRADA</span>`;
-                                    botonDeshabilitado = 'disabled';
-                                } else if (p.stock <= 0) {
-                                    badgeInferior = `<span class="absolute top-3 right-3 bg-gray-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Agotado</span>`;
-                                    botonDeshabilitado = 'disabled';
-                                } else {
-                                    badgeInferior = `<span class="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Stock: ${p.stock}</span>`;
-                                }
-
-                                container.innerHTML += `
+                container.innerHTML += `
                     <div class="bg-white rounded-3xl shadow-xs hover:shadow-md transition p-4 border border-gray-100 flex flex-col group relative ${estaCerrada ? 'opacity-70' : ''}">
                         <div class="relative h-48 mb-3 overflow-hidden rounded-2xl bg-gray-50 border">
                             <img src="${p.imagen_url}" class="w-full h-full object-cover group-hover:scale-103 transition duration-300" onerror="this.src='https://placehold.co/400x300?text=Comida'">
@@ -978,49 +778,49 @@
                         </div>
                     </div>
                 `;
-                            });
-                        }
+            });
+        }
 
-                        async function validarAplicarCupon() {
-                            const input = document.getElementById('cart-coupon-input').value.trim().toUpperCase();
-                            if (!input) return;
+        async function validarAplicarCupon() {
+            const input = document.getElementById('cart-coupon-input').value.trim().toUpperCase();
+            if(!input) return;
 
-                            try {
-                                const { data, error } = await supabaseCliente.from('cupones').select('*').eq('codigo', input).eq('activo', true).single();
-                                if (error || !data) {
-                                    alert("❌ El cupón no es válido o ya caducó.");
-                                    descuentoPorcentaje = 0;
-                                    codigoCuponAplicado = "";
-                                    document.getElementById('coupon-badge').classList.add('hidden');
-                                    actualizarInterfazCarrito();
-                                    return;
-                                }
+            try {
+                const { data, error } = await supabaseCliente.from('cupones').select('*').eq('codigo', input).eq('activo', true).single();
+                if(error || !data) {
+                    alert("❌ El cupón no es válido o ya caducó.");
+                    descuentoPorcentaje = 0;
+                    codigoCuponAplicado = "";
+                    document.getElementById('coupon-badge').classList.add('hidden');
+                    actualizarInterfazCarrito();
+                    return;
+                }
 
-                                descuentoPorcentaje = parseFloat(data.descuento_porcentaje);
-                                codigoCuponAplicado = data.codigo;
+                descuentoPorcentaje = parseFloat(data.descuento_porcentaje);
+                codigoCuponAplicado = data.codigo;
+                
+                const badge = document.getElementById('coupon-badge');
+                badge.innerText = `Cupón Activo: ${data.codigo} (-${descuentoPorcentaje}%)`;
+                badge.classList.remove('hidden');
+                
+                alert(`🎉 ¡Cupón aplicado! Se descontará el ${descuentoPorcentaje}% del total.`);
+                actualizarInterfazCarrito();
+            } catch(e) { console.error(e); }
+        }
 
-                                const badge = document.getElementById('coupon-badge');
-                                badge.innerText = `Cupón Activo: ${data.codigo} (-${descuentoPorcentaje}%)`;
-                                badge.classList.remove('hidden');
+        async function obtenerCuponesAdmin() {
+            try {
+                const { data } = await supabaseCliente.from('cupones').select('*').order('created_at', { ascending: false });
+                const container = document.getElementById('admin-lista-cupones');
+                container.innerHTML = '';
+                
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2">No hay cupones creados.</p>';
+                    return;
+                }
 
-                                alert(`🎉 ¡Cupón aplicado! Se descontará el ${descuentoPorcentaje}% del total.`);
-                                actualizarInterfazCarrito();
-                            } catch (e) { console.error(e); }
-                        }
-
-                        async function obtenerCuponesAdmin() {
-                            try {
-                                const { data } = await supabaseCliente.from('cupones').select('*').order('created_at', { ascending: false });
-                                const container = document.getElementById('admin-lista-cupones');
-                                container.innerHTML = '';
-
-                                if (!data || data.length === 0) {
-                                    container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2">No hay cupones creados.</p>';
-                                    return;
-                                }
-
-                                data.forEach(c => {
-                                    container.innerHTML += `
+                data.forEach(c => {
+                    container.innerHTML += `
                         <div class="bg-white p-2 rounded-xl border border-gray-100 flex justify-between items-center text-xs shadow-3xs">
                             <div>
                                 <span class="font-black text-gray-800 tracking-wider font-mono">${c.codigo}</span>
@@ -1029,84 +829,84 @@
                             <button onclick="adminEliminarCupon(${c.id})" class="text-red-400 hover:text-red-600 p-1 transition cursor-pointer"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
                         </div>
                     `;
-                                });
-                            } catch (e) { console.error(e); }
-                        }
+                });
+            } catch(e) { console.error(e); }
+        }
 
-                        async function adminCrearCupon() {
-                            const cod = document.getElementById('adm-nuevo-cupon-cod').value.trim().toUpperCase();
-                            const desc = parseFloat(document.getElementById('adm-nuevo-cupon-desc').value);
+        async function adminCrearCupon() {
+            const cod = document.getElementById('adm-nuevo-cupon-cod').value.trim().toUpperCase();
+            const desc = parseFloat(document.getElementById('adm-nuevo-cupon-desc').value);
 
-                            if (!cod || isNaN(desc)) return alert("Rellena todos los campos del cupón.");
+            if(!cod || isNaN(desc)) return alert("Rellena todos los campos del cupón.");
 
-                            try {
-                                const { error } = await supabaseCliente.from('cupones').insert([{ codigo: cod, descuento_porcentaje: desc, activo: true }]);
-                                if (error) { alert("Error al inyectar cupón: " + error.message); }
-                                else {
-                                    alert("🎟️ ¡Cupón activado y desplegado con éxito!");
-                                    document.getElementById('adm-nuevo-cupon-cod').value = '';
-                                    document.getElementById('adm-nuevo-cupon-desc').value = '';
-                                    await obtenerCuponesAdmin();
-                                }
-                            } catch (e) { console.error(e); }
-                        }
+            try {
+                const { error } = await supabaseCliente.from('cupones').insert([{ codigo: cod, descuento_porcentaje: desc, activo: true }]);
+                if(error) { alert("Error al inyectar cupón: " + error.message); }
+                else {
+                    alert("🎟️ ¡Cupón activado y desplegado con éxito!");
+                    document.getElementById('adm-nuevo-cupon-cod').value = '';
+                    document.getElementById('adm-nuevo-cupon-desc').value = '';
+                    await obtenerCuponesAdmin();
+                }
+            } catch(e) { console.error(e); }
+        }
 
-                        async function adminEliminarCupon(id) {
-                            if (confirm("¿Eliminar este cupón de la circulación?")) {
-                                await supabaseCliente.from('cupones').delete().eq('id', id);
-                                await obtenerCuponesAdmin();
-                            }
-                        }
+        async function adminEliminarCupon(id) {
+            if(confirm("¿Eliminar este cupón de la circulación?")) {
+                await supabaseCliente.from('cupones').delete().eq('id', id);
+                await obtenerCuponesAdmin();
+            }
+        }
 
-                        function agregarAlCarrito(id) {
-                            if (!usuarioActual) {
-                                alert("Inicia sesión para poder procesar la orden de compra.");
-                                abrirModal('modal-auth');
-                                return;
-                            }
-                            const prod = globalProductos.find(p => p.id === id);
-                            if (prod) {
-                                const itemExistente = carrito.find(item => item.id === id);
-                                if (itemExistente) {
-                                    if (itemExistente.cantidad < prod.stock) itemExistente.cantidad++;
-                                    else return alert("Límite de existencias alcanzado.");
-                                } else {
-                                    carrito.push({ ...prod, font: 1, cantidad: 1 });
-                                }
-                                actualizarInterfazCarrito();
-                            }
-                        }
+        function agregarAlCarrito(id) {
+            if (!usuarioActual) {
+                alert("Inicia sesión para poder procesar la orden de compra.");
+                abrirModal('modal-auth');
+                return;
+            }
+            const prod = globalProductos.find(p => p.id === id);
+            if (prod) {
+                const itemExistente = carrito.find(item => item.id === id);
+                if (itemExistente) {
+                    if (itemExistente.cantidad < prod.stock) itemExistente.cantidad++;
+                    else return alert("Límite de existencias alcanzado.");
+                } else {
+                    carrito.push({ ...prod, font: 1, cantidad: 1 });
+                }
+                actualizarInterfazCarrito();
+            }
+        }
 
-                        function cambiarCantidad(index, cambio) {
-                            const item = carrito[index];
-                            const prod = globalProductos.find(p => p.id === item.id);
-                            let n = item.cantidad + cambio;
-                            if (n <= 0) { carrito.splice(index, 1); }
-                            else if (prod && n > prod.stock) { alert("Límite de inventario excedido."); return; }
-                            else { item.cantidad = n; }
-                            actualizarInterfazCarrito();
-                        }
+        function cambiarCantidad(index, cambio) {
+            const item = carrito[index];
+            const prod = globalProductos.find(p => p.id === item.id);
+            let n = item.cantidad + cambio;
+            if (n <= 0) { carrito.splice(index, 1); }
+            else if (prod && n > prod.stock) { alert("Límite de inventario excedido."); return; }
+            else { item.cantidad = n; }
+            actualizarInterfazCarrito();
+        }
 
-                        function actualizarInterfazCarrito() {
-                            let totalArt = 0;
-                            carrito.forEach(i => totalArt += i.cantidad);
-                            document.getElementById('cart-count').innerText = totalArt;
+        function actualizarInterfazCarrito() {
+            let totalArt = 0;
+            carrito.forEach(i => totalArt += i.cantidad);
+            document.getElementById('cart-count').innerText = totalArt;
+            
+            const container = document.getElementById('cart-items');
+            container.innerHTML = '';
+            let brutoUSD = 0;
 
-                            const container = document.getElementById('cart-items');
-                            container.innerHTML = '';
-                            let brutoUSD = 0;
+            if (carrito.length === 0) {
+                container.innerHTML = `<p class="text-center py-6 text-gray-400 text-xs">El carrito está vacío.</p>`;
+                document.getElementById('cart-total-usd').innerText = "$0.00";
+                document.getElementById('cart-total-bs').innerText = "0.00 Bs";
+                return;
+            }
 
-                            if (carrito.length === 0) {
-                                container.innerHTML = `<p class="text-center py-6 text-gray-400 text-xs">El carrito está vacío.</p>`;
-                                document.getElementById('cart-total-usd').innerText = "$0.00";
-                                document.getElementById('cart-total-bs').innerText = "0.00 Bs";
-                                return;
-                            }
-
-                            carrito.forEach((item, index) => {
-                                const sub = parseFloat(item.precio_usd) * item.cantidad;
-                                brutoUSD += sub;
-                                container.innerHTML += `
+            carrito.forEach((item, index) => {
+                const sub = parseFloat(item.precio_usd) * item.cantidad;
+                brutoUSD += sub;
+                container.innerHTML += `
                     <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
                         <div class="flex-grow min-w-0">
                             <h4 class="font-bold text-xs text-gray-900 truncate">${item.nombre}</h4>
@@ -1119,372 +919,372 @@
                         </div>
                     </div>
                 `;
-                            });
+            });
 
-                            let totalUSD = brutoUSD;
-                            if (descuentoPorcentaje > 0) {
-                                totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
-                            }
+            let totalUSD = brutoUSD;
+            if(descuentoPorcentaje > 0) {
+                totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
+            }
 
-                            const totalBs = totalUSD * globalTasa;
-                            document.getElementById('cart-total-usd').innerText = `$ ${totalUSD.toFixed(2)}`;
-                            document.getElementById('cart-total-bs').innerText = `${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs`;
-                        }
+            const totalBs = totalUSD * globalTasa;
+            document.getElementById('cart-total-usd').innerText = `$ ${totalUSD.toFixed(2)}`;
+            document.getElementById('cart-total-bs').innerText = `${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs`;
+        }
 
-                        async function enviarPedidoWhatsApp() {
-                            if (carrito.length === 0) return alert("El carrito está vacío.");
-                            const nom = document.getElementById('checkout-nombre').value.trim();
-                            const dir = document.getElementById('checkout-direccion').value.trim();
-                            const metodoPago = document.getElementById('checkout-metodo-pago').value;
+        async function enviarPedidoWhatsApp() {
+    if (carrito.length === 0) return alert("El carrito está vacío.");
+    const nom = document.getElementById('checkout-nombre').value.trim();
+    const dir = document.getElementById('checkout-direccion').value.trim();
+    const metodoPago = document.getElementById('checkout-metodo-pago').value;
+    
+    if(!nom || !dir) return alert("Completa tus datos de entrega.");
 
-                            if (!nom || !dir) return alert("Completa tus datos de entrega.");
+    let urlCapture = "";
+    const btn = document.getElementById('btn-enviar-pedido');
 
-                            let urlCapture = "";
-                            const btn = document.getElementById('btn-enviar-pedido');
+    // Lógica para subir capture si es Pago Móvil
+    if (metodoPago === 'pagomovil') {
+        const fileInput = document.getElementById('checkout-capture');
+        if (!fileInput.files.length) {
+            return alert("❌ Por favor, adjunta el capture del Pago Móvil para poder procesar la orden.");
+        }
+        
+        const file = fileInput.files[0];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `capture_${Date.now()}_${Math.floor(Math.random()*1000)}.${fileExt}`;
 
-                            // Lógica para subir capture si es Pago Móvil
-                            if (metodoPago === 'pagomovil') {
-                                const fileInput = document.getElementById('checkout-capture');
-                                if (!fileInput.files.length) {
-                                    return alert("❌ Por favor, adjunta el capture del Pago Móvil para poder procesar la orden.");
-                                }
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xl"></i> SUBIENDO CAPTURE...`;
+        btn.disabled = true;
 
-                                const file = fileInput.files[0];
-                                const fileExt = file.name.split('.').pop();
-                                const fileName = `capture_${Date.now()}_${Math.floor(Math.random() * 1000)}.${fileExt}`;
+        try {
+            const { data, error } = await supabaseCliente.storage.from('comprobantes').upload(fileName, file);
+            if (error) throw error;
+            
+            const { data: publicUrlData } = supabaseCliente.storage.from('comprobantes').getPublicUrl(fileName);
+            urlCapture = publicUrlData.publicUrl;
+        } catch(err) {
+            console.error(err);
+            alert("Error al subir el capture. Intenta de nuevo.");
+            btn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP`;
+            btn.disabled = false;
+            return;
+        }
+    }
 
-                                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xl"></i> SUBIENDO CAPTURE...`;
-                                btn.disabled = true;
+    // Cálculos de Totales y Destino (Igual que antes)
+    let numeroDestino = "584128481584"; 
+    if (carrito.length > 0) {
+        const primerAliado = carrito[0].aliado_comercial;
+        const mismoVendedor = carrito.every(item => item.aliado_comercial === primerAliado);
+        if (mismoVendedor) {
+            const alConf = globalAliados.find(a => a.nombre === primerAliado);
+            if (alConf && alConf.activo_directo && alConf.whatsapp) {
+                numeroDestino = alConf.whatsapp.replace(/\s+/g, '');
+            }
+        }
+    }
 
-                                try {
-                                    const { data, error } = await supabaseCliente.storage.from('comprobantes').upload(fileName, file);
-                                    if (error) throw error;
+    let brutoUSD = 0;
+    const mapaDetalle = carrito.map(item => {
+        brutoUSD += parseFloat(item.precio_usd) * item.cantidad;
+        return { producto_id: item.id, nombre: item.nombre, cantidad: item.cantidad, precio_unitario_usd: item.precio_usd, aliado: item.aliado_comercial };
+    });
 
-                                    const { data: publicUrlData } = supabaseCliente.storage.from('comprobantes').getPublicUrl(fileName);
-                                    urlCapture = publicUrlData.publicUrl;
-                                } catch (err) {
-                                    console.error(err);
-                                    alert("Error al subir el capture. Intenta de nuevo.");
-                                    btn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP`;
-                                    btn.disabled = false;
-                                    return;
-                                }
-                            }
+    let totalUSD = brutoUSD;
+    if(descuentoPorcentaje > 0) {
+        totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
+    }
+    const totalBs = totalUSD * globalTasa;
 
-                            // Cálculos de Totales y Destino (Igual que antes)
-                            let numeroDestino = "584128481584";
-                            if (carrito.length > 0) {
-                                const primerAliado = carrito[0].aliado_comercial;
-                                const mismoVendedor = carrito.every(item => item.aliado_comercial === primerAliado);
-                                if (mismoVendedor) {
-                                    const alConf = globalAliados.find(a => a.nombre === primerAliado);
-                                    if (alConf && alConf.activo_directo && alConf.whatsapp) {
-                                        numeroDestino = alConf.whatsapp.replace(/\s+/g, '');
-                                    }
-                                }
-                            }
+    // Guardar pedido en Supabase
+    try {
+        await supabaseCliente.from('pedidos').insert([{
+            usuario_id: usuarioActual ? usuarioActual.id : null,
+            cliente_nombre: nom,
+            direccion: dir,
+            total_usd: totalUSD,
+            total_bs: totalBs,
+            productos_detalle: mapaDetalle,
+            estado: 'pendiente',
+            metodo_pago: metodoPago,
+            comprobante_url: urlCapture
+        }]);
+    } catch(ex) { console.error(ex); }
 
-                            let brutoUSD = 0;
-                            const mapaDetalle = carrito.map(item => {
-                                brutoUSD += parseFloat(item.precio_usd) * item.cantidad;
-                                return { producto_id: item.id, nombre: item.nombre, cantidad: item.cantidad, precio_unitario_usd: item.precio_usd, aliado: item.aliado_comercial };
-                            });
+    // Generar Mensaje WhatsApp
+    let txt = `🛒 *NUEVO PEDIDO A TU PUERTA* 🛒\n\n`;
+    txt += `👤 *Cliente:* ${nom}\n📍 *Dirección:* ${dir}\n`;
+    txt += `💳 *Método de Pago:* ${metodoPago === 'pagomovil' ? 'Pago Móvil' : 'Efectivo'}\n`;
+    
+    if(codigoCuponAplicado) txt += `🎟️ *Cupón:* ${codigoCuponAplicado} (-${descuentoPorcentaje}%)\n`;
+    txt += `───────────────\n\n`;
+    
+    carrito.forEach((item, i) => {
+        txt += `${i+1}. *${item.nombre}* (x${item.cantidad})\n   _Tienda:_ ${item.aliado_comercial}\n\n`;
+    });
+    
+    txt += `───────────────\n`;
+    txt += `💵 *TOTAL NETO:* $${totalUSD.toFixed(2)}\n🇻🇪 *TOTAL BS:* ${totalBs.toLocaleString('es-VE', {minimumFractionDigits:2})} Bs\n`;
+    
+    if (urlCapture) {
+        txt += `\n📎 *VER CAPTURE DE PAGO:* ${urlCapture}\n`;
+    }
 
-                            let totalUSD = brutoUSD;
-                            if (descuentoPorcentaje > 0) {
-                                totalUSD = brutoUSD - (brutoUSD * (descuentoPorcentaje / 100));
-                            }
-                            const totalBs = totalUSD * globalTasa;
+    // Restaurar el botón y redirigir a WhatsApp
+    btn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP`;
+    btn.disabled = false;
+    
+    window.open(`https://wa.me/${numeroDestino}?text=${encodeURIComponent(txt)}`, '_blank');
+    
+    // Limpiar carrito después del envío opcionalmente:
+    // carrito = []; actualizarInterfazCarrito(); cerrarModal('modal-carrito');
+}
 
-                            // Guardar pedido en Supabase
-                            try {
-                                await supabaseCliente.from('pedidos').insert([{
-                                    usuario_id: usuarioActual ? usuarioActual.id : null,
-                                    cliente_nombre: nom,
-                                    direccion: dir,
-                                    total_usd: totalUSD,
-                                    total_bs: totalBs,
-                                    productos_detalle: mapaDetalle,
-                                    estado: 'pendiente',
-                                    metodo_pago: metodoPago,
-                                    comprobante_url: urlCapture
-                                }]);
-                            } catch (ex) { console.error(ex); }
+        function cambiarAccesoGate(tipo) {
+            if(tipo === 'maestro') {
+                document.getElementById('gate-form-maestro').classList.remove('hidden');
+                document.getElementById('gate-form-aliado').classList.add('hidden');
+            } else {
+                document.getElementById('gate-form-aliado').classList.remove('hidden');
+                document.getElementById('gate-form-maestro').classList.add('hidden');
+            }
+        }
 
-                            // Generar Mensaje WhatsApp
-                            let txt = `🛒 *NUEVO PEDIDO A TU PUERTA* 🛒\n\n`;
-                            txt += `👤 *Cliente:* ${nom}\n📍 *Dirección:* ${dir}\n`;
-                            txt += `💳 *Método de Pago:* ${metodoPago === 'pagomovil' ? 'Pago Móvil' : 'Efectivo'}\n`;
+        function validarAdminMaestro() {
+            if (document.getElementById('admin-key').value === '27146006') {
+                document.getElementById('admin-gate-ui').classList.add('hidden');
+                document.getElementById('admin-main-ui').classList.remove('hidden');
+                cargarMetricasGlobales();
+                obtenerCuponesAdmin(); 
+            } else { alert("Clave Incorrecta."); }
+        }
 
-                            if (codigoCuponAplicado) txt += `🎟️ *Cupón:* ${codigoCuponAplicado} (-${descuentoPorcentaje}%)\n`;
-                            txt += `───────────────\n\n`;
+        function validarAdminAliado() {
+            const tienda = document.getElementById('gate-aliado-select').value;
+            const claveInput = document.getElementById('gate-aliado-pass').value;
 
-                            carrito.forEach((item, i) => {
-                                txt += `${i + 1}. *${item.nombre}* (x${item.cantidad})\n   _Tienda:_ ${item.aliado_comercial}\n\n`;
-                            });
+            const baseAliado = globalAliados.find(a => a.nombre === tienda);
+            if(baseAliado && baseAliado.clave_acceso === claveInput) {
+                loginAliadoActivo = baseAliado.nombre;
+                
+                document.getElementById('sub-nombre-tienda').innerText = baseAliado.nombre;
+                document.getElementById('sub-tienda-abierto-toggle').checked = baseAliado.abierto;
+                actualizarBadgeHorarioTexto(baseAliado.abierto);
 
-                            txt += `───────────────\n`;
-                            txt += `💵 *TOTAL NETO:* $${totalUSD.toFixed(2)}\n🇻🇪 *TOTAL BS:* ${totalBs.toLocaleString('es-VE', { minimumFractionDigits: 2 })} Bs\n`;
+                document.getElementById('admin-gate-ui').classList.add('hidden');
+                document.getElementById('admin-aliado-ui').classList.remove('hidden');
+                
+                renderizarInventarioAliado();
+            } else {
+                alert("❌ Credenciales inválidas para ese establecimiento.");
+            }
+        }
 
-                            if (urlCapture) {
-                                txt += `\n📎 *VER CAPTURE DE PAGO:* ${urlCapture}\n`;
-                            }
+        function salirDePaneles() {
+            loginAliadoActivo = null;
+            document.getElementById('admin-main-ui').classList.add('hidden');
+            document.getElementById('admin-aliado-ui').classList.add('hidden');
+            document.getElementById('admin-gate-ui').classList.remove('hidden');
+            document.getElementById('admin-key').value = '';
+            document.getElementById('gate-aliado-pass').value = '';
+        }
 
-                            // Restaurar el botón y redirigir a WhatsApp
-                            btn.innerHTML = `<i class="fa-brands fa-whatsapp text-xl"></i> ENVIAR PEDIDO A WHATSAPP`;
-                            btn.disabled = false;
+        async function toggleEstadoHorarioAliado() {
+            const check = document.getElementById('sub-tienda-abierto-toggle').checked;
+            actualizarBadgeHorarioTexto(check);
 
-                            window.open(`https://wa.me/${numeroDestino}?text=${encodeURIComponent(txt)}`, '_blank');
+            const { error } = await supabaseCliente.from('aliados').update({ abierto: check }).eq('nombre', loginAliadoActivo);
+            if(error) alert("Error al cambiar horario: " + error.message);
+            else {
+                await obtenerAliadosComerciales();
+                await obtenerProductosInventario();
+            }
+        }
 
-                            // Limpiar carrito después del envío opcionalmente:
-                            // carrito = []; actualizarInterfazCarrito(); cerrarModal('modal-carrito');
-                        }
+        function actualizarBadgeHorarioTexto(abierto) {
+            const b = document.getElementById('sub-tienda-abierto-badge');
+            if(abierto) {
+                b.innerText = "Abierto / Recibiendo";
+                b.className = "text-xs font-black uppercase text-emerald-600";
+            } else {
+                b.innerText = "Cerrado / Pausado";
+                b.className = "text-xs font-black uppercase text-red-500";
+            }
+        }
 
-                        function cambiarAccesoGate(tipo) {
-                            if (tipo === 'maestro') {
-                                document.getElementById('gate-form-maestro').classList.remove('hidden');
-                                document.getElementById('gate-form-aliado').classList.add('hidden');
-                            } else {
-                                document.getElementById('gate-form-aliado').classList.remove('hidden');
-                                document.getElementById('gate-form-maestro').classList.add('hidden');
-                            }
-                        }
+        async function cargarMetricasGlobales() {
+            try {
+                const { data, error } = await supabaseCliente.from('pedidos').select('*');
+                if (error || !data) return;
 
-                        function validarAdminMaestro() {
-                            if (document.getElementById('admin-key').value === '27146006') {
-                                document.getElementById('admin-gate-ui').classList.add('hidden');
-                                document.getElementById('admin-main-ui').classList.remove('hidden');
-                                cargarMetricasGlobales();
-                                obtenerCuponesAdmin();
-                            } else { alert("Clave Incorrecta."); }
-                        }
+                let ingresos = 0;
+                let conteo = data.length;
+                let mapaAliados = {};
+                let mapaProductos = {};
 
-                        function validarAdminAliado() {
-                            const tienda = document.getElementById('gate-aliado-select').value;
-                            const claveInput = document.getElementById('gate-aliado-pass').value;
+                data.forEach(p => {
+                    ingresos += parseFloat(p.total_usd || 0);
+                    const detalles = p.productos_detalle || [];
+                    detalles.forEach(d => {
+                        mapaAliados[d.aliado] = (mapaAliados[d.aliado] || 0) + (parseFloat(d.precio_unitario_usd) * d.cantidad);
+                        mapaProductos[d.nombre] = (mapaProductos[d.nombre] || 0) + d.cantidad;
+                    });
+                });
 
-                            const baseAliado = globalAliados.find(a => a.nombre === tienda);
-                            if (baseAliado && baseAliado.clave_acceso === claveInput) {
-                                loginAliadoActivo = baseAliado.nombre;
+                let topAliado = "Ninguno"; let maxAl = 0;
+                for(let key in mapaAliados) {
+                    if(mapaAliados[key] > maxAl) { maxAl = mapaAliados[key]; topAliado = key; }
+                }
 
-                                document.getElementById('sub-nombre-tienda').innerText = baseAliado.nombre;
-                                document.getElementById('sub-tienda-abierto-toggle').checked = baseAliado.abierto;
-                                actualizarBadgeHorarioTexto(baseAliado.abierto);
+                let topProd = "Ninguno"; let maxPr = 0;
+                for(let key in mapaProductos) {
+                    if(mapaProductos[key] > maxPr) { maxPr = mapaProductos[key]; topProd = key; }
+                }
 
-                                document.getElementById('admin-gate-ui').classList.add('hidden');
-                                document.getElementById('admin-aliado-ui').classList.remove('hidden');
+                document.getElementById('metric-total-usd').innerText = `$ ${ingresos.toFixed(2)}`;
+                document.getElementById('metric-total-pedidos').innerText = conteo;
+                document.getElementById('metric-top-aliado').innerText = topAliado !== "Ninguno" ? `${topAliado} ($${maxAl.toFixed(1)})` : "Sin datos";
+                document.getElementById('metric-top-producto').innerText = topProd !== "Ninguno" ? `${topProd} (${maxPr} und)` : "Sin datos";
 
-                                renderizarInventarioAliado();
-                            } else {
-                                alert("❌ Credenciales inválidas para ese establecimiento.");
-                            }
-                        }
+            } catch(e) { console.error(e); }
+        }
 
-                        function salirDePaneles() {
-                            loginAliadoActivo = null;
-                            document.getElementById('admin-main-ui').classList.add('hidden');
-                            document.getElementById('admin-aliado-ui').classList.add('hidden');
-                            document.getElementById('admin-gate-ui').classList.remove('hidden');
-                            document.getElementById('admin-key').value = '';
-                            document.getElementById('gate-aliado-pass').value = '';
-                        }
+        async function actualizarTasa() {
+            const v = parseFloat(document.getElementById('adm-tasa').value);
+            await supabaseCliente.from('configuracion').update({ tasa_dolar: v }).eq('id', 1);
+            window.location.reload();
+        }
 
-                        async function toggleEstadoHorarioAliado() {
-                            const check = document.getElementById('sub-tienda-abierto-toggle').checked;
-                            actualizarBadgeHorarioTexto(check);
+        async function adminCrearAliado() {
+			const nom = document.getElementById('adm-nuevo-aliado-nom').value.trim();
+			const img = document.getElementById('adm-nuevo-aliado-img').value.trim();
+			const tel = document.getElementById('adm-nuevo-aliado-tel').value.trim();
+			const clv = document.getElementById('adm-nuevo-aliado-clave').value.trim();
+			const tog = document.getElementById('adm-nuevo-aliado-toggle').checked;
+			
+			const pmBanco = document.getElementById('adm-nuevo-aliado-pm-banco').value.trim();
+			const pmCedula = document.getElementById('adm-nuevo-aliado-pm-cedula').value.trim();
+			const pmTel = document.getElementById('adm-nuevo-aliado-pm-tel').value.trim();
 
-                            const { error } = await supabaseCliente.from('aliados').update({ abierto: check }).eq('nombre', loginAliadoActivo);
-                            if (error) alert("Error al cambiar horario: " + error.message);
-                            else {
-                                await obtenerAliadosComerciales();
-                                await obtenerProductosInventario();
-                            }
-                        }
+			await supabaseCliente.from('aliados').insert([{ 
+				nombre: nom, imagen_url: img, whatsapp: tel, clave_acceso: clv, activo_directo: tog,
+				pm_banco: pmBanco, pm_cedula: pmCedula, pm_telefono: pmTel
+			}]);
+			window.location.reload();
+		}
 
-                        function actualizarBadgeHorarioTexto(abierto) {
-                            const b = document.getElementById('sub-tienda-abierto-badge');
-                            if (abierto) {
-                                b.innerText = "Abierto / Recibiendo";
-                                b.className = "text-xs font-black uppercase text-emerald-600";
-                            } else {
-                                b.innerText = "Cerrado / Pausado";
-                                b.className = "text-xs font-black uppercase text-red-500";
-                            }
-                        }
+        async function adminEliminarAliado(id) {
+            if (confirm("¿Eliminar comercio aliado?")) {
+                await supabaseCliente.from('aliados').delete().eq('id', id);
+                window.location.reload();
+            }
+        }
 
-                        async function cargarMetricasGlobales() {
-                            try {
-                                const { data, error } = await supabaseCliente.from('pedidos').select('*');
-                                if (error || !data) return;
+        async function adminGuardarProducto(e, rol) {
+            e.preventDefault();
+            let pEstructura = {};
 
-                                let ingresos = 0;
-                                let conteo = data.length;
-                                let mapaAliados = {};
-                                let mapaProductos = {};
+            if(rol === 'maestro') {
+                pEstructura = {
+                    nombre: document.getElementById('adm-nombre').value.trim(),
+                    descripcion: document.getElementById('adm-desc').value.trim(),
+                    precio_usd: parseFloat(document.getElementById('adm-precio').value),
+                    stock: parseInt(document.getElementById('adm-stock').value),
+                    imagen_url: document.getElementById('adm-img').value.trim(),
+                    aliado_comercial: document.getElementById('adm-aliado').value, 
+                    categoria_id: document.getElementById('adm-cat').value || null,
+                    es_promocion: document.getElementById('adm-promo').checked
+                };
+            } else {
+                pEstructura = {
+                    nombre: document.getElementById('sub-nombre').value.trim(),
+                    descripcion: document.getElementById('sub-desc').value.trim(),
+                    precio_usd: parseFloat(document.getElementById('sub-precio').value),
+                    stock: parseInt(document.getElementById('sub-stock').value),
+                    imagen_url: document.getElementById('sub-img').value.trim(),
+                    aliado_comercial: loginAliadoActivo, 
+                    categoria_id: document.getElementById('sub-cat').value || null,
+                    es_promocion: document.getElementById('sub-promo').checked
+                };
+            }
 
-                                data.forEach(p => {
-                                    ingresos += parseFloat(p.total_usd || 0);
-                                    const detalles = p.productos_detalle || [];
-                                    detalles.forEach(d => {
-                                        mapaAliados[d.aliado] = (mapaAliados[d.aliado] || 0) + (parseFloat(d.precio_unitario_usd) * d.cantidad);
-                                        mapaProductos[d.nombre] = (mapaProductos[d.nombre] || 0) + d.cantidad;
-                                    });
-                                });
+            if (idProductoEditando !== null) {
+                await supabaseCliente.from('productos').update(pEstructura).eq('id', idProductoEditando);
+                alert("Modificación inyectada.");
+                cancelarEdicion(rol);
+            } else {
+                await supabaseCliente.from('productos').insert([pEstructura]);
+                alert("Guardado en vitrina.");
+                e.target.reset();
+            }
+            await obtenerProductosInventario();
+        }
 
-                                let topAliado = "Ninguno"; let maxAl = 0;
-                                for (let key in mapaAliados) {
-                                    if (mapaAliados[key] > maxAl) { maxAl = mapaAliados[key]; topAliado = key; }
-                                }
+        function cargarProductoParaEditar(id, rol) {
+            const p = globalProductos.find(prod => prod.id === id);
+            if (!p) return;
+            idProductoEditando = p.id;
 
-                                let topProd = "Ninguno"; let maxPr = 0;
-                                for (let key in mapaProductos) {
-                                    if (mapaProductos[key] > maxPr) { maxPr = mapaProductos[key]; topProd = key; }
-                                }
+            if(rol === 'maestro') {
+                document.getElementById('admin-form-title').innerText = "Editar Producto Maestro";
+                document.getElementById('btn-admin-guardar').innerText = "ACTUALIZAR";
+                document.getElementById('btn-admin-cancelar').classList.remove('hidden');
 
-                                document.getElementById('metric-total-usd').innerText = `$ ${ingresos.toFixed(2)}`;
-                                document.getElementById('metric-total-pedidos').innerText = conteo;
-                                document.getElementById('metric-top-aliado').innerText = topAliado !== "Ninguno" ? `${topAliado} ($${maxAl.toFixed(1)})` : "Sin datos";
-                                document.getElementById('metric-top-producto').innerText = topProd !== "Ninguno" ? `${topProd} (${maxPr} und)` : "Sin datos";
+                document.getElementById('adm-nombre').value = p.nombre;
+                document.getElementById('adm-desc').value = p.descripcion || '';
+                document.getElementById('adm-precio').value = p.precio_usd;
+                document.getElementById('adm-stock').value = p.stock;
+                document.getElementById('adm-img').value = p.imagen_url;
+                document.getElementById('adm-aliado').value = p.aliado_comercial;
+                document.getElementById('adm-cat').value = p.categoria_id || '';
+                document.getElementById('adm-promo').checked = p.es_promocion;
+            } else {
+                document.getElementById('sub-form-title').innerText = "Modificar mi Producto";
+                document.getElementById('btn-sub-guardar').innerText = "ACTUALIZAR MI ARTÍCULO";
+                document.getElementById('btn-sub-cancelar').classList.remove('hidden');
 
-                            } catch (e) { console.error(e); }
-                        }
+                document.getElementById('sub-nombre').value = p.nombre;
+                document.getElementById('sub-desc').value = p.descripcion || '';
+                document.getElementById('sub-precio').value = p.precio_usd;
+                document.getElementById('sub-stock').value = p.stock;
+                document.getElementById('sub-img').value = p.imagen_url;
+                document.getElementById('sub-cat').value = p.categoria_id || '';
+                document.getElementById('sub-promo').checked = p.es_promocion;
+            }
+        }
 
-                        async function actualizarTasa() {
-                            const v = parseFloat(document.getElementById('adm-tasa').value);
-                            await supabaseCliente.from('configuracion').update({ tasa_dolar: v }).eq('id', 1);
-                            window.location.reload();
-                        }
+        function cancelarEdicion(rol) {
+            idProductoEditando = null;
+            if(rol === 'maestro') {
+                document.getElementById('admin-form-title').innerText = "Registrar Producto";
+                document.getElementById('btn-admin-guardar').innerText = "GUARDAR EN INVENTARIO";
+                document.getElementById('btn-admin-cancelar').classList.add('hidden');
+                document.getElementById('adm-nombre').value = ''; document.getElementById('adm-desc').value = '';
+                document.getElementById('adm-precio').value = ''; document.getElementById('adm-stock').value = '';
+                document.getElementById('adm-img').value = '';
+            } else {
+                document.getElementById('sub-form-title').innerText = "Registrar Producto en mi Menú";
+                document.getElementById('btn-sub-guardar').innerText = "SUBIR A LA VITRINA";
+                document.getElementById('btn-sub-cancelar').classList.add('hidden');
+                document.getElementById('sub-nombre').value = ''; document.getElementById('sub-desc').value = '';
+                document.getElementById('sub-precio').value = ''; document.getElementById('sub-stock').value = '';
+                document.getElementById('sub-img').value = '';
+            }
+        }
 
-                        async function adminCrearAliado() {
-                            const nom = document.getElementById('adm-nuevo-aliado-nom').value.trim();
-                            const img = document.getElementById('adm-nuevo-aliado-img').value.trim();
-                            const tel = document.getElementById('adm-nuevo-aliado-tel').value.trim();
-                            const clv = document.getElementById('adm-nuevo-aliado-clave').value.trim();
-                            const tog = document.getElementById('adm-nuevo-aliado-toggle').checked;
+        async function eliminarProducto(id, rol) {
+            if (confirm("¿Eliminar artículo definitivamente?")) {
+                await supabaseCliente.from('productos').delete().eq('id', id);
+                cancelarEdicion(rol);
+                await obtenerProductosInventario();
+            }
+        }
 
-                            const pmBanco = document.getElementById('adm-nuevo-aliado-pm-banco').value.trim();
-                            const pmCedula = document.getElementById('adm-nuevo-aliado-pm-cedula').value.trim();
-                            const pmTel = document.getElementById('adm-nuevo-aliado-pm-tel').value.trim();
-
-                            await supabaseCliente.from('aliados').insert([{
-                                nombre: nom, imagen_url: img, whatsapp: tel, clave_acceso: clv, activo_directo: tog,
-                                pm_banco: pmBanco, pm_cedula: pmCedula, pm_telefono: pmTel
-                            }]);
-                            window.location.reload();
-                        }
-
-                        async function adminEliminarAliado(id) {
-                            if (confirm("¿Eliminar comercio aliado?")) {
-                                await supabaseCliente.from('aliados').delete().eq('id', id);
-                                window.location.reload();
-                            }
-                        }
-
-                        async function adminGuardarProducto(e, rol) {
-                            e.preventDefault();
-                            let pEstructura = {};
-
-                            if (rol === 'maestro') {
-                                pEstructura = {
-                                    nombre: document.getElementById('adm-nombre').value.trim(),
-                                    descripcion: document.getElementById('adm-desc').value.trim(),
-                                    precio_usd: parseFloat(document.getElementById('adm-precio').value),
-                                    stock: parseInt(document.getElementById('adm-stock').value),
-                                    imagen_url: document.getElementById('adm-img').value.trim(),
-                                    aliado_comercial: document.getElementById('adm-aliado').value,
-                                    categoria_id: document.getElementById('adm-cat').value || null,
-                                    es_promocion: document.getElementById('adm-promo').checked
-                                };
-                            } else {
-                                pEstructura = {
-                                    nombre: document.getElementById('sub-nombre').value.trim(),
-                                    descripcion: document.getElementById('sub-desc').value.trim(),
-                                    precio_usd: parseFloat(document.getElementById('sub-precio').value),
-                                    stock: parseInt(document.getElementById('sub-stock').value),
-                                    imagen_url: document.getElementById('sub-img').value.trim(),
-                                    aliado_comercial: loginAliadoActivo,
-                                    categoria_id: document.getElementById('sub-cat').value || null,
-                                    es_promocion: document.getElementById('sub-promo').checked
-                                };
-                            }
-
-                            if (idProductoEditando !== null) {
-                                await supabaseCliente.from('productos').update(pEstructura).eq('id', idProductoEditando);
-                                alert("Modificación inyectada.");
-                                cancelarEdicion(rol);
-                            } else {
-                                await supabaseCliente.from('productos').insert([pEstructura]);
-                                alert("Guardado en vitrina.");
-                                e.target.reset();
-                            }
-                            await obtenerProductosInventario();
-                        }
-
-                        function cargarProductoParaEditar(id, rol) {
-                            const p = globalProductos.find(prod => prod.id === id);
-                            if (!p) return;
-                            idProductoEditando = p.id;
-
-                            if (rol === 'maestro') {
-                                document.getElementById('admin-form-title').innerText = "Editar Producto Maestro";
-                                document.getElementById('btn-admin-guardar').innerText = "ACTUALIZAR";
-                                document.getElementById('btn-admin-cancelar').classList.remove('hidden');
-
-                                document.getElementById('adm-nombre').value = p.nombre;
-                                document.getElementById('adm-desc').value = p.descripcion || '';
-                                document.getElementById('adm-precio').value = p.precio_usd;
-                                document.getElementById('adm-stock').value = p.stock;
-                                document.getElementById('adm-img').value = p.imagen_url;
-                                document.getElementById('adm-aliado').value = p.aliado_comercial;
-                                document.getElementById('adm-cat').value = p.categoria_id || '';
-                                document.getElementById('adm-promo').checked = p.es_promocion;
-                            } else {
-                                document.getElementById('sub-form-title').innerText = "Modificar mi Producto";
-                                document.getElementById('btn-sub-guardar').innerText = "ACTUALIZAR MI ARTÍCULO";
-                                document.getElementById('btn-sub-cancelar').classList.remove('hidden');
-
-                                document.getElementById('sub-nombre').value = p.nombre;
-                                document.getElementById('sub-desc').value = p.descripcion || '';
-                                document.getElementById('sub-precio').value = p.precio_usd;
-                                document.getElementById('sub-stock').value = p.stock;
-                                document.getElementById('sub-img').value = p.imagen_url;
-                                document.getElementById('sub-cat').value = p.categoria_id || '';
-                                document.getElementById('sub-promo').checked = p.es_promocion;
-                            }
-                        }
-
-                        function cancelarEdicion(rol) {
-                            idProductoEditando = null;
-                            if (rol === 'maestro') {
-                                document.getElementById('admin-form-title').innerText = "Registrar Producto";
-                                document.getElementById('btn-admin-guardar').innerText = "GUARDAR EN INVENTARIO";
-                                document.getElementById('btn-admin-cancelar').classList.add('hidden');
-                                document.getElementById('adm-nombre').value = ''; document.getElementById('adm-desc').value = '';
-                                document.getElementById('adm-precio').value = ''; document.getElementById('adm-stock').value = '';
-                                document.getElementById('adm-img').value = '';
-                            } else {
-                                document.getElementById('sub-form-title').innerText = "Registrar Producto en mi Menú";
-                                document.getElementById('btn-sub-guardar').innerText = "SUBIR A LA VITRINA";
-                                document.getElementById('btn-sub-cancelar').classList.add('hidden');
-                                document.getElementById('sub-nombre').value = ''; document.getElementById('sub-desc').value = '';
-                                document.getElementById('sub-precio').value = ''; document.getElementById('sub-stock').value = '';
-                                document.getElementById('sub-img').value = '';
-                            }
-                        }
-
-                        async function eliminarProducto(id, rol) {
-                            if (confirm("¿Eliminar artículo definitivamente?")) {
-                                await supabaseCliente.from('productos').delete().eq('id', id);
-                                cancelarEdicion(rol);
-                                await obtenerProductosInventario();
-                            }
-                        }
-
-                        function renderizarInventarioAdmin() {
-                            const container = document.getElementById('admin-lista-productos');
-                            container.innerHTML = '';
-                            globalProductos.forEach(p => {
-                                container.innerHTML += `
+        function renderizarInventarioAdmin() {
+            const container = document.getElementById('admin-lista-productos');
+            container.innerHTML = '';
+            globalProductos.forEach(p => {
+                container.innerHTML += `
                     <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border text-xs">
                         <div class="flex-grow min-w-0">
                             <p class="font-bold text-gray-900 truncate">${p.nombre}</p>
@@ -1496,22 +1296,22 @@
                         </div>
                     </div>
                 `;
-                            });
-                        }
+            });
+        }
 
-                        function renderizarInventarioAliado() {
-                            const container = document.getElementById('sub-lista-productos');
-                            container.innerHTML = '';
+        function renderizarInventarioAliado() {
+            const container = document.getElementById('sub-lista-productos');
+            container.innerHTML = '';
+            
+            const misProductos = globalProductos.filter(p => p.aliado_comercial === loginAliadoActivo);
+            
+            if(misProductos.length === 0) {
+                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-xs">No has cargado ningún producto a tu vitrina todavía.</p>`;
+                return;
+            }
 
-                            const misProductos = globalProductos.filter(p => p.aliado_comercial === loginAliadoActivo);
-
-                            if (misProductos.length === 0) {
-                                container.innerHTML = `<p class="text-center py-8 text-gray-400 text-xs">No has cargado ningún producto a tu vitrina todavía.</p>`;
-                                return;
-                            }
-
-                            misProductos.forEach(p => {
-                                container.innerHTML += `
+            misProductos.forEach(p => {
+                container.innerHTML += `
                     <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-200">
                         <img src="${p.imagen_url}" class="w-10 h-10 object-cover rounded-lg border bg-white" onerror="this.src='https://placehold.co/100'">
                         <div class="flex-grow min-w-0">
@@ -1524,149 +1324,149 @@
                         </div>
                     </div>
                 `;
-                            });
-                        }
+            });
+        }
 
-                        // 1. Controla visualmente si estamos en Login o Registro
-                        function cambiarModoAuth(modo) {
-                            modoAuthActual = modo;
-                            const titulo = document.getElementById('auth-titulo');
-                            const desc = document.getElementById('auth-desc');
-                            const btnPrincipal = document.getElementById('btn-auth-principal');
-                            const btnCambio = document.getElementById('btn-auth-cambio');
-                            const divTipoCuenta = document.getElementById('auth-tipo-container');
+        // 1. Controla visualmente si estamos en Login o Registro
+function cambiarModoAuth(modo) {
+    modoAuthActual = modo;
+    const titulo = document.getElementById('auth-titulo');
+    const desc = document.getElementById('auth-desc');
+    const btnPrincipal = document.getElementById('btn-auth-principal');
+    const btnCambio = document.getElementById('btn-auth-cambio');
+    const divTipoCuenta = document.getElementById('auth-tipo-container');
 
-                            if (modo === 'registro') {
-                                titulo.innerText = 'Crear Cuenta';
-                                desc.innerText = 'Regístrate para empezar a pedir o trabajar.';
-                                btnPrincipal.innerText = 'Registrarme';
-                                btnCambio.innerText = '¿Ya tienes cuenta? Inicia sesión aquí';
-                                btnCambio.onclick = () => cambiarModoAuth('login');
-                                divTipoCuenta.classList.remove('hidden');
-                            } else {
-                                titulo.innerText = 'Iniciar Sesión';
-                                desc.innerText = 'Ingresa tu cuenta para continuar.';
-                                btnPrincipal.innerText = 'Ingresar';
-                                btnCambio.innerText = '¿No tienes cuenta? Regístrate aquí';
-                                btnCambio.onclick = () => cambiarModoAuth('registro');
-                                divTipoCuenta.classList.add('hidden');
-                            }
-                        }
+    if (modo === 'registro') {
+        titulo.innerText = 'Crear Cuenta';
+        desc.innerText = 'Regístrate para empezar a pedir o trabajar.';
+        btnPrincipal.innerText = 'Registrarme';
+        btnCambio.innerText = '¿Ya tienes cuenta? Inicia sesión aquí';
+        btnCambio.onclick = () => cambiarModoAuth('login');
+        divTipoCuenta.classList.remove('hidden');
+    } else {
+        titulo.innerText = 'Iniciar Sesión';
+        desc.innerText = 'Ingresa tu cuenta para continuar.';
+        btnPrincipal.innerText = 'Ingresar';
+        btnCambio.innerText = '¿No tienes cuenta? Regístrate aquí';
+        btnCambio.onclick = () => cambiarModoAuth('registro');
+        divTipoCuenta.classList.add('hidden');
+    }
+}
 
-                        // 2. Ejecuta la autenticación real en Supabase con manejo de errores y roles
-                        async function ejecutarAuth() {
-                            const email = document.getElementById('auth-email').value.trim();
-                            const pass = document.getElementById('auth-pass').value.trim();
-                            const btn = document.getElementById('btn-auth-principal');
+// 2. Ejecuta la autenticación real en Supabase con manejo de errores y roles
+async function ejecutarAuth() {
+    const email = document.getElementById('auth-email').value.trim();
+    const pass = document.getElementById('auth-pass').value.trim();
+    const btn = document.getElementById('btn-auth-principal');
+    
+    if(!email || !pass) return alert("Por favor, ingresa correo y contraseña.");
 
-                            if (!email || !pass) return alert("Por favor, ingresa correo y contraseña.");
+    // Cambiar el botón a estado de carga
+    const textoOriginal = btn.innerText;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Procesando...`;
+    btn.disabled = true;
 
-                            // Cambiar el botón a estado de carga
-                            const textoOriginal = btn.innerText;
-                            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Procesando...`;
-                            btn.disabled = true;
+    try {
+        if (modoAuthActual === 'login') {
+            // FLUJO DE INGRESO
+            const { error } = await supabaseCliente.auth.signInWithPassword({ email, password: pass });
+            if (error) throw error;
+            
+        } else {
+            // FLUJO DE REGISTRO
+            const tipoCuenta = document.getElementById('auth-tipo').value;
+            const { error } = await supabaseCliente.auth.signUp({ 
+                email, 
+                password: pass,
+                options: {
+                    // Guardamos el rol directamente en los metadatos del usuario en Supabase
+                    data: { rol: tipoCuenta }
+                }
+            });
+            if (error) throw error;
+            alert("✅ ¡Cuenta creada exitosamente! Ya estás registrado.");
+        }
+        
+        // Si todo sale bien, recargamos la página para aplicar la sesión
+        window.location.reload();
+        
+    } catch (err) {
+        console.error(err);
+        
+        // Traducción de los errores más comunes de Supabase al español
+        let msg = "Ocurrió un error en la autenticación.";
+        if(err.message.includes("Invalid login credentials")) msg = "Correo o contraseña incorrectos.";
+        if(err.message.includes("Password should be at least")) msg = "La contraseña debe tener al menos 6 caracteres.";
+        if(err.message.includes("User already registered")) msg = "Este correo ya se encuentra registrado.";
+        
+        alert(`❌ ${msg}`);
+        
+        // Restaurar el botón si hay error
+        btn.innerText = textoOriginal;
+        btn.disabled = false;
+    }
+}
 
-                            try {
-                                if (modoAuthActual === 'login') {
-                                    // FLUJO DE INGRESO
-                                    const { error } = await supabaseCliente.auth.signInWithPassword({ email, password: pass });
-                                    if (error) throw error;
+// 3. Verifica el usuario al cargar la página y lee su Rol
+async function verificarEstadoUsuario() {
+    const { data } = await supabaseCliente.auth.getSession();
+    
+    if (data && data.session) {
+        usuarioActual = data.session.user;
+        const rol = usuarioActual.user_metadata?.rol || 'cliente';
+        
+        document.getElementById('auth-buttons').classList.add('hidden');
+        document.getElementById('user-menu').classList.remove('hidden');
+        
+        let badgeRol = '';
+        if(rol === 'aliado') badgeRol = '<span class="bg-indigo-100 text-indigo-700 text-[9px] px-1.5 py-0.5 rounded font-black ml-1">ALIADO</span>';
+        if(rol === 'motorizado') {
+            badgeRol = '<span class="bg-amber-100 text-amber-700 text-[9px] px-1.5 py-0.5 rounded font-black ml-1">MOTO</span>';
+            document.getElementById('btn-panel-moto').classList.remove('hidden'); // Mostramos el botón
+        }
 
-                                } else {
-                                    // FLUJO DE REGISTRO
-                                    const tipoCuenta = document.getElementById('auth-tipo').value;
-                                    const { error } = await supabaseCliente.auth.signUp({
-                                        email,
-                                        password: pass,
-                                        options: {
-                                            // Guardamos el rol directamente en los metadatos del usuario en Supabase
-                                            data: { rol: tipoCuenta }
-                                        }
-                                    });
-                                    if (error) throw error;
-                                    alert("✅ ¡Cuenta creada exitosamente! Ya estás registrado.");
-                                }
+        document.getElementById('user-name').innerHTML = `${usuarioActual.email.split('@')[0]} ${badgeRol}`;
 
-                                // Si todo sale bien, recargamos la página para aplicar la sesión
-                                window.location.reload();
+        // Carga de datos de perfil para el carrito
+        const { data: perfilData } = await supabaseCliente.from('perfiles').select('*').eq('id', usuarioActual.id).single();
+        if (perfilData) {
+            datosPerfilUsuario = perfilData;
+            if(document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = perfilData.nombre_completo || '';
+            if(document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = perfilData.direccion_principal || '';
+        }
+    }
+}
+		// --- LÓGICA DEL MOTORIZADO ---
 
-                            } catch (err) {
-                                console.error(err);
+function abrirPanelMotorizado() {
+    abrirModal('modal-motorizado');
+    cargarPedidosParaMoto();
+}
 
-                                // Traducción de los errores más comunes de Supabase al español
-                                let msg = "Ocurrió un error en la autenticación.";
-                                if (err.message.includes("Invalid login credentials")) msg = "Correo o contraseña incorrectos.";
-                                if (err.message.includes("Password should be at least")) msg = "La contraseña debe tener al menos 6 caracteres.";
-                                if (err.message.includes("User already registered")) msg = "Este correo ya se encuentra registrado.";
+async function cargarPedidosParaMoto() {
+    if (!usuarioActual) return;
 
-                                alert(`❌ ${msg}`);
+    // Traemos los pedidos que necesitan moto o que ya son de este motorizado
+    const { data: pedidos, error } = await supabaseCliente
+        .from('pedidos')
+        .select('*')
+        .in('estado_delivery', ['esperando_moto', 'en_camino'])
+        .order('created_at', { ascending: false });
 
-                                // Restaurar el botón si hay error
-                                btn.innerText = textoOriginal;
-                                btn.disabled = false;
-                            }
-                        }
+    if (error) { console.error("Error cargando pedidos", error); return; }
 
-                        // 3. Verifica el usuario al cargar la página y lee su Rol
-                        async function verificarEstadoUsuario() {
-                            const { data } = await supabaseCliente.auth.getSession();
+    const containerDisp = document.getElementById('moto-lista-disponibles');
+    const containerMios = document.getElementById('moto-lista-mis-viajes');
+    containerDisp.innerHTML = ''; containerMios.innerHTML = '';
 
-                            if (data && data.session) {
-                                usuarioActual = data.session.user;
-                                const rol = usuarioActual.user_metadata?.rol || 'cliente';
+    const disponibles = pedidos.filter(p => p.estado_delivery === 'esperando_moto');
+    const misViajes = pedidos.filter(p => p.motorizado_id === usuarioActual.id && p.estado_delivery === 'en_camino');
 
-                                document.getElementById('auth-buttons').classList.add('hidden');
-                                document.getElementById('user-menu').classList.remove('hidden');
-
-                                let badgeRol = '';
-                                if (rol === 'aliado') badgeRol = '<span class="bg-indigo-100 text-indigo-700 text-[9px] px-1.5 py-0.5 rounded font-black ml-1">ALIADO</span>';
-                                if (rol === 'motorizado') {
-                                    badgeRol = '<span class="bg-amber-100 text-amber-700 text-[9px] px-1.5 py-0.5 rounded font-black ml-1">MOTO</span>';
-                                    document.getElementById('btn-panel-moto').classList.remove('hidden'); // Mostramos el botón
-                                }
-
-                                document.getElementById('user-name').innerHTML = `${usuarioActual.email.split('@')[0]} ${badgeRol}`;
-
-                                // Carga de datos de perfil para el carrito
-                                const { data: perfilData } = await supabaseCliente.from('perfiles').select('*').eq('id', usuarioActual.id).single();
-                                if (perfilData) {
-                                    datosPerfilUsuario = perfilData;
-                                    if (document.getElementById('checkout-nombre')) document.getElementById('checkout-nombre').value = perfilData.nombre_completo || '';
-                                    if (document.getElementById('checkout-direccion')) document.getElementById('checkout-direccion').value = perfilData.direccion_principal || '';
-                                }
-                            }
-                        }
-                        // --- LÓGICA DEL MOTORIZADO ---
-
-                        function abrirPanelMotorizado() {
-                            abrirModal('modal-motorizado');
-                            cargarPedidosParaMoto();
-                        }
-
-                        async function cargarPedidosParaMoto() {
-                            if (!usuarioActual) return;
-
-                            // Traemos los pedidos que necesitan moto o que ya son de este motorizado
-                            const { data: pedidos, error } = await supabaseCliente
-                                .from('pedidos')
-                                .select('*')
-                                .in('estado_delivery', ['esperando_moto', 'en_camino'])
-                                .order('created_at', { ascending: false });
-
-                            if (error) { console.error("Error cargando pedidos", error); return; }
-
-                            const containerDisp = document.getElementById('moto-lista-disponibles');
-                            const containerMios = document.getElementById('moto-lista-mis-viajes');
-                            containerDisp.innerHTML = ''; containerMios.innerHTML = '';
-
-                            const disponibles = pedidos.filter(p => p.estado_delivery === 'esperando_moto');
-                            const misViajes = pedidos.filter(p => p.motorizado_id === usuarioActual.id && p.estado_delivery === 'en_camino');
-
-                            // Renderizar Disponibles
-                            if (disponibles.length === 0) containerDisp.innerHTML = '<p class="text-xs text-gray-400 text-center py-4 font-bold">No hay pedidos pendientes en el radar.</p>';
-                            disponibles.forEach(p => {
-                                const tiendas = [...new Set(p.productos_detalle.map(d => d.aliado))].join(', ');
-                                containerDisp.innerHTML += `
+    // Renderizar Disponibles
+    if(disponibles.length === 0) containerDisp.innerHTML = '<p class="text-xs text-gray-400 text-center py-4 font-bold">No hay pedidos pendientes en el radar.</p>';
+    disponibles.forEach(p => {
+        const tiendas = [...new Set(p.productos_detalle.map(d => d.aliado))].join(', ');
+        containerDisp.innerHTML += `
             <div class="bg-white p-4 rounded-xl shadow-xs border border-gray-100 flex flex-col gap-2">
                 <div class="flex justify-between items-start">
                     <div>
@@ -1684,12 +1484,12 @@
                 </button>
             </div>
         `;
-                            });
+    });
 
-                            // Renderizar Mis Viajes
-                            if (misViajes.length === 0) containerMios.innerHTML = '<p class="text-xs text-indigo-300 text-center py-4 font-bold">No tienes viajes activos.</p>';
-                            misViajes.forEach(p => {
-                                containerMios.innerHTML += `
+    // Renderizar Mis Viajes
+    if(misViajes.length === 0) containerMios.innerHTML = '<p class="text-xs text-indigo-300 text-center py-4 font-bold">No tienes viajes activos.</p>';
+    misViajes.forEach(p => {
+        containerMios.innerHTML += `
             <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-200 flex flex-col gap-2 relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-1 h-full bg-amber-500"></div>
                 <div class="pl-2 flex justify-between items-start">
@@ -1708,86 +1508,99 @@
                 </button>
             </div>
         `;
-                            });
-                        }
+    });
+}
 
-                        async function tomarPedidoMoto(pedidoId) {
-                            if (confirm("¿Confirmas que retirarás y entregarás este pedido?")) {
-                                const { error } = await supabaseCliente
-                                    .from('pedidos')
-                                    .update({ motorizado_id: usuarioActual.id, estado_delivery: 'en_camino' })
-                                    .eq('id', pedidoId);
+async function tomarPedidoMoto(pedidoId) {
+    if(confirm("¿Confirmas que retirarás y entregarás este pedido?")) {
+        const { error } = await supabaseCliente
+            .from('pedidos')
+            .update({ motorizado_id: usuarioActual.id, estado_delivery: 'en_camino' })
+            .eq('id', pedidoId);
+        
+        if(error) alert("Error al tomar el pedido.");
+        else cargarPedidosParaMoto();
+    }
+}
 
-                                if (error) alert("Error al tomar el pedido.");
-                                else cargarPedidosParaMoto();
-                            }
-                        }
+async function marcarPedidoEntregado(pedidoId) {
+    if(confirm("¿Confirmas que ya entregaste el pedido al cliente?")) {
+        const { error } = await supabaseCliente
+            .from('pedidos')
+            .update({ estado_delivery: 'entregado', estado: 'completado' }) // Completamos el flujo general también
+            .eq('id', pedidoId);
+        
+        if(error) alert("Error al actualizar.");
+        else {
+            alert("✅ ¡Excelente trabajo! Entrega registrada.");
+            cargarPedidosParaMoto();
+        }
+    }
+}
+		
+        }
 
-                        async function marcarPedidoEntregado(pedidoId) {
-                            if (confirm("¿Confirmas que ya entregaste el pedido al cliente?")) {
-                                const { error } = await supabaseCliente
-                                    .from('pedidos')
-                                    .update({ estado_delivery: 'entregado', estado: 'completado' }) // Completamos el flujo general también
-                                    .eq('id', pedidoId);
+        async function ejecutarAuth() {
+            const email = document.getElementById('auth-email').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            if (modoAuthActual === 'login') {
+                await supabaseCliente.auth.signInWithPassword({ email, password: pass });
+            } else {
+                await supabaseCliente.auth.signUp({ email, password: pass });
+                alert("¡Cuenta registrada!");
+            }
+            window.location.reload();
+        }
 
-                                if (error) alert("Error al actualizar.");
-                                else {
-                                    alert("✅ ¡Excelente trabajo! Entrega registrada.");
-                                    cargarPedidosParaMoto();
-                                }
-                            }
-                        }
+        async function cerrarSesion() { await supabaseCliente.auth.signOut(); window.location.reload(); }
+        function abrirModal(id) { document.getElementById(id).classList.add('active'); }
+        function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
 
-                            async function cerrarSesion() { await supabaseCliente.auth.signOut(); window.location.reload(); }
-                            function abrirModal(id) { document.getElementById(id).classList.add('active'); }
-                            function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
+        // --- MANEJO DE INSTALACIÓN PWA (MANUAL/AUTOMÁTICO) ---
+        let deferredPrompt;
+        const btnInstalar = document.getElementById('btn-instalar');
 
-                            // --- MANEJO DE INSTALACIÓN PWA (MANUAL/AUTOMÁTICO) ---
-                            let deferredPrompt;
-                            const btnInstalar = document.getElementById('btn-instalar');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Evita que navegadores muestren el prompt automático agresivo
+            e.preventDefault();
+            // Guarda el evento para ejecutarlo mediante el click del usuario
+            deferredPrompt = e;
+            // Revela el botón de instalación manual en la barra
+            if (btnInstalar) btnInstalar.classList.remove('hidden');
+        });
 
-                            window.addEventListener('beforeinstallprompt', (e) => {
-                                // Evita que navegadores muestren el prompt automático agresivo
-                                e.preventDefault();
-                                // Guarda el evento para ejecutarlo mediante el click del usuario
-                                deferredPrompt = e;
-                                // Revela el botón de instalación manual en la barra
-                                if (btnInstalar) btnInstalar.classList.remove('hidden');
-                            });
+        if (btnInstalar) {
+            btnInstalar.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                // Lanza el aviso nativo de instalación
+                deferredPrompt.prompt();
+                // Analiza la elección realizada por el usuario
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Elección de instalación: ${outcome}`);
+                // Limpia la variable ya consumida
+                deferredPrompt = null;
+                // Oculta nuevamente el botón
+                btnInstalar.classList.add('hidden');
+            });
+        }
 
-                            if (btnInstalar) {
-                                btnInstalar.addEventListener('click', async () => {
-                                    if (!deferredPrompt) return;
-                                    // Lanza el aviso nativo de instalación
-                                    deferredPrompt.prompt();
-                                    // Analiza la elección realizada por el usuario
-                                    const { outcome } = await deferredPrompt.userChoice;
-                                    console.log(`Elección de instalación: ${outcome}`);
-                                    // Limpia la variable ya consumida
-                                    deferredPrompt = null;
-                                    // Oculta nuevamente el botón
-                                    btnInstalar.classList.add('hidden');
-                                });
-                            }
+        window.addEventListener('appinstalled', () => {
+            console.log('Aplicación instalada con éxito en el sistema.');
+            if (btnInstalar) btnInstalar.classList.add('hidden');
+        });
 
-                            window.addEventListener('appinstalled', () => {
-                                console.log('Aplicación instalada con éxito en el sistema.');
-                                if (btnInstalar) btnInstalar.classList.add('hidden');
-                            });
+        // Registro de Service Worker para capacidades sin conexión
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('PWA Lista - ServiceWorker registrado exitosamente');
+                }).catch(err => {
+                    console.log('Error al registrar ServiceWorker:', err);
+                });
+            });
+        }
 
-                            // Registro de Service Worker para capacidades sin conexión
-                            if ('serviceWorker' in navigator) {
-                                window.addEventListener('load', () => {
-                                    navigator.serviceWorker.register('./sw.js').then(reg => {
-                                        console.log('PWA Lista - ServiceWorker registrado exitosamente');
-                                    }).catch(err => {
-                                        console.log('Error al registrar ServiceWorker:', err);
-                                    });
-                                });
-                            }
-
-                            inicializarPlataforma();
-                    </script>
+        inicializarPlataforma();
+    </script>
 </body>
-
 </html>
