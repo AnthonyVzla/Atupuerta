@@ -896,8 +896,9 @@ async function submitClientRequest(points, event) {
   const isParcel = type === "encomienda";
   const mode = form.get("serviceMode") || (isParcel ? "encomienda" : "economico");
   const rate = isParcel ? 0.40 : mode === "express" ? 0.45 : 0.38;
-  const { data: setting } = await supabase.from("app_settings").select("value").eq("key", "bcv_usd_rate").maybeSingle();
-  const bcvRate = Number(setting?.value || 0);
+  const { data: setting, error: settingError } = await supabase.from("app_settings").select("value").eq("key", "bcv_usd_rate").maybeSingle();
+  if (settingError) return showToast(`No se pudo consultar la tasa BCV: ${settingError.message}`, true);
+  const bcvRate = Number(String(setting?.value || "").replace(",", "."));
   if (!bcvRate) return showToast("La tasa BCV todavía no está configurada.", true);
   const usd = km * rate;
   const bs = usd * bcvRate;
@@ -999,7 +1000,11 @@ function renderPaymentConfiguration() {
 async function loadPaymentConfiguration() {
   const node = document.querySelector("#payment-config-fields");
   if (!node) return;
-  const { data } = await supabase.from("app_settings").select("*").order("key");
+  const { data, error } = await supabase.from("app_settings").select("*").order("key");
+  if (error) {
+    node.innerHTML = `<p class="error">${escapeHtml(error.message)} Ejecuta nuevamente supabase/schema.sql en Supabase.</p>`;
+    return;
+  }
   const rate = data?.find(item => item.key === "bcv_usd_rate")?.value || "";
   node.innerHTML = `<form id="payment-config-form" class="stack"><label>Tasa BCV: 1 USD en Bs<input name="bcvRate" type="number" step="0.01" min="0.01" value="${escapeHtml(rate)}" required></label><button class="button primary">Guardar tasa</button><div class="payment-details"><span>Cédula / RIF: 27.146.006</span><span>Teléfono: 0412-8481584</span><span>Banco: Mercantil · 0105</span></div></form>`;
   document.querySelector("#payment-config-form").addEventListener("submit", async event => {
