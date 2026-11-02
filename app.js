@@ -206,10 +206,36 @@ function startRealtime() {
       renderIfSafe();
     });
     if (["soporte", "administracion"].includes(state.profile.role)) {
+      channel.on("postgres_changes", { event: "INSERT", schema: "public", table: "rides" }, async (payload) => {
+        playStaffServiceAlarm(payload.new);
+        await refreshData(true);
+        renderIfSafe();
+      });
+      channel.on("postgres_changes", { event: "UPDATE", schema: "public", table: "rides" }, async () => {
+        await refreshData(true);
+        renderIfSafe();
+      });
       channel.on("postgres_changes", { event: "*", schema: "public", table: "courier_locations" }, async () => {
         await refreshCourierLocations();
         renderIfSafe();
       });
+    }
+
+    function playStaffServiceAlarm(ride) {
+      const audio = state.alertAudio.incoming;
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      }
+      if (typeof navigator.vibrate === "function") navigator.vibrate([180, 100, 180, 100, 300]);
+      const id = `ride-${ride.id}`;
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("Nuevo servicio solicitado", {
+          body: `${ride.pickup_text || "Recogida"} → ${ride.destination_text || "Destino"}`,
+          tag: id
+        });
+      }
+      showToast("Nuevo servicio de traslado recibido.");
     }
   }
 
@@ -988,13 +1014,14 @@ async function loadPendingPassengerServices() {
   if (!node) return;
   const { data, error } = await supabase.from("rides").select("*").eq("status", "pending_payment_verification").order("created_at", { ascending: false });
   if (error) return node.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
-  node.innerHTML = data?.length ? data.map(ride => `<article class="card"><strong>#${ride.id.slice(0, 8)} · Pago por verificar</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p>Bs ${Number(ride.payment_amount_bs || 0).toFixed(2)} · Ref. ${escapeHtml(ride.payment_reference || "—")}</p>${ride.payment_capture_url ? `<a href="${escapeHtml(ride.payment_capture_url)}" target="_blank"><img class="payment-proof" src="${escapeHtml(ride.payment_capture_url)}" alt="Comprobante"></a>` : ""}<button class="button success small" data-verify-payment="${ride.id}">Verificar pago</button></article>`).join("") : `<div class="empty">No hay servicios pendientes de verificación.</div>`;
+  node.innerHTML = data?.length ? data.map(ride => `<article class="card"><strong>#${ride.id.slice(0, 8)} · Pago por verificar</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><div class="ride-money"><strong>$${Number(ride.price || 0).toFixed(2)} USD</strong><strong>Bs ${Number(ride.payment_amount_bs || 0).toLocaleString("es-VE", { minimumFractionDigits: 2 })}</strong></div><p>Ref. ${escapeHtml(ride.payment_reference || "—")}</p>${ride.payment_capture_url ? `<button class="proof-button" type="button" data-view-proof="${escapeHtml(ride.payment_capture_url)}">Ver comprobante</button>` : ""}<button class="button success small" data-verify-payment="${ride.id}">Verificar pago</button></article>`).join("") : `<div class="empty">No hay servicios pendientes de verificación.</div>`;
   node.querySelectorAll("[data-verify-payment]").forEach(button => button.addEventListener("click", () => verifyRidePayment(button.dataset.verifyPayment)));
+  node.querySelectorAll("[data-view-proof]").forEach(button => button.addEventListener("click", () => openProofModal(button.dataset.viewProof)));
 }
 
 function renderPaymentConfiguration() {
   setTimeout(loadPaymentConfiguration, 0);
-  return `<section class="card form-card"><h2>Tasa BCV y Pago móvil</h2><div id="payment-config-fields"></div></section>`;
+  return `<section class="card form-card"><h2>Tasa BCV y Pago móvil</h2><button class="button primary" type="button" data-open-payment-settings>Configurar tasa BCV</button><div id="payment-config-fields"></div></section>`;
 }
 
 async function loadPaymentConfiguration() {
@@ -1006,7 +1033,7 @@ async function loadPaymentConfiguration() {
     return;
   }
   const rate = data?.find(item => item.key === "bcv_usd_rate")?.value || "";
-  node.innerHTML = `<form id="payment-config-form" class="stack"><label>Tasa BCV: 1 USD en Bs<input name="bcvRate" type="number" step="0.01" min="0.01" value="${escapeHtml(rate)}" required></label><button class="button primary">Guardar tasa</button><div class="payment-details"><span>Cédula / RIF: 27.146.006</span><span>Teléfono: 0412-8481584</span><span>Banco: Mercantil · 0105</span></div></form>`;
+  node.innerHTML = `<form id="payment-config-form" class="stack"><label>Tasa BCV: 1 USD en Bs<input name="bcvRate" type="number" step="0.01" min="0.01" value="${escapeHtml(rate)}" required></label><button class="button primary">Guardar tasa</button></form>`;
   document.querySelector("#payment-config-form").addEventListener("submit", async event => {
     event.preventDefault();
     const rateValue = new FormData(event.currentTarget).get("bcvRate");
@@ -1014,6 +1041,14 @@ async function loadPaymentConfiguration() {
     if (error) return showToast(error.message, true);
     showToast("Tasa BCV actualizada.");
   });
+  document.querySelector("[data-open-payment-settings]")?.addEventListener("click", openPaymentSettingsModal);
+}
+
+function openPaymentSettingsModal() {
+  document.querySelector("#payment-settings-modal")?.remove();
+  document.body.insertAdjacentHTML("beforeend", `<div id="payment-settings-modal" class="payment-modal-backdrop"><section class="payment-modal"><button class="payment-close" type="button" aria-label="Cerrar">×</button><h2>Datos de Pago móvil</h2><div class="payment-details"><span><strong>Cédula / RIF</strong><br>27.146.006</span><span><strong>Teléfono</strong><br>0412-8481584</span><span><strong>Banco</strong><br>Mercantil · 0105</span></div></section></div>`);
+  document.querySelector("#payment-settings-modal .payment-close").addEventListener("click", () => document.querySelector("#payment-settings-modal").remove());
+  document.querySelector("#payment-settings-modal").addEventListener("click", event => { if (event.target.id === "payment-settings-modal") event.currentTarget.remove(); });
 }
 
 function renderAllyOrders(history) {
@@ -1380,8 +1415,53 @@ async function loadPassengerServices() {
   if (!node) return;
   const { data, error } = await supabase.from("rides").select("*").order("created_at", { ascending: false });
   if (error) return node.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
-  node.innerHTML = data?.length ? data.map(ride => `<article class="card"><div class="ride-admin-card"><div><strong>#${ride.id.slice(0, 8)} · ${escapeHtml(ride.service_type)}</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p class="muted">$${Number(ride.price || 0).toFixed(2)} · Bs ${Number(ride.payment_amount_bs || 0).toFixed(2)} · Ref. ${escapeHtml(ride.payment_reference || "—")}</p></div>${ride.payment_capture_url ? `<a href="${escapeHtml(ride.payment_capture_url)}" target="_blank" rel="noopener"><img class="payment-proof" src="${escapeHtml(ride.payment_capture_url)}" alt="Comprobante de pago"></a>` : `<span class="badge orange">Sin comprobante</span>`}</div><button class="button success small" data-verify-payment="${ride.id}" ${ride.payment_status === "verified" ? "disabled" : ""}>${ride.payment_status === "verified" ? "Pago verificado" : "Verificar pago"}</button></article>`).join("") : `<div class="empty">No hay solicitudes de traslado.</div>`;
+  node.innerHTML = data?.length ? data.map(ride => renderPassengerServiceCard(ride)).join("") : `<div class="empty">No hay solicitudes de traslado.</div>`;
   node.querySelectorAll("[data-verify-payment]").forEach(button => button.addEventListener("click", () => verifyRidePayment(button.dataset.verifyPayment)));
+  node.querySelectorAll("[data-view-proof]").forEach(button => button.addEventListener("click", () => openProofModal(button.dataset.viewProof)));
+  node.querySelectorAll("[data-assign-ride]").forEach(button => button.addEventListener("click", () => assignRide(button.dataset.assignRide)));
+  node.querySelectorAll("[data-reassign-ride]").forEach(button => button.addEventListener("click", () => assignRide(button.dataset.reassignRide, true)));
+  node.querySelectorAll("[data-release-ride]").forEach(button => button.addEventListener("click", () => releaseRide(button.dataset.releaseRide)));
+}
+
+function activeRideCouriers() {
+  return state.profiles.filter(profile => profile.role === "motorizado" && profile.approved && !profile.suspended);
+}
+
+function renderPassengerServiceCard(ride) {
+  const couriers = activeRideCouriers();
+  const current = couriers.find(profile => profile.id === ride.courier_id);
+  const options = couriers.map(profile => `<option value="${profile.id}" ${profile.id === ride.courier_id ? "selected" : ""}>${escapeHtml(profile.full_name || profile.username)}</option>`).join("");
+  const controls = ride.payment_status === "verified" ? `
+    <div class="ride-assignment">
+      <label>Motorizado<select data-ride-courier="${ride.id}" ${ride.status === "pending" ? "" : ""}><option value="">Seleccionar motorizado</option>${options}</select></label>
+      ${ride.courier_id ? `<button class="button small" data-reassign-ride="${ride.id}">Reasignar</button><button class="button subtle small" data-release-ride="${ride.id}">Liberar pedido</button>` : `<button class="button primary small" data-assign-ride="${ride.id}">Asignar motorizado</button>`}
+      ${current ? `<span class="muted">Asignado: ${escapeHtml(current.full_name || current.username)}</span>` : `<span class="badge orange">Sin asignar</span>`}
+    </div>` : "";
+  return `<article class="card"><div class="ride-admin-card"><div><strong>#${ride.id.slice(0, 8)} · ${escapeHtml(ride.service_type)}</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><div class="ride-money"><strong>$${Number(ride.price || 0).toFixed(2)} USD</strong><strong>Bs ${Number(ride.payment_amount_bs || 0).toLocaleString("es-VE", { minimumFractionDigits: 2 })}</strong></div><p class="muted">Ref. ${escapeHtml(ride.payment_reference || "—")}</p></div>${ride.payment_capture_url ? `<button class="proof-button" type="button" data-view-proof="${escapeHtml(ride.payment_capture_url)}">Ver comprobante</button>` : `<span class="badge orange">Sin comprobante</span>`}</div>${ride.payment_status !== "verified" ? `<button class="button success small" data-verify-payment="${ride.id}">Verificar pago</button>` : `<span class="badge green">Pago verificado</span>`}${controls}</article>`;
+}
+
+function openProofModal(url) {
+  const existing = document.querySelector("#proof-modal");
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML("beforeend", `<div id="proof-modal" class="payment-modal-backdrop"><section class="payment-modal proof-modal"><button class="payment-close" type="button" aria-label="Cerrar">×</button><h2>Comprobante de pago</h2><img src="${escapeHtml(url)}" alt="Comprobante ampliado"></section></div>`);
+  document.querySelector("#proof-modal .payment-close").addEventListener("click", () => document.querySelector("#proof-modal").remove());
+  document.querySelector("#proof-modal").addEventListener("click", event => { if (event.target.id === "proof-modal") event.currentTarget.remove(); });
+}
+
+async function assignRide(id, reassigned = false) {
+  const select = document.querySelector(`[data-ride-courier="${id}"]`);
+  if (!select?.value) return showToast("Selecciona un motorizado.", true);
+  const { error } = await supabase.from("rides").update({ courier_id: select.value, status: "assigned" }).eq("id", id);
+  if (error) return showToast(error.message, true);
+  showToast(reassigned ? "Servicio reasignado." : "Servicio asignado.");
+  loadPassengerServices();
+}
+
+async function releaseRide(id) {
+  const { error } = await supabase.from("rides").update({ courier_id: null, status: "pending" }).eq("id", id);
+  if (error) return showToast(error.message, true);
+  showToast("Servicio liberado para motorizados.");
+  loadPassengerServices();
 }
 
 async function verifyRidePayment(id) {
