@@ -1,7 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const SUPABASE_URL = "https://dvkusfutsnygppvtbxmg.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImliY2x6Y2lra3hoZG5vcmNiZm9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0NTUwNTEsImV4cCI6MjEwODAzMTA1MX0.FU_CgXhXloA4le2KfBRc0bCIXjewuJ8zr7JxUJLcKJk";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a3VzZnV0c255Z3BwdnRieG1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3NDUwMjksImV4cCI6MjA5NjMyMTAyOX0.ZTBkpZrdZ0K0KFXGSrd2TIkKHRJcP52k0Ioy1cQFeJI";
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const app = document.querySelector("#app");
 const toastNode = document.querySelector("#toast");
