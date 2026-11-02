@@ -1,0 +1,17 @@
+{
+  "name": "Te Llevo",
+  "short_name": "Te Llevo",
+  "description": "Gestión de pedidos y entregas",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111014",
+  "theme_color": "#111014",
+  "icons": [
+    {
+      "src": "./images (1).png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
