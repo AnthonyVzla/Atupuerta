@@ -6,15 +6,15 @@
   background: #111014;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --bg: #111014;
-  --panel: #1b191f;
-  --panel-soft: #232129;
-  --line: #34313a;
-  --muted: #a7a2ae;
-  --pink: #d936bc;
-  --purple: #8d54ef;
-  --green: #42d392;
-  --red: #ff707b;
+  --bg: #07182f;
+  --panel: #102b4d;
+  --panel-soft: #173a63;
+  --line: #274f7a;
+  --muted: #b6c8da;
+  --pink: #f6d20b;
+  --purple: #17a8c7;
+  --green: #8ee34a;
+  --red: #ff8a00;
 }
 
 * { box-sizing: border-box; }

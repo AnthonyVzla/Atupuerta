@@ -14,7 +14,7 @@ function escapeHtml(value = "") {
 }
 
 function legalFooter() {
-  return `<footer class="legal-footer">Derechos reservados · A un paso RIF: J-503180226 <span>POWERED BY BAMBAMDEV</span></footer>`;
+  return `<footer class="legal-footer">Derechos reservados · <span>POWERED BY BAMBAMDEV</span></footer>`;
 }
 
 function renderAudioActivationPrompt() {
@@ -50,7 +50,7 @@ function reportError(error) {
 }
 
 function usernameEmail(username) {
-  return `${username.trim().toLowerCase()}@users.aunpaso.local`;
+  return `${username.trim().toLowerCase()}@users.tellevo.local`;
 }
 
 async function boot() {
@@ -304,7 +304,7 @@ async function startNativeBackgroundLocationTracking() {
   try {
     state.nativeBackgroundLocationWatcherId = await nativeLocation.addWatcher({
       backgroundMessage: "Ubicación activa para entregas. Cambia a OFF para detenerla.",
-      backgroundTitle: "A un paso · GPS activo",
+      backgroundTitle: "Te llevo · GPS activo",
       requestPermissions: true,
       stale: false,
       distanceFilter: 10
@@ -554,10 +554,10 @@ function refreshActiveCourierOptions() {
 
 const navItems = {
   cliente: [["solicitudes", "Mis solicitudes"], ["solicitar", "Solicitar viaje"], ["agendar", "Agendar viaje"]],
-  motorizado: [["inicio", "Resumen"], ["activos", "Pedidos activos"], ["curso", "Pedido en curso"], ["entregados", "Entregados"]],
-  soporte: [["inicio", "Resumen"], ["crear", "Crear pedido"], ["pendientes", "Pedidos pendientes"], ["pedidos", "Pedidos"], ["entregados", "Finalizados"], ["motorizados", "Motorizados activos"], ["monitoreo", "Monitoreo"], ["aliados", "Aliados"]],
-  administracion: [["inicio", "Resumen"], ["pendientes", "Pedidos pendientes"], ["pedidos", "Pedidos"], ["entregados", "Finalizados"], ["motorizados", "Motorizados activos"], ["monitoreo", "Monitoreo"], ["usuarios", "Usuarios"], ["postulaciones", "Postulaciones"], ["aliados", "Aliados"], ["reportes", "Reportes"], ["metricas", "Métricas"]],
-  aliado: [["crear", "Crear pedido"], ["mis_pedidos", "Pedidos en curso"], ["historial", "Historial"]]
+  motorizado: [["inicio", "Resumen"], ["activos", "Servicios activos"], ["curso", "Servicio en curso"], ["entregados", "Finalizados"]],
+  soporte: [["inicio", "Resumen"], ["crear", "Crear servicio"], ["pendientes", "Servicios pendientes"], ["pedidos", "Servicios"], ["entregados", "Finalizados"], ["motorizados", "Motorizados activos"], ["monitoreo", "Monitoreo"], ["agendados", "Servicios agendados"], ["aliados", "Aliados"]],
+  administracion: [["inicio", "Resumen"], ["pendientes", "Servicios pendientes"], ["pedidos", "Servicios"], ["agendados", "Servicios agendados"], ["entregados", "Finalizados"], ["motorizados", "Motorizados activos"], ["monitoreo", "Monitoreo"], ["usuarios", "Usuarios"], ["postulaciones", "Postulaciones"], ["configuracion", "Configuración y pagos"], ["aliados", "Aliados"], ["reportes", "Reportes"], ["metricas", "Métricas"]],
+  aliado: [["crear", "Crear servicio"], ["mis_pedidos", "Servicios en curso"], ["historial", "Historial"]]
 };
 
 function renderApp() {
@@ -567,7 +567,7 @@ function renderApp() {
   const nav = items.map(([key, label]) => `<button class="nav-button ${state.screen === key ? "active" : ""}" data-screen="${key}">${label}</button>`).join("");
   app.innerHTML = `<div class="app-page"><div class="layout">
     <aside class="sidebar">
-      <div class="sidebar-brand"><img src="./brand-logo.jpg" alt=""><div><strong>A un paso<br>delivery</strong><span>${roleNames[state.profile.role]}</span></div></div>
+      <div class="sidebar-brand"><img src="./brand-logo.jpg" alt=""><div><strong>Te llevo</strong><span>${roleNames[state.profile.role]}</span></div></div>
       <nav class="nav-list">${nav}</nav>
       <div class="sidebar-bottom"><div class="user-summary"><strong>${escapeHtml(state.profile.full_name)}</strong><span>@${escapeHtml(state.profile.username)} · ${roleNames[state.profile.role]}</span></div><button class="button subtle full" data-action="logout">Cerrar sesión</button></div>
     </aside>
@@ -800,7 +800,7 @@ function emitCourierNotification(kind, order) {
 }
 
 function titleFor(screen) {
-  return ({ inicio: "Resumen", activos: "Pedidos activos", curso: "Pedido en curso", entregados: "Pedidos entregados", crear: "Crear pedido", pedidos: "Pedidos", pendientes: "Pedidos pendientes", mis_pedidos: "Pedidos en curso", historial: "Historial", motorizados: "Motorizados activos", monitoreo: "Monitoreo", aliados: "Aliados", usuarios: "Usuarios", reportes: "Reportes", metricas: "Métricas" })[screen] || "Te llevo";
+  return ({ inicio: "Resumen", activos: "Servicios activos", curso: "Servicio en curso", entregados: "Servicios finalizados", crear: "Crear servicio", pedidos: "Pedidos", pendientes: "Servicios pendientes", mis_pedidos: "Servicios en curso", historial: "Historial", motorizados: "Motorizados activos", monitoreo: "Monitoreo", aliados: "Aliados", usuarios: "Usuarios", reportes: "Reportes", metricas: "Métricas" })[screen] || "Te llevo";
 }
 
 function countOnline() {
@@ -809,7 +809,25 @@ function countOnline() {
 }
 
 function renderClientRequests() {
-  return `<div class="client-actions"><h2>¿Cómo quieres viajar?</h2><div class="grid two"><button class="card client-action" data-client-service="solicitar"><span>🚗</span><strong>Solicitar viaje</strong></button><button class="card client-action" data-client-service="agendar"><span>📅</span><strong>Agendar viaje</strong></button><button class="card client-action" data-client-service="encomienda"><span>📦</span><strong>Solicitar encomienda</strong></button></div><a class="support-float" href="https://wa.me/584128481584" target="_blank" rel="noopener">💬 Soporte</a></div>`;
+  setTimeout(loadClientRequests, 0);
+  return `<div class="client-actions"><h2>Mis solicitudes</h2><div id="client-current-rides" class="list"><p class="muted">Consultando servicios actuales…</p></div><div class="section-head"><h2>Historial de viajes</h2></div><div id="client-ride-history" class="list"><p class="muted">Consultando historial…</p></div><a class="support-float" href="https://wa.me/584128481584" target="_blank" rel="noopener">💬 Soporte</a></div>`;
+}
+
+async function loadClientRequests() {
+  const currentNode = document.querySelector("#client-current-rides");
+  const historyNode = document.querySelector("#client-ride-history");
+  if (!currentNode || !historyNode) return;
+  const { data, error } = await supabase.from("rides").select("*").eq("client_id", state.profile.id).order("created_at", { ascending: false });
+  if (error) {
+    currentNode.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
+    historyNode.innerHTML = "";
+    return;
+  }
+  const active = (data || []).filter(ride => !["delivered", "cancelled", "completed"].includes(ride.status));
+  const history = (data || []).filter(ride => ["delivered", "cancelled", "completed"].includes(ride.status));
+  const rideCard = ride => `<article class="card ride-card"><div><strong>${ride.service_type === "agendar" ? "Viaje agendado" : ride.service_type === "encomienda" ? "Encomienda" : "Viaje solicitado"}</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p class="muted">${ride.scheduled_at ? dateTime(ride.scheduled_at) + " · " : ""}${escapeHtml(ride.status)} · $${Number(ride.price || 0).toFixed(2)}</p></div></article>`;
+  currentNode.innerHTML = active.length ? active.map(rideCard).join("") : `<div class="empty">No tienes servicios en curso.</div>`;
+  historyNode.innerHTML = history.length ? history.map(rideCard).join("") : `<div class="empty">Aún no tienes viajes finalizados.</div>`;
 }
 
 function renderClientRequest(type) {
@@ -829,6 +847,8 @@ async function bindClientRequest() {
   if (typeof L === "undefined") return;
   const mapNode = document.querySelector("#client-address-map");
   if (!mapNode) return;
+  state.publicPickupMarker = null;
+  state.publicDestinationMarker = null;
   state.publicMap = L.map(mapNode).setView([10.250, -67.600], 11);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(state.publicMap);
   const pickupInput = document.querySelector("#pickup-search");
@@ -839,9 +859,10 @@ async function bindClientRequest() {
     const options = document.querySelector("#fare-options");
     if (!pickup || !destination) return;
     const km = haversineKm(pickup, destination);
+    const etaMinutes = Math.max(1, Math.round(km / 55 * 60));
     if (state.requestedService === "encomienda") {
-      options.innerHTML = `<label class="fare-card"><input type="radio" name="serviceMode" value="encomienda" checked><div><strong>Encomienda</strong><span>${km.toFixed(1)} km · $${(km * 0.40).toFixed(2)}</span></div></label>`;
-    } else options.innerHTML = `<label class="fare-card"><input type="radio" name="serviceMode" value="express"><div><strong>Express</strong><span>${km.toFixed(1)} km · $${(km * 0.45).toFixed(2)}</span></div></label><label class="fare-card"><input type="radio" name="serviceMode" value="economico"><div><strong>Económico</strong><span>${km.toFixed(1)} km · $${(km * 0.38).toFixed(2)}</span></div></label>`;
+      options.innerHTML = `<label class="fare-card"><input type="radio" name="serviceMode" value="encomienda" checked><div><strong>Encomienda</strong><span>${km.toFixed(1)} km · ${etaMinutes} min · $${(km * 0.40).toFixed(2)}</span></div></label>`;
+    } else options.innerHTML = `<label class="fare-card"><input type="radio" name="serviceMode" value="express" checked><div><strong>Express</strong><span>${km.toFixed(1)} km · ${etaMinutes} min · $${(km * 0.45).toFixed(2)}</span></div></label><label class="fare-card"><input type="radio" name="serviceMode" value="economico"><div><strong>Económico</strong><span>${km.toFixed(1)} km · ${etaMinutes} min · $${(km * 0.38).toFixed(2)}</span></div></label>`;
     document.querySelector("#request-submit").disabled = false;
   };
   const setMarker = (kind, point, label) => {
@@ -875,8 +896,42 @@ async function submitClientRequest(points, event) {
   const isParcel = type === "encomienda";
   const mode = form.get("serviceMode") || (isParcel ? "encomienda" : "economico");
   const rate = isParcel ? 0.40 : mode === "express" ? 0.45 : 0.38;
-  const { error } = await supabase.from("rides").insert({ client_id: state.profile.id, service_type: type, mode, status: "pending", pickup_text: form.get("pickupText"), destination_text: form.get("destinationText"), pickup_lat: pickup.lat, pickup_lng: pickup.lng, destination_lat: destination.lat, destination_lng: destination.lng, distance_km: km, price: km * rate, scheduled_at: form.get("scheduledAt") || null, passenger_name: form.get("passengerName") || null, passenger_phone: form.get("passengerPhone") || null, recipient_name: form.get("recipientName") || null, recipient_phone: form.get("recipientPhone") || null, description: form.get("description") || null });
+  const { data: setting } = await supabase.from("app_settings").select("value").eq("key", "bcv_usd_rate").maybeSingle();
+  const bcvRate = Number(setting?.value || 0);
+  if (!bcvRate) return showToast("La tasa BCV todavía no está configurada.", true);
+  const usd = km * rate;
+  const bs = usd * bcvRate;
+  openPaymentGateway({ form, type, mode, pickup, destination, km, usd, bs, bcvRate, isParcel });
+}
+
+async function openPaymentGateway(service) {
+  const existing = document.querySelector("#payment-modal");
+  if (existing) existing.remove();
+  document.body.insertAdjacentHTML("beforeend", `<div id="payment-modal" class="payment-modal-backdrop"><section class="payment-modal"><button class="payment-close" type="button" aria-label="Cerrar">×</button><h2>Pago móvil</h2><div class="payment-details"><strong>Monto: Bs ${service.bs.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong><span>$${service.usd.toFixed(2)} al cambio BCV ${Number(service.bcvRate).toLocaleString("es-VE", { maximumFractionDigits: 2 })}</span><hr><span>Cédula / RIF: 27.146.006</span><span>Teléfono: 0412-8481584</span><span>Banco: Mercantil · 0105</span></div><form id="payment-form" class="stack"><label>Número de referencia del pago<input name="paymentReference" inputmode="numeric" minlength="4" required></label><label>Captura de la transacción<input name="paymentCapture" type="file" accept="image/*" required></label><button class="button primary full" type="submit">Enviar comprobante y solicitar</button></form></section></div>`);
+  document.querySelector("#payment-modal .payment-close").addEventListener("click", () => document.querySelector("#payment-modal").remove());
+  document.querySelector("#payment-form").addEventListener("submit", event => submitPaidRide(event, service));
+}
+
+async function submitPaidRide(event, service) {
+  event.preventDefault();
+  const paymentForm = new FormData(event.currentTarget);
+  const capture = paymentForm.get("paymentCapture");
+  const submitButton = event.currentTarget.querySelector("button[type='submit']");
+  submitButton.disabled = true;
+  submitButton.textContent = "Verificando pago…";
+  let capturePath = "";
+  let captureUrl = "";
+  if (capture && capture.size) {
+    capturePath = `${state.profile.id}/${Date.now()}-${capture.name}`;
+    const { error: uploadError } = await supabase.storage.from("payment-proofs").upload(capturePath, capture, { upsert: false });
+    if (uploadError) { submitButton.disabled = false; submitButton.textContent = "Enviar comprobante y solicitar"; return showToast(uploadError.message, true); }
+    const publicUrl = supabase.storage.from("payment-proofs").getPublicUrl(capturePath);
+    captureUrl = publicUrl.data.publicUrl;
+  }
+  const form = service.form;
+  const { error } = await supabase.from("rides").insert({ client_id: state.profile.id, service_type: service.type, mode: service.mode, status: "pending_payment_verification", pickup_text: form.get("pickupText"), destination_text: form.get("destinationText"), pickup_lat: service.pickup.lat, pickup_lng: service.pickup.lng, destination_lat: service.destination.lat, destination_lng: service.destination.lng, distance_km: service.km, price: service.usd, scheduled_at: form.get("scheduledAt") || null, passenger_name: form.get("passengerName") || null, passenger_phone: form.get("passengerPhone") || null, recipient_name: form.get("recipientName") || null, recipient_phone: form.get("recipientPhone") || null, description: form.get("description") || null, payment_status: "pending_verification", payment_reference: paymentForm.get("paymentReference"), payment_capture_url: captureUrl, payment_amount_bs: service.bs, bcv_rate: service.bcvRate });
   if (error) return showToast(error.message, true);
+  document.querySelector("#payment-modal")?.remove();
   showToast("Servicio solicitado correctamente."); state.requestedService = null; state.screen = "solicitudes"; renderApp();
 }
 
@@ -902,6 +957,7 @@ function renderScreen() {
   if (state.screen === "inicio") return renderDashboard();
   if (state.screen === "crear" && ["soporte", "administracion"].includes(role)) return renderCreateOrder();
   if (state.screen === "pendientes" && ["soporte", "administracion"].includes(role)) return renderPendingOrders();
+  if (state.screen === "agendados" && ["soporte", "administracion"].includes(role)) return renderScheduledServices();
   if (state.screen === "activos" && role === "motorizado") return renderCourierAvailable();
   if (state.screen === "curso" && role === "motorizado") return renderCourierCurrent();
   if (state.screen === "motorizados" && ["soporte", "administracion"].includes(role)) return renderActiveCouriers();
@@ -913,17 +969,51 @@ function renderScreen() {
   if (state.screen === "postulaciones" && role === "administracion") return renderDriverApplications();
   if (state.screen === "reportes" && role === "administracion") return renderReports();
   if (state.screen === "metricas" && role === "administracion") return renderMetrics();
+  if (state.screen === "configuracion" && role === "administracion") return renderPaymentConfiguration();
   return `<div class="empty">Selecciona una sección.</div>`;
 }
 
+function renderScheduledServices() { setTimeout(loadScheduledServices, 0); return `<section><h2>Servicios agendados</h2><div id="scheduled-services-list" class="list"><p class="muted">Cargando servicios agendados…</p></div></section>`; }
+async function loadScheduledServices() { const node=document.querySelector("#scheduled-services-list"); if(!node)return; const {data,error}=await supabase.from("rides").select("*").eq("service_type","agendar").eq("status","pending").gte("scheduled_at",new Date().toISOString()).order("scheduled_at",{ascending:true}); if(error){node.innerHTML=`<p class="error">${escapeHtml(error.message)}</p>`;return;} node.innerHTML=data?.length ? data.map(ride=>`<article class="card"><strong>${escapeHtml(dateTime(ride.scheduled_at))}</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p class="muted">${escapeHtml(ride.mode)} · $${Number(ride.price || 0).toFixed(2)}</p></article>`).join("") : `<div class="empty">No hay servicios agendados.</div>`; }
+
 function renderPendingOrders() {
   const orders = state.orders.filter((order) => order.status === "pending" && !order.courier_id);
-  return `<p class="muted">Pedidos creados por aliados y pedidos aún sin motorizado. Asígnalos o libéralos para que los motorizados activos puedan tomarlos.</p><div class="list">${renderOrderCards(orders, "pending")}</div>`;
+  setTimeout(loadPendingPassengerServices, 0);
+  return `<h2>Servicios pendientes</h2><div id="pending-passenger-services" class="list"><p class="muted">Cargando servicios…</p></div><div class="section-head"><h2>Servicios anteriores</h2></div><p class="muted">Servicios creados por aliados y servicios aún sin conductor. Asígnalos o libéralos para que los conductores activos puedan tomarlos.</p><div class="list">${renderOrderCards(orders, "pending")}</div>`;
+}
+
+async function loadPendingPassengerServices() {
+  const node = document.querySelector("#pending-passenger-services");
+  if (!node) return;
+  const { data, error } = await supabase.from("rides").select("*").eq("status", "pending_payment_verification").order("created_at", { ascending: false });
+  if (error) return node.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
+  node.innerHTML = data?.length ? data.map(ride => `<article class="card"><strong>#${ride.id.slice(0, 8)} · Pago por verificar</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p>Bs ${Number(ride.payment_amount_bs || 0).toFixed(2)} · Ref. ${escapeHtml(ride.payment_reference || "—")}</p>${ride.payment_capture_url ? `<a href="${escapeHtml(ride.payment_capture_url)}" target="_blank"><img class="payment-proof" src="${escapeHtml(ride.payment_capture_url)}" alt="Comprobante"></a>` : ""}<button class="button success small" data-verify-payment="${ride.id}">Verificar pago</button></article>`).join("") : `<div class="empty">No hay servicios pendientes de verificación.</div>`;
+  node.querySelectorAll("[data-verify-payment]").forEach(button => button.addEventListener("click", () => verifyRidePayment(button.dataset.verifyPayment)));
+}
+
+function renderPaymentConfiguration() {
+  setTimeout(loadPaymentConfiguration, 0);
+  return `<section class="card form-card"><h2>Tasa BCV y Pago móvil</h2><div id="payment-config-fields"></div></section>`;
+}
+
+async function loadPaymentConfiguration() {
+  const node = document.querySelector("#payment-config-fields");
+  if (!node) return;
+  const { data } = await supabase.from("app_settings").select("*").order("key");
+  const rate = data?.find(item => item.key === "bcv_usd_rate")?.value || "";
+  node.innerHTML = `<form id="payment-config-form" class="stack"><label>Tasa BCV: 1 USD en Bs<input name="bcvRate" type="number" step="0.01" min="0.01" value="${escapeHtml(rate)}" required></label><button class="button primary">Guardar tasa</button><div class="payment-details"><span>Cédula / RIF: 27.146.006</span><span>Teléfono: 0412-8481584</span><span>Banco: Mercantil · 0105</span></div></form>`;
+  document.querySelector("#payment-config-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const rateValue = new FormData(event.currentTarget).get("bcvRate");
+    const { error } = await supabase.from("app_settings").update({ value: String(rateValue), updated_at: new Date().toISOString() }).eq("key", "bcv_usd_rate");
+    if (error) return showToast(error.message, true);
+    showToast("Tasa BCV actualizada.");
+  });
 }
 
 function renderAllyOrders(history) {
   const orders = state.orders.filter((order) => history ? order.status === "delivered" : !["delivered", "cancelled"].includes(order.status));
-  return `<p class="muted">${history ? "Pedidos entregados de tu aliado." : "Pedidos en espera de soporte, asignados o en curso."}</p><div class="list">${renderOrderCards(orders, history ? "completed" : "ally")}</div>`;
+  return `<p class="muted">${history ? "Servicios finalizados de tu aliado." : "Pedidos en espera de soporte, asignados o en curso."}</p><div class="list">${renderOrderCards(orders, history ? "completed" : "ally")}</div>`;
 }
 
 function renderDriverApplications() { setTimeout(loadDriverApplications, 0); return `<section><h2>Postulaciones de conductores</h2><div id="driver-applications-list" class="list"><p class="muted">Cargando solicitudes…</p></div></section>`; }
@@ -1090,7 +1180,7 @@ function renderDashboard() {
     <article class="card"><span class="metric-label">${role === "motorizado" ? `Tu ganancia hoy (${courierEarningsPercentage()}%)` : "Delivery generado hoy"}</span><div class="metric-value">${formatMoney(revenue)}</div><span class="metric-foot">${role === "motorizado" ? "Tu parte de los pedidos entregados" : "Suma de costos de delivery"}</span></article>
     <article class="card"><span class="metric-label">Motorizados activos</span><div class="metric-value">${role === "motorizado" ? (state.profile.online ? "1" : "0") : countOnline()}</div><span class="metric-foot">Disponibles en este momento</span></article>
   </div>
-  <div class="section-head"><h2>${role === "motorizado" ? "Tus entregas activas" : "Pedidos en curso"}</h2></div>
+  <div class="section-head"><h2>${role === "motorizado" ? "Tus entregas activas" : "Servicios en curso"}</h2></div>
   <div class="list">${renderOrderCards(activeOrders.filter((order) => role !== "motorizado" || order.courier_id === state.profile.id).slice(0, 5), "dashboard")}</div>`;
 }
 
@@ -1276,7 +1366,24 @@ function renderCompletedOrders() {
 }
 
 function renderStaffOrders() {
-  return `<div class="toolbar"><label>Filtrar por estado<select id="staff-status"><option value="active">En curso</option><option value="pending">Sin asignar</option><option value="assigned">Asignados</option><option value="at_store">En el comercio</option><option value="in_transit">En camino</option><option value="cancelled">Cancelados</option><option value="all">Todos</option></select></label></div><div id="staff-orders" class="list">${renderOrderCards(state.orders.filter((order) => !["delivered", "cancelled"].includes(order.status)), "staff")}</div>`;
+  setTimeout(loadPassengerServices, 0);
+  return `<h2>Servicios de traslado</h2><div id="passenger-services-list" class="list"><p class="muted">Cargando solicitudes…</p></div><div class="section-head"><h2>Servicios anteriores</h2></div><div class="toolbar"><label>Filtrar por estado<select id="staff-status"><option value="active">En curso</option><option value="pending">Sin asignar</option><option value="assigned">Asignados</option><option value="at_store">En el comercio</option><option value="in_transit">En camino</option><option value="cancelled">Cancelados</option><option value="all">Todos</option></select></label></div><div id="staff-orders" class="list">${renderOrderCards(state.orders.filter((order) => !["delivered", "cancelled"].includes(order.status)), "staff")}</div>`;
+}
+
+async function loadPassengerServices() {
+  const node = document.querySelector("#passenger-services-list");
+  if (!node) return;
+  const { data, error } = await supabase.from("rides").select("*").order("created_at", { ascending: false });
+  if (error) return node.innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
+  node.innerHTML = data?.length ? data.map(ride => `<article class="card"><div class="ride-admin-card"><div><strong>#${ride.id.slice(0, 8)} · ${escapeHtml(ride.service_type)}</strong><p>${escapeHtml(ride.pickup_text)} → ${escapeHtml(ride.destination_text)}</p><p class="muted">$${Number(ride.price || 0).toFixed(2)} · Bs ${Number(ride.payment_amount_bs || 0).toFixed(2)} · Ref. ${escapeHtml(ride.payment_reference || "—")}</p></div>${ride.payment_capture_url ? `<a href="${escapeHtml(ride.payment_capture_url)}" target="_blank" rel="noopener"><img class="payment-proof" src="${escapeHtml(ride.payment_capture_url)}" alt="Comprobante de pago"></a>` : `<span class="badge orange">Sin comprobante</span>`}</div><button class="button success small" data-verify-payment="${ride.id}" ${ride.payment_status === "verified" ? "disabled" : ""}>${ride.payment_status === "verified" ? "Pago verificado" : "Verificar pago"}</button></article>`).join("") : `<div class="empty">No hay solicitudes de traslado.</div>`;
+  node.querySelectorAll("[data-verify-payment]").forEach(button => button.addEventListener("click", () => verifyRidePayment(button.dataset.verifyPayment)));
+}
+
+async function verifyRidePayment(id) {
+  const { error } = await supabase.from("rides").update({ payment_status: "verified", status: "pending" }).eq("id", id);
+  if (error) return showToast(error.message, true);
+  showToast("Pago verificado. El servicio ya puede asignarse.");
+  loadPassengerServices();
 }
 
 function renderCreateOrder() {
@@ -1294,7 +1401,7 @@ function renderCreateOrder() {
     <label class="wide">Descripción del pedido<textarea name="description" placeholder="Ej.: Torta, traslado, encomienda..." required></textarea></label>
     <label class="wide">Dirección escrita<textarea name="address"></textarea></label>
     <label class="wide">Ubicación de Google Maps (URL)<input name="mapsUrl" type="url" placeholder="https://maps.google.com/..."></label>
-    <div class="wide"><button class="button primary" type="submit">Crear pedido</button></div>
+    <div class="wide"><button class="button primary" type="submit">Crear servicio</button></div>
   </form></article>`;
 }
 
@@ -1401,13 +1508,13 @@ function renderMetrics() {
   }).join("");
 
   return `<div class="grid metrics">
-    <article class="card"><span class="metric-label">Pedidos entregados hoy</span><div class="metric-value">${deliveredToday.length}</div></article>
+    <article class="card"><span class="metric-label">Servicios finalizados hoy</span><div class="metric-value">${deliveredToday.length}</div></article>
     <article class="card"><span class="metric-label">Motorizado con más entregas</span><div class="metric-value metric-text">${escapeHtml(topCourier)}</div><span class="metric-foot">${ranking[0]?.orders.length || 0} pedidos completados hoy</span></article>
     <article class="card"><span class="metric-label">Promedio de aceptación</span><div class="metric-value">${formatDuration(avgAcceptance)}</div><span class="metric-foot">Desde creación hasta asignación, pedidos creados hoy</span></article>
     <article class="card"><span class="metric-label">Promedio de entrega</span><div class="metric-value">${formatDuration(avgDelivery)}</div><span class="metric-foot">Desde llegada al comercio hasta entrega, finalizados hoy</span></article>
   </div>
   <div class="section-head"><h2>Desempeño de motorizados · hoy</h2></div>
-  <div class="table-wrap"><table><thead><tr><th>Motorizado</th><th>Pedidos entregados</th><th>Promedio de aceptación</th><th>Promedio de entrega</th></tr></thead><tbody>${rankingRows || `<tr><td colspan="4">No hay motorizados registrados.</td></tr>`}</tbody></table></div>`;
+  <div class="table-wrap"><table><thead><tr><th>Motorizado</th><th>Servicios finalizados</th><th>Promedio de aceptación</th><th>Promedio de entrega</th></tr></thead><tbody>${rankingRows || `<tr><td colspan="4">No hay motorizados registrados.</td></tr>`}</tbody></table></div>`;
 }
 
 function reportTable(orders) {
